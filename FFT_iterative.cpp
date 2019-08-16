@@ -35,7 +35,12 @@ void butterfly(
   *bottomIM_o = topIM_i - botIM;
 }
 
-void FFT_complex_iterative(int size, int log2size, double *dataRE, double *dataIM)
+void FFT_complex_iterative(
+  int size,
+  int log2size,
+  double *dataRE,
+  double *dataIM
+)
 {
   for (int i=0; i < log2size; ++i){
     int m = 1 << (i+1);
@@ -195,16 +200,13 @@ void matrix_convolution(
 
   for (int i=0;i<height;++i)
     for (int j=0;j<width;++j)
-      cRE[i][j]/=(width*height);
-
-  for (int i=0;i<height;++i)
-    for (int j=0;j<width;++j)
-      c[i][j] = cRE[i][j];
+      c[i][j] = cRE[i][j]/(width*height);
+      // c[i][j] = cRE[i][j] >> (log2w + log2h); -- cannot bitshift double
 }
 
 namespace {
 extern "C" {
-
+#ifdef PYTHON3_MODULE
 int main(){
   int n = 4;
   int height = 4, width = 4;
@@ -256,6 +258,6 @@ int main(){
 
   return 0;
 }
-
+#endif // PYTHON3_MODULE
 }
 }

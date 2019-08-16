@@ -126,7 +126,7 @@ static struct PyModuleDef convolution_module = {
     convolution_methods
 };
 
-PyMODINIT_FUNC PyInit_convolution(void)
+PyMODINIT_FUNC PyInit_convolution_cpp_lib(void)
 {
     import_array();
     return PyModule_Create(&convolution_module);
@@ -140,7 +140,7 @@ int main(int argc, char **argv)
         exit(1);
     }
     /* Add a built-in module, before Py_Initialize */
-    PyImport_AppendInittab("convolution_cpp_lib", PyInit_convolution);
+    PyImport_AppendInittab("convolution_cpp_lib", PyInit_convolution_cpp_lib);
 
     /* Pass argv[0] to the Python interpreter */
     Py_SetProgramName(program);

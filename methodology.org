@@ -1,1 +1,344 @@
+RT METHODOLOGY -*- mode: org -*-
+* Loop Instruction Elimination
+** butterfly
+   #+BEGIN_SRC c++
+     botRE = bottomRE_i * wCOS[k] - bottomIM_i * wSIN[k];
+     botIM = bottomRE_i * wSIN[k] + bottomIM_i * wCOS[k];
+
+     topRE_o = topRE_i + botRE;
+     topIM_o = topIM_i + botIM;
+     bottomRE_o = topRE_i - botRE;
+     bottomIM_o = topIM_i - botIM;
+
+     nop
+   #+END_SRC
+** FFT_complex_iterative
+   #+BEGIN_SRC c++
+     i = 0;
+l1:
+       m = 1 << (i+1);
+       m2 = 1 << i; 
+       j = 0;
+l2:
+         k = j;
+l3:
+           topRE = dataRE[k];
+           topIM = dataIM[k];
+           bottomRE = dataRE[k+m2];
+           bottomIM = dataIM[k+m2];
+           
+           butterfly(
+             topRE,
+             topIM,
+             bottomRE,
+             bottomIM,
+             dataRE+k,
+             dataIM+k,
+             dataRE+k+m2,
+             dataIM+k+m2,
+             j << (log2size-i-1) 
+           );
+
+           k = k + m;
+         if (k == size) 
+           goto l3e;
+         else
+           goto l3;
 l3e:
+         j = j + 1;
+       if (j == m2)
+         goto l2e;
+       else 
+         goto l2;
+l2e:
+       i = i + 1;
+     if (i == log2size)
+       goto stop;
+     else 
+       goto l1;
+stop:
+     nop;
+   #+END_SRC
+** FFT2D_complex_iterative
+   #+BEGIN_SRC c++
+     i = 0;
+l1:
+       j = 0;
+l2: 
+         reversed = 0;
+         temp = 0;
+         k = 0;
+l3: 
+           reversed = reversed << 1;
+           reversed = reversed | (temp&1);
+           temp = temp >> 1;
+         
+           k = k + 1;
+         if (k == log2h)
+           goto l3e;
+         else
+           goto l3;
+l3e:
+         dataRE[j] = matrixDataRE[i][reversed];
+         dataIM[j] = matrixDataIM[i][reversed];
+         
+         j = j + 1;
+       if (j == width)
+         goto l2e;
+       else
+         goto l2;
+l2e:
+       FFT_complex_iterative(width, log2w, dataRE, dataIM);
+
+       j = 0;
+l4:
+         matrixDataRE[i][j] = dataRE[j];
+         matrixDataIM[i][j] = dataIM[j];
+
+         j = j + 1;
+       if (j == width)
+         goto l4e;
+       else
+         goto l4;
+l4e:
+       i = i + 1;
+     if (i == height)
+       goto l1e;
+     else
+       goto l1;
+
+l1e:
+     i = 0;
+l5:
+       j = 0;
+l6: 
+         reversed = 0;
+         temp = 0;
+         k = 0;
+l7: 
+           reversed = reversed << 1;
+           reversed = reversed | (temp&1);
+           temp = temp >> 1;
+         
+           k = k + 1;
+         if (k == log2h)
+           goto l7e;
+         else
+           goto l7;
+l7e:
+         dataRE[j] = matrixDataRE[i][reversed];
+         dataIM[j] = matrixDataIM[i][reversed];
+         
+         j = j + 1;
+       if (j == width)
+         goto l6e;
+       else
+         goto l6;
+l6e:
+       FFT_complex_iterative(width, log2w, dataRE, dataIM);
+
+       j = 0;
+l8:
+         matrixDataRE[i][j] = dataRE[j];
+         matrixDataIM[i][j] = dataIM[j];
+
+         j = j + 1;
+       if (j == width)
+         goto l8e;
+       else
+         goto l8;
+l8e:
+       i = i + 1;
+     if (i == height)
+       goto stop;
+     else
+       goto l5;
+stop:
+     nop;
+   #+END_SRC
+** matrix_convolution
+   #+BEGIN_SRC c++
+     FFT2D_complex_iterative(
+       height, log2h,
+       width, log2w,
+       aRE, aIM);
+
+     FFT2D_complex_iterative(
+       height, log2h,
+       width, log2w,
+       bRE, bIM);
+
+     i = 0;
+l1:
+       j = 0;
+l2:
+         aRE_tmp = aRE[i][j];
+         aIM_tmp = aIM[i][j];
+         bRE_tmp = bRE[i][j];
+         bIM_tmp = bIM[i][j];
+         cRE[i][j] = aRE_tmp * bRE_tmp - aIM_tmp * bIM_tmp;
+         cIM[i][j] = - (aRE_tmp * bIM_tmp + aIM_tmp * bRE_tmp);
+         
+         j = j + 1;
+       if (j == width)
+         goto l2e;
+       else
+         goto l2;
+l2e:
+       i = i + 1;
+     if (i == height)
+       goto l1e;
+     else 
+       goto l1;
+l1e:
+     FFT2D_complex_iterative(
+       height, log2h,
+       width, log2w,
+       cRE, cIM);
+
+     i = 0;
+l3:
+       j = 0;
+l4:
+         c[i][j]= cRE[i][j] >> (log2w+log2h);
+
+         j = j + 1;
+       if (j == width)
+         goto l4e;
+       else
+         goto l4;
+l4e:
+       i = i + 1;
+     if (i == height)
+       goto stop;
+     else 
+       goto l3;
+stop:
+     nop;
+   #+END_SRC 
+* Digital System Interface Definition
+** Maximal Values
+*** WIDTH = 32
+**** Represents the maximal number of bits of a digital number
+*** FIXED_POINT_WIDTH = 16
+**** Represents the maximal number of fixed point bits of a digital number
+*** SIZE = 128
+**** Maximal matrix dimensions
+** butterfly
+*** Input Data Interface
+**** TODO Memory wCOS
+***** wCOS_addr_o - std_logic_vector, width = upper(ld(SIZE/2))
+***** wCOS_data_i - std_logic_vector, width = WIDTH
+***** wCOS_wr_o - std_logic
+**** TODO Memory wSIN
+***** wSIN_addr_o - std_logic_vector, width = upper(ld(SIZE/2))
+***** wSIN_data_i - std_logic_vector, width = WIDTH
+***** wSIN_wr_o - std_logic
+**** Other
+***** topRE_i, topIM_i, bottomRE_i, bottomIM_i - std_logic_vector, width = WIDTH
+***** k - std_logic_vector, width = upper(ld(SIZE/2))
+***** size = std_logic_vector, width = upper(ld(SIZE)) 
+*** Output Data Interface
+**** Other
+***** topRE_o, topIM_o, bottomRE_o, bottom_IM_o - std_logic_vector, width = WIDTH
+*** Command Interface
+***** start - std_logic
+*** Status Interface
+***** ready - std_logic
+** FFT_complex_iterative 
+*** Input Data Interface
+**** Memory dataRE_i 
+***** dataRE_i_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** dataRE_i_data_i - std_logic_vector, width = WIDTH
+***** dataRE_i_wr_o - std_logic
+**** Memory dataIM_i
+***** dataIM_i_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** dataIM_i_data_i - std_logic_vector, width = WIDTH
+***** dataIM_i_wr_o - std_logic  
+**** Other
+***** size - std_logic_vector, width = upper(ld(SIZE))
+***** log2size - std_logic_vector, width = upper(ld(upper(ld(SIZE))))
+***** butterfly_ready - std_logic 
+*** Output Data Interface
+**** Memory dataRE_o 
+***** dataRE_o_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** dataRE_o_data_o - std_logic_vector, width = WIDTH
+***** dataRE_o_wr_o - std_logic
+**** Memory dataIM_o
+***** dataIM_o_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** dataIM_o_data_o - std_logic_vector, width = WIDTH
+***** dataIM_o_wr_o - std_logic
+**** Other
+***** butterfly_start - std_logic
+*** Command Interface
+***** start - std_logic
+*** Status Interface
+***** ready - std_logic
+** FFT2D_complex_iterative
+*** Input Data Interface
+**** Memory matrixDataRE_i 
+***** matrixDataRE_i_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** matrixDataRE_i_data_i - std_logic_vector, width = WIDTH
+***** matrixDataRE_i_wr_o - std_logic
+**** Memory matrixDataIM_i
+***** matrixDataIM_i_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** matrixDataIM_i_data_i - std_logic_vector, width = WIDTH
+***** matrixDataIM_i_wr_o - std_logic  
+**** Other
+***** height - std_logic_vector, width = upper(ld(SIZE))
+***** width - std_logic_vector, width = upper(ld(SIZE))
+***** log2h - std_logic_vector, width = upper(ld(upper(ld(SIZE))))
+***** log2w - std_logic_vector, width = upper(ld(upper(ld(SIZE))))
+***** FFT_complex_iterative_ready - std_logic 
+*** Output Data Interface
+**** Memory matrixDataRE_o 
+***** matrixDataRE_o_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** matrixDataRE_o_data_o - std_logic_vector, width = WIDTH
+***** matrixDataRE_o_wr_o - std_logic
+**** Memory matrixDataIM_o
+***** matrixDataIM_o_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** matrixDataIM_o_data_o - std_logic_vector, width = WIDTH
+***** matrixDataIM_o_wr_o - std_logic  
+**** Other
+***** FFT_complex_iterative_start - std_logic
+*** Command Interface
+***** start - std_logic
+*** Status Interface
+***** ready - std_logic
+** matrix_convolution
+*** Input Data Interface
+**** Memory a_i 
+***** a_i_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** a_i_data_i - std_logic_vector, width = WIDTH
+***** a_i_wr_o - std_logic
+**** Memory b_i
+***** b_i_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** b_i_data_i - std_logic_vector, width = WIDTH
+***** b_i_wr_o - std_logic  
+**** Other
+***** height - std_logic_vector, width = upper(ld(SIZE))
+***** width - std_logic_vector, width = upper(ld(SIZE))
+***** log2h - std_logic_vector, width = upper(ld(upper(ld(SIZE))))
+***** log2w - std_logic_vector, width = upper(ld(upper(ld(SIZE))))
+***** FFT2D_complex_iterative_ready - std_logic 
+*** Output Data Interface
+**** Memory a_o 
+***** a_o_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** a_o_data_o - std_logic_vector, width = WIDTH
+***** a_o_wr_o - std_logic
+**** Memory b_o
+***** b_o_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** b_o_data_o - std_logic_vector, width = WIDTH
+***** b_o_wr_o - std_logic  
+**** Memory c_o
+***** c_o_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** c_o_data_o - std_logic_vector, width = WIDTH
+***** c_o_wr_o - std_logic  
+**** Other
+***** FFT2D_complex_iterative_start - std_logic
+*** Command Interface
+***** start - std_logic
+*** Status Interface
+***** ready - std_logic
+* Controlpath Module Design
+* Datapath Module Design
