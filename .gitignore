@@ -1,9 +1,11 @@
-#Some of these are related to eclipse. So i keep them out of my repo
-.cproject
-.dep/
-.project
-.settings/
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*# Unnecessary folders and hidden files
+
 build/
+.*
 
 #files being edited
 *~
@@ -15,6 +17,28 @@ build/
 *.lss
 *.map
 *.sym
+
+# C++ gitignore
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
 
 # I keep these, since I prefer having the reference of the final build
 # *.elf
