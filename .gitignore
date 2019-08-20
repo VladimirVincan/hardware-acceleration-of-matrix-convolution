@@ -2,9 +2,13 @@
 *
 
 # Unignore all with extensions
-!*.*# Unnecessary folders and hidden files
+!*.*
 
+# Unnecessary folders and hidden files
 build/
+matrix_convolution_rtl/
+!rtl/
+!sim/
 .*
 
 #files being edited

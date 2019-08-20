@@ -1,7 +1,7 @@
 from distutils.core import setup, Extension
 import numpy
 
-std_module = Extension('convolution_cpp_lib', sources=['py_wrapper_module.cpp'], 
+std_module = Extension('convolution_cpp_lib', sources=['py_wrapper_module.cpp'],
                               include_dirs=[numpy.get_include()])
 
 setup(name='convolution_cpp_lib',

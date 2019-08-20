@@ -1,0 +1,33 @@
+@startuml
+
+start
+
+partition Initialization {
+  :topRE_o <= 0
+  tomIM_o <= 0
+  bottomRE_o <= 0
+  bottomIM_o <= 0
+  ready <= 0]
+}
+repeat
+  partition State1 {
+    repeat
+      :ready <= 1]
+    repeat while (start = 1) is (false)
+    -> true;
+  }
+
+  partition State2 {
+    :botRE <- bottomRE_i * w(COSk,size) - bottomIM_i * wSIN(k,size)
+    botIM <- bottomRE_i * wSIN(k,size) + bottomIM_i * wCOS(k,size)]
+  }
+  partition State3 {
+    :topRE_o <- topRE_i + botRE
+    topIM_o <- topIM_i + botIM
+    bottomRE_o <- topRE_i - botRE
+    bottomIM_o <- topIM_i - botIM]
+  }
+repeat while ()
+detach
+
+@enduml

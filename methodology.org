@@ -26,7 +26,6 @@ l3:
            topIM = dataIM[k];
            bottomRE = dataRE[k+m2];
            bottomIM = dataIM[k+m2];
-           
            butterfly(
              topRE,
              topIM,
@@ -69,7 +68,8 @@ l2:
          temp = 0;
          k = 0;
 l3: 
-           reversed = reversed << 1;
+           reversed = revThen download the jar file save it somewhere on your system, set `org-plantuml-jar-path' to point to this file.
+ersed << 1;
            reversed = reversed | (temp&1);
            temp = temp >> 1;
          
@@ -222,22 +222,22 @@ stop:
 **** Represents the maximal number of bits of a digital number
 *** FIXED_POINT_WIDTH = 16
 **** Represents the maximal number of fixed point bits of a digital number
-*** SIZE = 128
+*** FFT_SIZE = 128
 **** Maximal matrix dimensions
 ** butterfly
 *** Input Data Interface
 **** TODO Memory wCOS
-***** wCOS_addr_o - std_logic_vector, width = upper(ld(SIZE/2))
+***** wCOS_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE/2))
 ***** wCOS_data_i - std_logic_vector, width = WIDTH
 ***** wCOS_wr_o - std_logic
 **** TODO Memory wSIN
-***** wSIN_addr_o - std_logic_vector, width = upper(ld(SIZE/2))
+***** wSIN_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE/2))
 ***** wSIN_data_i - std_logic_vector, width = WIDTH
 ***** wSIN_wr_o - std_logic
 **** Other
 ***** topRE_i, topIM_i, bottomRE_i, bottomIM_i - std_logic_vector, width = WIDTH
-***** k - std_logic_vector, width = upper(ld(SIZE/2))
-***** size = std_logic_vector, width = upper(ld(SIZE)) 
+***** k - std_logic_vector, width = upper(ld(FFT_SIZE/2))
+***** size = std_logic_vector, width = upper(ld(FFT_SIZE)) 
 *** Output Data Interface
 **** Other
 ***** topRE_o, topIM_o, bottomRE_o, bottom_IM_o - std_logic_vector, width = WIDTH
@@ -247,27 +247,21 @@ stop:
 ***** ready - std_logic
 ** FFT_complex_iterative 
 *** Input Data Interface
-**** Memory dataRE_i 
-***** dataRE_i_addr_o - std_logic_vector, width = upper(ld(SIZE))
+**** Memory dataRE_i and dataIM_i 
+***** data_i_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE))
 ***** dataRE_i_data_i - std_logic_vector, width = WIDTH
-***** dataRE_i_wr_o - std_logic
-**** Memory dataIM_i
-***** dataIM_i_addr_o - std_logic_vector, width = upper(ld(SIZE))
 ***** dataIM_i_data_i - std_logic_vector, width = WIDTH
-***** dataIM_i_wr_o - std_logic  
+***** data_i_wr_o - std_logic  
 **** Other
-***** size - std_logic_vector, width = upper(ld(SIZE))
-***** log2size - std_logic_vector, width = upper(ld(upper(ld(SIZE))))
+***** size - std_logic_vector, width = upper(ld(FFT_SIZE))
+***** log2size - std_logic_vector, width = upper(ld(upper(ld(FFT_SIZE))))
 ***** butterfly_ready - std_logic 
 *** Output Data Interface
-**** Memory dataRE_o 
-***** dataRE_o_addr_o - std_logic_vector, width = upper(ld(SIZE))
+**** Memory dataRE_o and dataIM_o
+***** data_o_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE))
 ***** dataRE_o_data_o - std_logic_vector, width = WIDTH
-***** dataRE_o_wr_o - std_logic
-**** Memory dataIM_o
-***** dataIM_o_addr_o - std_logic_vector, width = upper(ld(SIZE))
 ***** dataIM_o_data_o - std_logic_vector, width = WIDTH
-***** dataIM_o_wr_o - std_logic
+***** data_o_wr_o - std_logic
 **** Other
 ***** butterfly_start - std_logic
 *** Command Interface
@@ -277,26 +271,26 @@ stop:
 ** FFT2D_complex_iterative
 *** Input Data Interface
 **** Memory matrixDataRE_i 
-***** matrixDataRE_i_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** matrixDataRE_i_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE))
 ***** matrixDataRE_i_data_i - std_logic_vector, width = WIDTH
 ***** matrixDataRE_i_wr_o - std_logic
 **** Memory matrixDataIM_i
-***** matrixDataIM_i_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** matrixDataIM_i_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE))
 ***** matrixDataIM_i_data_i - std_logic_vector, width = WIDTH
 ***** matrixDataIM_i_wr_o - std_logic  
 **** Other
-***** height - std_logic_vector, width = upper(ld(SIZE))
-***** width - std_logic_vector, width = upper(ld(SIZE))
-***** log2h - std_logic_vector, width = upper(ld(upper(ld(SIZE))))
-***** log2w - std_logic_vector, width = upper(ld(upper(ld(SIZE))))
+***** height - std_logic_vector, width = upper(ld(FFT_SIZE))
+***** width - std_logic_vector, width = upper(ld(FFT_SIZE))
+***** log2h - std_logic_vector, width = upper(ld(upper(ld(FFT_SIZE))))
+***** log2w - std_logic_vector, width = upper(ld(upper(ld(FFT_SIZE))))
 ***** FFT_complex_iterative_ready - std_logic 
 *** Output Data Interface
 **** Memory matrixDataRE_o 
-***** matrixDataRE_o_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** matrixDataRE_o_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE))
 ***** matrixDataRE_o_data_o - std_logic_vector, width = WIDTH
 ***** matrixDataRE_o_wr_o - std_logic
 **** Memory matrixDataIM_o
-***** matrixDataIM_o_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** matrixDataIM_o_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE))
 ***** matrixDataIM_o_data_o - std_logic_vector, width = WIDTH
 ***** matrixDataIM_o_wr_o - std_logic  
 **** Other
@@ -308,30 +302,30 @@ stop:
 ** matrix_convolution
 *** Input Data Interface
 **** Memory a_i 
-***** a_i_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** a_i_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE))
 ***** a_i_data_i - std_logic_vector, width = WIDTH
 ***** a_i_wr_o - std_logic
 **** Memory b_i
-***** b_i_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** b_i_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE))
 ***** b_i_data_i - std_logic_vector, width = WIDTH
 ***** b_i_wr_o - std_logic  
 **** Other
-***** height - std_logic_vector, width = upper(ld(SIZE))
-***** width - std_logic_vector, width = upper(ld(SIZE))
-***** log2h - std_logic_vector, width = upper(ld(upper(ld(SIZE))))
-***** log2w - std_logic_vector, width = upper(ld(upper(ld(SIZE))))
+***** height - std_logic_vector, width = upper(ld(FFT_SIZE))
+***** width - std_logic_vector, width = upper(ld(FFT_SIZE))
+***** log2h - std_logic_vector, width = upper(ld(upper(ld(FFT_SIZE))))
+***** log2w - std_logic_vector, width = upper(ld(upper(ld(FFT_SIZE))))
 ***** FFT2D_complex_iterative_ready - std_logic 
 *** Output Data Interface
 **** Memory a_o 
-***** a_o_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** a_o_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE))
 ***** a_o_data_o - std_logic_vector, width = WIDTH
 ***** a_o_wr_o - std_logic
 **** Memory b_o
-***** b_o_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** b_o_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE))
 ***** b_o_data_o - std_logic_vector, width = WIDTH
 ***** b_o_wr_o - std_logic  
 **** Memory c_o
-***** c_o_addr_o - std_logic_vector, width = upper(ld(SIZE))
+***** c_o_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE))
 ***** c_o_data_o - std_logic_vector, width = WIDTH
 ***** c_o_wr_o - std_logic  
 **** Other
@@ -341,4 +335,39 @@ stop:
 *** Status Interface
 ***** ready - std_logic
 * Controlpath Module Design
+** butterfly
+#+begin_src plantuml :file butterflyDiagram.png
+start
+
+partition Initialization {
+  :topRE_o <= 0
+  tomIM_o <= 0
+  bottomRE_o <= 0
+  bottomIM_o <= 0
+  ready <= 0]
+}
+repeat
+  partition State1 {
+    repeat
+      :ready <= 1]
+    repeat while (start = 1) is (false)
+    -> true;
+  }
+
+  partition State2 {
+    :botRE <- bottomRE_i * w(COSk,size) - bottomIM_i * wSIN(k,size)
+    botIM <- bottomRE_i * wSIN(k,size) + bottomIM_i * wCOS(k,size)]
+  }
+  partition State3 {
+    :topRE_o <- topRE_i + botRE
+    topIM_o <- topIM_i + botIM
+    bottomRE_o <- topRE_i - botRE
+    bottomIM_o <- topIM_i - botIM]
+  }
+repeat while ()
+detach
+#+end_src
+** FFT_complex_iterative
+** FFT2D_complex_iterative
+** matrix_convolution
 * Datapath Module Design
