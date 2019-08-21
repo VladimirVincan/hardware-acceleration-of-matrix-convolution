@@ -23,7 +23,7 @@ entity butterfly is
            bottomRE_o : out STD_LOGIC_VECTOR (WIDTH-1 downto 0);
            bottomIM_o : out STD_LOGIC_VECTOR (WIDTH-1 downto 0);
            
-           k : in STD_LOGIC_VECTOR (log2c(FFT_SIZE/2)-1 downto 0);
+           k : in STD_LOGIC_VECTOR (FFT_SIZE/2-1 downto 0);
            size : in STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
            
            start : in STD_LOGIC;
@@ -41,7 +41,7 @@ architecture Behavioral of butterfly is
     begin
         for i in 0 to log2c(FFT_SIZE) - 1 loop
             for j in 0 to FFT_SIZE/2 - 1 loop
-                theta := MATH_2_PI * real(j) / real(2**i);
+                theta := MATH_2_PI * real(j) / real(2**(i+1));
                 rom(j, i) := std_logic_vector(to_signed(integer(cos(theta)*real(2**FIXED_POINT_WIDTH)),WIDTH));
             end loop;
         end loop;
@@ -54,7 +54,7 @@ architecture Behavioral of butterfly is
     begin
         for i in 0 to log2c(FFT_SIZE) - 1 loop
             for j in 0 to FFT_SIZE/2 - 1 loop
-                theta := MATH_2_PI * real(j) / real(2**i);
+                theta := MATH_2_PI * real(j) / real(2**(i+1));
                 rom(j, i) := std_logic_vector(to_signed(integer(-sin(theta)*real(2**FIXED_POINT_WIDTH)),WIDTH));
             end loop;
         end loop;

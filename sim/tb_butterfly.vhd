@@ -43,7 +43,7 @@ architecture Behavioral of tb_butterfly is
     signal bottomRE_o : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
     signal bottomIM_o : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
            
-    signal k : STD_LOGIC_VECTOR (log2c(FFT_SIZE/2)-1 downto 0);
+    signal k : STD_LOGIC_VECTOR (FFT_SIZE/2-1 downto 0);
     signal size : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
            
     signal start : STD_LOGIC;
@@ -90,12 +90,48 @@ begin
         end if;
         wait for 100ns;
         
-        -- 1 0 0 0 0 8 => 1 0 1 0
+        -- 1 0 0 0 x x => 1 0 1 0
         topRE_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
         topIM_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
         bottomRE_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
         bottomIM_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
-        k <= std_logic_vector(to_unsigned(natural(0), log2c(FFT_SIZE/2)));
+        k <= std_logic_vector(to_unsigned(natural(0), FFT_SIZE/2));
+        size <= std_logic_vector(to_unsigned(natural(2), log2c(FFT_SIZE)));
+        start <= '1';
+        if ready /= '0' then
+            wait until ready = '0';
+        end if;
+        wait for 200ns;
+        start <= '0';
+        if ready /= '1' then
+            wait until ready = '1';
+        end if;
+        wait for 100ns;
+        
+        -- 1 0 0 0 x x => 1 0 1 0
+        topRE_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        topIM_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        bottomRE_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        bottomIM_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        k <= std_logic_vector(to_unsigned(natural(2), FFT_SIZE/2));
+        size <= std_logic_vector(to_unsigned(natural(2), log2c(FFT_SIZE)));
+        start <= '1';
+        if ready /= '0' then
+            wait until ready = '0';
+        end if;
+        wait for 200ns;
+        start <= '0';
+        if ready /= '1' then
+            wait until ready = '1';
+        end if;
+        wait for 100ns;
+        
+        -- 1 0 0 0 x x => 1 0 1 0
+        topRE_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        topIM_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        bottomRE_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        bottomIM_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        k <= std_logic_vector(to_unsigned(natural(3), FFT_SIZE/2));
         size <= std_logic_vector(to_unsigned(natural(2), log2c(FFT_SIZE)));
         start <= '1';
         if ready /= '0' then
@@ -113,7 +149,7 @@ begin
         topIM_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
         bottomRE_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
         bottomIM_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
-        k <= std_logic_vector(to_unsigned(natural(0), log2c(FFT_SIZE/2)));
+        k <= std_logic_vector(to_unsigned(natural(0), FFT_SIZE/2));
         size <= std_logic_vector(to_unsigned(natural(2), log2c(FFT_SIZE)));
         start <= '1';
         if ready /= '0' then
@@ -125,14 +161,67 @@ begin
             wait until ready = '1';
         end if;
         wait for 100ns;
-        wait;
         
-        -- 1 0 1 0 0 8 => 2 0 0 0
+        -- 1 0 1 0 1 8 => 1.707 0.707 0.292 -0.707
         topRE_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
         topIM_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
         bottomRE_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
         bottomIM_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
-        k <= std_logic_vector(to_unsigned(natural(0), log2c(FFT_SIZE/2)));
+        k <= std_logic_vector(to_unsigned(natural(1), FFT_SIZE/2));
+        size <= std_logic_vector(to_unsigned(natural(2), log2c(FFT_SIZE)));
+        start <= '1';
+        if ready /= '0' then
+            wait until ready = '0';
+        end if;
+        wait for 100ns;
+        start <= '0';
+        if ready /= '1' then
+            wait until ready = '1';
+        end if;
+        wait for 100ns;
+        
+        -- 0 1 0 1 1 8 => -0.707 1.707 0.707 0.292
+        topRE_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        topIM_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        bottomRE_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        bottomIM_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        k <= std_logic_vector(to_unsigned(natural(1), FFT_SIZE/2));
+        size <= std_logic_vector(to_unsigned(natural(2), log2c(FFT_SIZE)));
+        start <= '1';
+        if ready /= '0' then
+            wait until ready = '0';
+        end if;
+        wait for 100ns;
+        start <= '0';
+        if ready /= '1' then
+            wait until ready = '1';
+        end if;
+        wait for 100ns;
+        
+        -- 1 1 0 0 x x => 1 1 1 1
+        topRE_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        topIM_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        bottomRE_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        bottomIM_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        k <= std_logic_vector(to_unsigned(natural(0), FFT_SIZE/2));
+        size <= std_logic_vector(to_unsigned(natural(2), log2c(FFT_SIZE)));
+        start <= '1';
+        if ready /= '0' then
+            wait until ready = '0';
+        end if;
+        wait for 100ns;
+        start <= '0';
+        if ready /= '1' then
+            wait until ready = '1';
+        end if;
+        wait for 100ns;
+        
+        -- 1 1 1 1 0 8 => 1 1 1 1
+        topRE_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        topIM_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        bottomRE_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        bottomIM_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
+        k <= std_logic_vector(to_unsigned(natural(0), FFT_SIZE/2));
         size <= std_logic_vector(to_unsigned(natural(2), log2c(FFT_SIZE)));
         start <= '1';
         if ready /= '0' then
