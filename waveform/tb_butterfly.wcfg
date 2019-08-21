@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_butterfly_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="tb_butterfly" />
+            <top_module name="utils_pkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0fs"></ZoomStartTime>
+      <ZoomEndTime time="2343810171fs"></ZoomEndTime>
+      <Cursor1Time time="1000000000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="172"></NameColumnWidth>
+      <ValueColumnWidth column_width="84"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="24" />
+   <wvobject type="logic" fp_name="/tb_butterfly/clk">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_butterfly/rst">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/topRE_i">
+      <obj_property name="ElementShortName">topRE_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">topRE_i[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/topIM_i">
+      <obj_property name="ElementShortName">topIM_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">topIM_i[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/bottomRE_i">
+      <obj_property name="ElementShortName">bottomRE_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bottomRE_i[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/bottomIM_i">
+      <obj_property name="ElementShortName">bottomIM_i[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bottomIM_i[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/k">
+      <obj_property name="ElementShortName">k[3:0]</obj_property>
+      <obj_property name="ObjectShortName">k[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/size">
+      <obj_property name="ElementShortName">size[2:0]</obj_property>
+      <obj_property name="ObjectShortName">size[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/topRE_o">
+      <obj_property name="ElementShortName">topRE_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">topRE_o[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/topIM_o">
+      <obj_property name="ElementShortName">topIM_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">topIM_o[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/bottomRE_o">
+      <obj_property name="ElementShortName">bottomRE_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bottomRE_o[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/bottomIM_o">
+      <obj_property name="ElementShortName">bottomIM_o[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bottomIM_o[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_butterfly/start">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb_butterfly/ready">
+      <obj_property name="ElementShortName">ready</obj_property>
+      <obj_property name="ObjectShortName">ready</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/uut/wCOS">
+      <obj_property name="ElementShortName">wCOS[0:3,0:2][31:0]</obj_property>
+      <obj_property name="ObjectShortName">wCOS[0:3,0:2][31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/uut/wSIN">
+      <obj_property name="ElementShortName">wSIN[0:3,0:2][31:0]</obj_property>
+      <obj_property name="ObjectShortName">wSIN[0:3,0:2][31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/uut/botRE_r">
+      <obj_property name="ElementShortName">botRE_r[31:0]</obj_property>
+      <obj_property name="ObjectShortName">botRE_r[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/uut/botIM_r">
+      <obj_property name="ElementShortName">botIM_r[31:0]</obj_property>
+      <obj_property name="ObjectShortName">botIM_r[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/uut/mult1_r">
+      <obj_property name="ElementShortName">mult1_r[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mult1_r[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/uut/mult2_r">
+      <obj_property name="ElementShortName">mult2_r[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mult2_r[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/uut/mult3_r">
+      <obj_property name="ElementShortName">mult3_r[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mult3_r[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb_butterfly/uut/mult4_r">
+      <obj_property name="ElementShortName">mult4_r[31:0]</obj_property>
+      <obj_property name="ObjectShortName">mult4_r[31:0]</obj_property>
+      <obj_property name="Radix">REALRADIX</obj_property>
+      <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+      <obj_property name="radix_fractionWidth">16</obj_property>
+      <obj_property name="radix_otherWidth">0</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_butterfly/uut/state_r">
+      <obj_property name="ElementShortName">state_r</obj_property>
+      <obj_property name="ObjectShortName">state_r</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/tb_butterfly/uut/state_n">
+      <obj_property name="ElementShortName">state_n</obj_property>
+      <obj_property name="ObjectShortName">state_n</obj_property>
+   </wvobject>
+</wave_config>

@@ -236,7 +236,7 @@ stop:
 ***** wSIN_wr_o - std_logic
 **** Other
 ***** topRE_i, topIM_i, bottomRE_i, bottomIM_i - std_logic_vector, width = WIDTH
-***** k - std_logic_vector, width = upper(ld(FFT_SIZE/2))
+***** k - std_logic_vector, width = FFT_SIZE/2
 ***** size = std_logic_vector, width = upper(ld(FFT_SIZE)) 
 *** Output Data Interface
 **** Other
@@ -249,21 +249,18 @@ stop:
 *** Input Data Interface
 **** Memory dataRE_i and dataIM_i 
 ***** data_i_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE))
-***** dataRE_i_data_i - std_logic_vector, width = WIDTH
-***** dataIM_i_data_i - std_logic_vector, width = WIDTH
-***** data_i_wr_o - std_logic  
+***** dataRE_i - std_logic_vector, width = WIDTH
+***** dataIM_i - std_logic_vector, width = WIDTH
+***** data_rd_o - std_logic  
 **** Other
 ***** size - std_logic_vector, width = upper(ld(FFT_SIZE))
 ***** log2size - std_logic_vector, width = upper(ld(upper(ld(FFT_SIZE))))
-***** butterfly_ready - std_logic 
 *** Output Data Interface
 **** Memory dataRE_o and dataIM_o
 ***** data_o_addr_o - std_logic_vector, width = upper(ld(FFT_SIZE))
-***** dataRE_o_data_o - std_logic_vector, width = WIDTH
-***** dataIM_o_data_o - std_logic_vector, width = WIDTH
-***** data_o_wr_o - std_logic
-**** Other
-***** butterfly_start - std_logic
+***** dataRE_o - std_logic_vector, width = WIDTH
+***** dataIM_o - std_logic_vector, width = WIDTH
+***** data_wr_o - std_logic
 *** Command Interface
 ***** start - std_logic
 *** Status Interface

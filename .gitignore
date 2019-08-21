@@ -9,6 +9,8 @@ build/
 matrix_convolution_rtl/
 !rtl/
 !sim/
+!waveform/
+!diagrams
 .*
 
 #files being edited
