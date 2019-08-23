@@ -17,7 +17,7 @@ entity fft is
            dataRE_i : in STD_LOGIC_VECTOR (WIDTH-1 downto 0);
            dataIM_i : in STD_LOGIC_VECTOR (WIDTH-1 downto 0);
            data_rd_o : out STD_LOGIC;
-           
+
            data_o_addr_o : out STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
            dataRE_o : in STD_LOGIC_VECTOR (WIDTH-1 downto 0);
            dataIM_o : in STD_LOGIC_VECTOR (WIDTH-1 downto 0);
@@ -32,11 +32,19 @@ end fft;
 
 architecture Behavioral of fft is
 
-    signal i_r, i_n : unsigned(log2c(log2c(FFT_SIZE))-1 downto 0);
-    signal j_r, j_n : unsigned(log2c(FFT_SIZE)-1 downto 0);
-    signal k_r, k_n : unsigned(log2c(FFT_SIZE)-1 downto 0);
-    signal m2_r, m2_n : unsigned(log2c(FFT_SIZE)-1 downto 0);
-    signal m_r, m_n : unsigned(log2c(FFT_SIZE) downto 0);
+    subtype rom_word_t is std_logic_vector (WIDTH-1 downto 0);
+    type rom_t is array (0 to FFT_SIZE-1) of rom_word_t;
+    signal dataRE : rom_t := (others => (others => '0'));
+    signal dataIM : rom_t := (others => (others => '0'));
+
+    signal i_r, i_n : STD_LOGIC_VECTOR(log2c(log2c(FFT_SIZE))-1 downto 0);
+    signal j_r, j_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
+    signal k_r, k_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
+    signal m2_r, m2_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
+    signal m_r, m_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE) downto 0);
+        
+    signal reversed_r, reversed_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
+    signal temp_r, temp_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
 
     signal topRE_i_r, topRE_i_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
     signal topIM_i_r, topIM_i_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0);  
@@ -48,11 +56,12 @@ architecture Behavioral of fft is
     signal botRE_o_r, botRE_o_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
     signal botIM_o_r, botIM_o_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
     
-    type state_t is (init, idle, bit_reversal, l1, l2, l3, l4, l5);
+    type state_t is (init, idle, rd, wr, bit_reversal, start_butterfly, l1, l2, l3, l4, l5);
     signal state_r, state_n : state_t;
     
     signal butterfly_start_r, butterfly_start_n : STD_LOGIC := '0';
     signal butterfly_ready : STD_LOGIC;
+
 begin
 
     butterfly : entity work.butterfly
@@ -101,6 +110,9 @@ begin
             topIM_o_r <= (others => '0');
             botRE_o_r <= (others => '0');
             botIM_o_r <= (others => '0');
+            
+            dataRE <= (others => (others => '0'));
+            dataIM <= (others => (others => '0'));
                         
         elsif (clk'event and clk = '1') then
             state_r <= state_n;
@@ -127,7 +139,6 @@ begin
    -- Combinatorial Circuits
    process (state_r, start) begin
        -- Default Assignments
-       state_n <= state_r;
        i_n <= i_r;
        j_n <= j_r;
        k_n <= k_r;
@@ -138,24 +149,57 @@ begin
            when init => 
                 state_n <= idle;
                 
-                topRE_i_r <= (others => '0');
-                topIM_i_r <= (others => '0');
-                botRE_i_r <= (others => '0');
-                botIM_i_r <= (others => '0');
+                topRE_i_n <= (others => '0');
+                topIM_i_n <= (others => '0');
+                botRE_i_n <= (others => '0');
+                botIM_i_n <= (others => '0');
             
-                topRE_o_r <= (others => '0');
-                topIM_o_r <= (others => '0');
-                botRE_o_r <= (others => '0');
-                botIM_o_r <= (others => '0');
-           
+                topRE_o_n <= (others => '0');
+                topIM_o_n <= (others => '0');
+                botRE_o_n <= (others => '0');
+                botIM_o_n <= (others => '0');
+                
+                dataRE <= (others => (others => '0'));
+                dataIM <= (others => (others => '0'));
+                
                 ready <= '0';   
-                butterfly_start <= '0';
+                butterfly_start_n <= '0';
            when idle => 
                ready <= '1';
                if (start = '1') then
                    state_n <= bit_reversal;
                end if;
            when bit_reversal =>
+               j_n <= (others => '0');
+               state_n <= l1;
+           when l1 =>
+               reversed_n <= (others => '0');
+               temp_n <= j_r;
+               k_n <= (others => '0');
+               state_n <= l2;
+           when l2 => 
+               reversed_n <= STD_LOGIC_VECTOR(shift_left(unsigned(reversed_r),1)) AND j_r;
+               temp_n <= STD_LOGIC_VECTOR(shift_right(unsigned(temp_r),1));
+               data_i_addr_o <= reversed_r;
+               if unsigned(k_r) = unsigned(log2s) then
+                   state_n <= rd;
+                   data_rd_o <= '1';
+               else 
+                   state_n <= l2;
+               end if;
+           when rd => 
+               dataRE(to_integer(unsigned(j_r))) <= dataRE_i; 
+               dataIM(to_integer(unsigned(j_r))) <= dataIM_i;
+               if unsigned(j_r) = unsigned(size) then
+                   state_n <= start_butterfly;
+               else
+                   state_n <= l1;
+               end if;
+           when start_butterfly =>
+               i_n <= (others => '0');
+               state_n <= l3;
+           when l3 =>
+               m_n <= STD_LOGIC_VECTOR(shift_left(unsigned(1), unsigned(i)+unsigned(1))); 
                
           end case;
    end process;
