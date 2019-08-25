@@ -23,8 +23,8 @@ entity butterfly is
            bottomRE_o : out STD_LOGIC_VECTOR (WIDTH-1 downto 0);
            bottomIM_o : out STD_LOGIC_VECTOR (WIDTH-1 downto 0);
            
-           k : in STD_LOGIC_VECTOR (FFT_SIZE/2-1 downto 0);
-           size : in STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
+           k : in STD_LOGIC_VECTOR (log2c(FFT_SIZE/2)-1 downto 0);        -- added log2c
+           size : in STD_LOGIC_VECTOR (log2c(log2c(FFT_SIZE))-1 downto 0);-- added log2c
            
            start : in STD_LOGIC;
            ready : out STD_LOGIC);
