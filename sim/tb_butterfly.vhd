@@ -162,7 +162,7 @@ begin
         end if;
         wait for 100ns;
         
-        -- 1 0 1 0 1 8 => 1.707 0.707 0.292 -0.707
+        -- 1 0 1 0 1 8 => 1.707 -0.707 0.292 0.707
         topRE_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
         topIM_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
         bottomRE_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
@@ -180,7 +180,7 @@ begin
         end if;
         wait for 100ns;
         
-        -- 0 1 0 1 1 8 => -0.707 1.707 0.707 0.292
+        -- 0 1 0 1 1 8 => 0.707 1.707 -0.707 0.292
         topRE_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
         topIM_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
         bottomRE_i <= std_logic_vector(to_signed(integer( real(0) * real(2**FIXED_POINT_WIDTH)),WIDTH));
@@ -216,7 +216,7 @@ begin
         end if;
         wait for 100ns;
         
-        -- 1 1 1 1 0 8 => 1 1 1 1
+        -- 1 1 1 1 0 8 => 2 2 0 0
         topRE_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
         topIM_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));
         bottomRE_i <= std_logic_vector(to_signed(integer( real(1) * real(2**FIXED_POINT_WIDTH)),WIDTH));

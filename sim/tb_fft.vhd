@@ -45,41 +45,47 @@ architecture Behavioral of tb_fft is
     signal dataIM_o : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
     signal data_wr_o : STD_LOGIC;
     
-    signal log2s : STD_LOGIC_VECTOR (log2c(log2c(FFT_SIZE))-1 downto 0);
-    signal size : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
+    signal log2s : STD_LOGIC_VECTOR (log2c(log2c(FFT_SIZE))-1 downto 0) := (others => '0');
+    signal size : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0) := (others => '0');
     
-    signal start : STD_LOGIC;
+    signal start : STD_LOGIC := '0';
     signal ready : STD_LOGIC;
+    
+ -- INIT DP_MEMORY_1D INTERFACE
+    signal init_addr_i: std_logic_vector(log2c(FFT_SIZE)-1 downto 0) := (others => '0');
+    signal init_data_i: std_logic_vector(WIDTH-1 downto 0) := (others => '0');
+    signal init_wr_i: std_logic := '0';
        
 -- TEST FFT ARRAYS
     type mem_t is array (0 to FFT_SIZE-1) of std_logic_vector(WIDTH-1 downto 0);
     constant arr1_c : mem_t :=
-       (conv_std_logic_vector(1, WIDTH),
-        conv_std_logic_vector(0, WIDTH),
-        conv_std_logic_vector(0, WIDTH),
-        conv_std_logic_vector(0, WIDTH),
-        conv_std_logic_vector(0, WIDTH),
-        conv_std_logic_vector(0, WIDTH),
-        conv_std_logic_vector(0, WIDTH),
-        conv_std_logic_vector(0, WIDTH));
+       (conv_std_logic_vector(1, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH));
     constant arr2_c : mem_t :=
-       (conv_std_logic_vector(1, WIDTH),
-        conv_std_logic_vector(2, WIDTH),
-        conv_std_logic_vector(3, WIDTH),
-        conv_std_logic_vector(4, WIDTH),
-        conv_std_logic_vector(5, WIDTH),
-        conv_std_logic_vector(6, WIDTH),
-        conv_std_logic_vector(7, WIDTH),
-        conv_std_logic_vector(8, WIDTH));
+       (conv_std_logic_vector(1, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(2, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(3, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(4, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(5, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(6, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(7, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(8, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH));
     constant arr3_c : mem_t :=
-       (conv_std_logic_vector(1, WIDTH),
-        conv_std_logic_vector(1, WIDTH),
-        conv_std_logic_vector(0, WIDTH),
-        conv_std_logic_vector(0, WIDTH),
-        conv_std_logic_vector(0, WIDTH),
-        conv_std_logic_vector(0, WIDTH),
-        conv_std_logic_vector(0, WIDTH),
-        conv_std_logic_vector(0, WIDTH));
+       (conv_std_logic_vector(1, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(1, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH));
+        
 begin
     uut: entity work.fft
     generic map ( 
@@ -124,13 +130,15 @@ begin
         wait for 100ns;
 
         wait until falling_edge(clk);
-        data_wr_o <= '1';
+        init_wr_i <= '1';
+        log2s <= conv_std_logic_vector(2,log2s'length); -- check this part
+        size <= conv_std_logic_vector(7,size'length);
         for i in 0 to FFT_SIZE-1 loop
-            data_o_addr_o <= conv_std_logic_vector(i, data_o_addr_o'length);
-            dataRE_o <= arr1_c(i);
+            init_addr_i <= conv_std_logic_vector(i,init_addr_i'length);
+            init_data_i <= arr1_c(i);
             wait until falling_edge(clk);
         end loop;
-        data_wr_o <= '0';  
+        init_wr_i <= '0';  
         
         start <= '1';
         if ready /= '0' then
@@ -157,6 +165,10 @@ begin
         clk => clk,
         reset => rst,
         
+        init_addr_i => init_addr_i,
+        init_data_i => init_data_i,
+        init_wr_i => init_wr_i,
+        
         p1_addr_i => data_i_addr_o,
         p1_data_o => dataRE_i,
         p1_rd_i => data_rd_o,
@@ -172,7 +184,11 @@ begin
     port map (
         clk => clk,
         reset => rst,
-        
+         
+        init_addr_i => (others => '0'),
+        init_data_i => (others => '0'),
+        init_wr_i => '0',
+               
         p1_addr_i => data_i_addr_o,
         p1_data_o => dataIM_i,
         p1_rd_i => data_rd_o,
