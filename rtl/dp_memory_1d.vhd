@@ -21,11 +21,13 @@ entity dp_memory_1d is
         p1_addr_i: in std_logic_vector(log2c(SIZE)-1 downto 0);
         p1_data_o: out std_logic_vector(WIDTH-1 downto 0) := (others => '0');
         p1_rd_i: in std_logic;
+        p1_rd_o: out std_logic;
         
         -- Port 2 write interface
         p2_addr_i: in std_logic_vector(log2c(SIZE)-1 downto 0);
         p2_data_i: in std_logic_vector(WIDTH-1 downto 0);
-        p2_wr_i: in std_logic);
+        p2_wr_i: in std_logic;
+        p2_wr_o: out std_logic);
 end entity;
 
 architecture beh of dp_memory_1d is
@@ -35,6 +37,8 @@ begin
     process (clk)
     begin
         if (clk'event and clk = '1') then
+            p1_rd_o <= '0';
+            p2_wr_o <= '0';
             if (reset = '1') then
                 mem_s <= (others => (others => '0'));
             else
@@ -44,8 +48,10 @@ begin
                 end if;
                 if p1_rd_i = '1' and p2_wr_i = '0' then
                     p1_data_o <= mem_s(conv_integer(p1_addr_i));
+                    p1_rd_o <= '1';
                 elsif p1_rd_i = '0' and p2_wr_i = '1' then
                     mem_s(conv_integer(p2_addr_i)) <= p2_data_i;
+                    p2_wr_o <= '1';
                 else
                     p1_data_o <= (others => '0');
                 end if;                  

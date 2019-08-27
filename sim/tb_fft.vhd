@@ -39,11 +39,13 @@ architecture Behavioral of tb_fft is
     signal dataRE_i : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
     signal dataIM_i : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
     signal data_rd_o : STD_LOGIC;
+    signal data_rd_i : STD_LOGIC;
     
     signal data_o_addr_o : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
     signal dataRE_o : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
     signal dataIM_o : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
     signal data_wr_o : STD_LOGIC;
+    signal data_wr_i : STD_LOGIC;
     
     signal log2s : STD_LOGIC_VECTOR (log2c(log2c(FFT_SIZE))-1 downto 0) := (others => '0');
     signal size : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0) := (others => '0');
@@ -58,7 +60,9 @@ architecture Behavioral of tb_fft is
        
 -- TEST FFT ARRAYS
     type mem_t is array (0 to FFT_SIZE-1) of std_logic_vector(WIDTH-1 downto 0);
-    constant arr1_c : mem_t :=
+    constant arr1_c : mem_t := 
+    -- 1 1 1 1 1 1 1 1
+    -- 0 0 0 0 0 0 0 0
        (conv_std_logic_vector(1, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
         conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
         conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
@@ -67,7 +71,9 @@ architecture Behavioral of tb_fft is
         conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
         conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
         conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH));
-    constant arr2_c : mem_t :=
+    constant arr2_c : mem_t := 
+    -- 36 -4          -4 -4          -4 -4          -4 -4
+    -- 0   9.65685425  4  1.65685425  0 -1.65685425 -4 -9.65685425 
        (conv_std_logic_vector(1, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
         conv_std_logic_vector(2, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
         conv_std_logic_vector(3, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
@@ -77,6 +83,8 @@ architecture Behavioral of tb_fft is
         conv_std_logic_vector(7, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
         conv_std_logic_vector(8, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH));
     constant arr3_c : mem_t :=
+    -- 2  1.70710678  1  0.29289322 0 0.29289322 1 1.70710678
+    -- 0 -0.70710678 -1 -0.70710678 0 0.70710678 1 0.70710678
        (conv_std_logic_vector(1, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
         conv_std_logic_vector(1, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
         conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
@@ -85,7 +93,29 @@ architecture Behavioral of tb_fft is
         conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
         conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
         conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH));
-        
+    constant arr4_c : mem_t :=
+    -- 2 0 2 0 2 0 2 0
+    -- 0 0 0 0 0 0 0 0
+       (conv_std_logic_vector(1, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(1, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH));
+    constant arr5_c : mem_t :=
+    -- 3 -0.70710678 2  0.70710678 1 0.70710678  2 -0.70710678
+    -- 0 -0.70710678 1 -0.70710678 0 0.70710678 -1  0.70710678 
+       (conv_std_logic_vector(1, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(1, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(1, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(0, WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH));
+                
 begin
     uut: entity work.fft
     generic map ( 
@@ -100,11 +130,13 @@ begin
         dataRE_i => dataRE_i,
         dataIM_i => dataIM_i,
         data_rd_o => data_rd_o,
+        data_rd_i => data_rd_i,
         
         data_o_addr_o => data_o_addr_o,
         dataRE_o => dataRE_o,
         dataIM_o => dataIM_o,
         data_wr_o => data_wr_o,
+        data_wr_i => data_wr_i,
         
         log2s => log2s,
         size => size,
@@ -135,7 +167,7 @@ begin
         size <= conv_std_logic_vector(7,size'length);
         for i in 0 to FFT_SIZE-1 loop
             init_addr_i <= conv_std_logic_vector(i,init_addr_i'length);
-            init_data_i <= arr1_c(i);
+            init_data_i <= arr5_c(i);
             wait until falling_edge(clk);
         end loop;
         init_wr_i <= '0';  
@@ -172,10 +204,12 @@ begin
         p1_addr_i => data_i_addr_o,
         p1_data_o => dataRE_i,
         p1_rd_i => data_rd_o,
+        p1_rd_o => data_rd_i,
         
         p2_addr_i => data_o_addr_o,
         p2_data_i => dataRE_o,
-        p2_wr_i => data_wr_o);
+        p2_wr_i => data_wr_o,
+        p2_wr_o => data_wr_i);
         
     memoryIM : entity work.dp_memory_1d(beh)
     generic map (
@@ -192,9 +226,11 @@ begin
         p1_addr_i => data_i_addr_o,
         p1_data_o => dataIM_i,
         p1_rd_i => data_rd_o,
+        p1_rd_o => data_rd_i,
         
         p2_addr_i => data_o_addr_o,
         p2_data_i => dataIM_o,
-        p2_wr_i => data_wr_o);
+        p2_wr_i => data_wr_o,
+        p2_wr_o => data_wr_i);
             
 end Behavioral;

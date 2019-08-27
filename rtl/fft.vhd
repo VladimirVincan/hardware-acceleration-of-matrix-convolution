@@ -17,11 +17,13 @@ entity fft is
            dataRE_i : in STD_LOGIC_VECTOR (WIDTH-1 downto 0);
            dataIM_i : in STD_LOGIC_VECTOR (WIDTH-1 downto 0);
            data_rd_o : out STD_LOGIC;
+           data_rd_i : in STD_LOGIC;
 
            data_o_addr_o : out STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
            dataRE_o : out STD_LOGIC_VECTOR (WIDTH-1 downto 0);
            dataIM_o : out STD_LOGIC_VECTOR (WIDTH-1 downto 0);
            data_wr_o : out STD_LOGIC;
+           data_wr_i : in STD_LOGIC;
            
            log2s : in STD_LOGIC_VECTOR (log2c(log2c(FFT_SIZE))-1 downto 0);
            size : in STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
@@ -32,7 +34,7 @@ end fft;
 
 architecture Behavioral of fft is
 -- INNER SIGNALS & STATES
-    type state_t is (idle, wait_start_0, rd, wr, wr_delay, bit_reversal, reverse, main, butterfly_start_1, wait_butterfly_ready_0, wait_butterfly_ready_1, do_butterfly, l1, l2, l3, l4, l5);
+    type state_t is (idle, wait_start_0, rd, wait_data_rd_i_1, wait_data_rd_i_0, wr_next, wait_data_wr_i_1, wait_data_wr_i_0, bit_reversal, reverse, main, butterfly_start_1, wait_butterfly_ready_0, wait_butterfly_ready_1, do_butterfly, l1, l2, l3, l4, l5);
     signal state_r, state_n : state_t;
    
     signal size_r : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
@@ -147,7 +149,7 @@ begin
      end process;
         
     -- Combinatorial Circuits
-    process (state_r, start, butterfly_ready_r) begin
+    process (state_r, start, butterfly_ready_r, data_rd_i, data_wr_i) begin
     -- Default Assignments
         
     -- FFT OUTPUT INTERFACE (7 signals)
@@ -206,18 +208,34 @@ begin
             when l2 => 
                 reversed_n <= STD_LOGIC_VECTOR(shift_left(unsigned(reversed_r),1)) OR (temp_r AND STD_LOGIC_VECTOR(to_unsigned(1, temp_r'length)));
                 temp_n <= STD_LOGIC_VECTOR(shift_right(unsigned(temp_r),1));
-                state_n <= reverse;
+                state_n <= wait_data_rd_i_0;
+                
+            when wait_data_rd_i_0 =>
+                if data_rd_i = '0' then
+                    state_n <= reverse;
+                else
+                    state_n <= wait_data_rd_i_0;
+                end if;    
                 
             when reverse =>  
                 k_n <= STD_LOGIC_VECTOR(unsigned(k_r) + 1);
                 if unsigned(k_n) = unsigned(log2s_r) then
                     data_i_addr_o <= reversed_r;
                     data_rd_o <= '1';
-                    state_n <= rd;
+                    state_n <= wait_data_rd_i_1;
                 else 
                     state_n <= l2;
                 end if;
                 
+            when wait_data_rd_i_1 =>
+                data_i_addr_o <= reversed_r;
+                data_rd_o <= '1';
+                if data_rd_i = '1' then
+                    state_n <= rd;
+                else
+                    state_n <= wait_data_rd_i_1;
+                end if;
+                    
             when rd => 
                 dataRE(to_integer(unsigned(j_r))) <= dataRE_i; 
                 dataIM(to_integer(unsigned(j_r))) <= dataIM_i;
@@ -297,7 +315,7 @@ begin
                         i_n <= STD_LOGIC_VECTOR(unsigned(i_r) + 1);
                         if (i_n = log2s_r) then
                              j_n <= (others => '0');
-                             state_n <= wr;
+                             state_n <= wait_data_wr_i_0;
                         else 
                             state_n <= l3;
                         end if;
@@ -307,21 +325,32 @@ begin
                 else
                     state_n <= l5;
                 end if;
+                
+            when wait_data_wr_i_0 =>
+                if data_wr_i = '0' then
+                    state_n <= wait_data_wr_i_1;
+                else
+                    state_n <= wait_data_wr_i_0;
+                end if;
                                
-            when wr =>
-                j_n <= STD_LOGIC_VECTOR(unsigned(j_r) + 1);
+            when wait_data_wr_i_1 =>
                 data_o_addr_o <= j_r;
                 dataRE_o <= dataRE(to_integer(unsigned(j_r)));
                 dataIM_o <= dataIM(to_integer(unsigned(j_r)));
-                data_wr_o <= '1';    
+                data_wr_o <= '1'; 
+                if data_wr_i = '1' then
+                    state_n <= wr_next;
+                else
+                    state_n <= wait_data_wr_i_1;
+                end if;                  
+                
+            when wr_next =>
+                j_n <= STD_LOGIC_VECTOR(unsigned(j_r) + 1);
                 if j_n = size_r then
                     state_n <= idle;
                 else
-                    state_n <= wr_delay;
+                    state_n <= wait_data_wr_i_0;
                 end if;
-                
-            when wr_delay =>
-                state_n <= wr;
                 
         end case;
     end process;
