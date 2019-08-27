@@ -152,7 +152,7 @@ begin
     process (state_r, start, butterfly_ready_r, data_rd_i, data_wr_i) begin
     -- Default Assignments
         
-    -- FFT OUTPUT INTERFACE (7 signals)
+    -- FFT OUTPUT INTERFACE (9 signals)
         data_i_addr_o <= (others => '0');
         data_rd_o <= '0';
         
@@ -190,7 +190,7 @@ begin
                 end if; 
                 
             when wait_start_0 => 
-                ready <= '0';
+                ready <= '0'; -- can be deleted
                 if start = '0' then
                     state_n <= bit_reversal;
                 end if;
