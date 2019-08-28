@@ -43,8 +43,8 @@ architecture Behavioral of fft2 is
         horizontal_start, wait_horizontal_ready, horizontal_update);
     signal state_r, state_n : state_t;
 
-    signal i_r, i_n : STD_LOGIC;
-    signal j_r, j_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
+    signal i_r, i_n : STD_LOGIC := '0';
+    signal j_r, j_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0) := (others => '0');
     
     signal log2w_r, log2w_n : STD_LOGIC_VECTOR (log2c(log2c(FFT_SIZE))-1 downto 0);
     signal width_r, width_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);    
@@ -56,7 +56,7 @@ architecture Behavioral of fft2 is
     signal fft_data_i_addr_o_r : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
     signal fft_data_o_addr_o_r : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
 
-    signal log2s_r, log2s_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
+    signal log2s_r, log2s_n : STD_LOGIC_VECTOR (log2c(log2c(FFT_SIZE))-1 downto 0);
     signal size_r, size_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
     
     signal fft_data_rd_o_r : STD_LOGIC;
@@ -115,8 +115,8 @@ begin
             log2s_r <= (others => '0');
             size_r <= (others => '0');
             
-            fft_data_i_addr_o_r <= (others => '0');
-            fft_data_o_addr_o_r <= (others => '0');
+            -- fft_data_i_addr_o_r <= (others => '0');
+            -- fft_data_o_addr_o_r <= (others => '0');
                            
         elsif (clk'event and clk = '1') then
         -- INNER SIGNALS
@@ -146,7 +146,10 @@ begin
         
     -- FFT2 OUTPUT INTERFACE (3 + 4 signals)
         data_i_addr_o <= (others => '0');
-        data_o_addr_o <= (others => '0');        
+        data_o_addr_o <= (others => '0'); 
+        data_rd_o <= '0';
+        -- fft_data_wr_o_r <= '0';
+        -- fft_data_rd_o_r <= '0';       
         ready <= '0';
         
     -- INNER_SIGNALS
@@ -213,8 +216,8 @@ begin
             when wait_horizontal_ready =>
                 data_rd_o <= fft_data_rd_o_r;
                 data_wr_o <= fft_data_wr_o_r;
-                data_i_addr_o <= std_logic_vector(unsigned(j_r) * unsigned(width_r) + unsigned(fft_data_i_addr_o_r));
-                data_o_addr_o <= std_logic_vector(unsigned(j_r) * unsigned(width_r) + unsigned(fft_data_o_addr_o_r));
+                data_i_addr_o <= std_logic_vector(unsigned(j_r) * unsigned(width_r) + unsigned(j_r) + unsigned(fft_data_i_addr_o_r));
+                data_o_addr_o <= std_logic_vector(unsigned(j_r) * unsigned(width_r) + unsigned(j_r) + unsigned(fft_data_o_addr_o_r));
                 
                 if fft_ready_r = '1' then
                     state_n <= horizontal_update;
@@ -224,7 +227,7 @@ begin
             
             when horizontal_update =>
                 if j_n = width_r then
-                    i_r <= '1';
+                    i_n <= '1';
                     j_n <= (others => '0');
                     state_n <= l1;
                 else 
@@ -245,8 +248,8 @@ begin
             when wait_vertical_ready => 
                 data_rd_o <= fft_data_rd_o_r;
                 data_wr_o <= fft_data_wr_o_r;
-                data_i_addr_o <= std_logic_vector(unsigned(fft_data_i_addr_o_r) * unsigned(width_r) + unsigned(j_r));
-                data_o_addr_o <= std_logic_vector(unsigned(fft_data_o_addr_o_r) * unsigned(width_r) + unsigned(j_r));
+                data_i_addr_o <= std_logic_vector(unsigned(fft_data_i_addr_o_r) * unsigned(width_r) + unsigned(fft_data_i_addr_o_r) + unsigned(j_r));
+                data_o_addr_o <= std_logic_vector(unsigned(fft_data_o_addr_o_r) * unsigned(width_r) + unsigned(fft_data_o_addr_o_r) + unsigned(j_r));
                 
                 if fft_ready_r = '1' then
                     state_n <= vertical_update;
@@ -256,7 +259,7 @@ begin
             
             when vertical_update =>
                 if j_n = height_r then
-                    i_r <= '0';
+                    i_n <= '0';
                     j_n <= (others => '0');
                     state_n <= idle;
                 else 
