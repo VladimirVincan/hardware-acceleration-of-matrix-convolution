@@ -7,11 +7,14 @@
 # Unnecessary folders and hidden files
 build/
 matrix_convolution_rtl/
+ip_repo/
+!ip/
 !rtl/
 !sim/
 !waveform/
 !diagrams
 .*
+rtl/conv2*
 
 #files being edited
 *~

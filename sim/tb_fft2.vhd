@@ -86,24 +86,24 @@ architecture Behavioral of tb_fft2 is
     -- 0 0 0 0 
     -- 0 0 0 0
        (conv_std_logic_vector(1, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(2, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(3, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(4, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
         
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(5, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(6, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(7, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(8, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
         
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(9, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(10, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(11, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(12, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
         
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
-        conv_std_logic_vector(0, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH));
+        conv_std_logic_vector(13, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(14, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(15, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH),
+        conv_std_logic_vector(16, DATA_WIDTH - FIXED_POINT_WIDTH) & conv_std_logic_vector(0, FIXED_POINT_WIDTH));
 begin
     
     uut: entity work.fft2
