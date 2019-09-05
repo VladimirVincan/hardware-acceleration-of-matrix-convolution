@@ -8,6 +8,7 @@
 build/
 matrix_convolution_rtl/
 ip_repo/
+!ip_archive/
 !ip/
 !rtl/
 !sim/
