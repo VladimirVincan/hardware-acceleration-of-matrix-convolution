@@ -156,6 +156,9 @@ architecture arch_imp of axi_fft2_v1_0 is
         
         signal start : STD_LOGIC;
         signal ready : STD_LOGIC;
+        
+    -- auxiliary
+        signal mem_addr_i : STD_LOGIC_VECTOR (log2c(FFT_SIZE*FFT_SIZE) downto 0);
 
 --	-- component declaration
 --	component axi_fft2_v1_0_S00_AXI is
@@ -479,6 +482,8 @@ axi_fft2_v1_0_S01_AXI_inst : entity work.axi_fft2_v1_0_S01_AXI(arch_imp)
 
 	-- Add user logic here
 	 reset_s <= not s00_axi_aresetn;
+	 
+	 mem_addr_i <= mem_addr_o(mem_addr_o'high) & mem_addr_o(log2c(FFT_SIZE*FFT_SIZE)- 1 downto 0);
 	
 mem_subsystem_inst: entity work.mem_subsystem(struct)
     generic map(
@@ -504,7 +509,7 @@ mem_subsystem_inst: entity work.mem_subsystem(struct)
         cmd_axi_o => cmd_axi_i,
         status_axi_o => status_axi_i,
         
-        mem_addr_i => mem_addr_o(log2c(FFT_SIZE*FFT_SIZE) downto 0),
+        mem_addr_i =>  mem_addr_i,--(mem_addr_o(log2c(FFT_SIZE*FFT_SIZE), mem_addr_o(log2c(FFT_SIZE*FFT_SIZE)- 1 downto 0)),
         mem_data_i => mem_data_o,
         mem_wr_i => mem_wr_o,
         

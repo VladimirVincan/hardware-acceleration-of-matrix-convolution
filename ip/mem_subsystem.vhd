@@ -34,7 +34,7 @@ entity mem_subsystem is
         mem_re_axi_data_o : out std_logic_vector(DATA_WIDTH-1 downto 0);
         mem_im_axi_data_o : out std_logic_vector(DATA_WIDTH-1 downto 0);
         
-        -- Interface to the matrix multiply module
+        -- Interface to the fft2 module
         log2w_o : out std_logic_vector(log2c(log2c(FFT_SIZE))-1 downto 0);
         width_o : out std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
         log2h_o : out std_logic_vector(log2c(log2c(FFT_SIZE))-1 downto 0);
@@ -201,7 +201,7 @@ begin
         );
         
     -- Memory for storing the elements of IM values
-    b_memory: entity work.dp_bram(beh)
+    im_memory: entity work.dp_bram(beh)
         generic map (
             DATA_WIDTH => DATA_WIDTH,
             FFT_SIZE => FFT_SIZE

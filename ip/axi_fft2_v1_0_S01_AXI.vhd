@@ -556,7 +556,7 @@ begin
     mem_data_o <= S_AXI_WDATA;
     
     --Output memory read data
-    addr_field_s <= axi_araddr(C_S_AXI_ADDR_WIDTH-1);
+    addr_field_s <= axi_araddr(C_S_AXI_ADDR_WIDTH-1); -- or axi_awaddr(C_S_AXI_ADDR_WIDTH-1);
 
     process(mem_re_axi_data_i, mem_im_axi_data_i, axi_rvalid, addr_field_s) is
     begin

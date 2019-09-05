@@ -13,31 +13,63 @@ architecture beh of axi_matrix_mult_tb is
     constant DATA_WIDTH_c : integer := 32;
     constant FIXED_POINT_WIDTH_c : integer := 16;
     constant FFT_SIZE_c : integer := 4;
-    constant HEIGHT_c : integer := 4;
-    constant WIDTH_c : integer := 4;
+    constant HEIGHT_c : integer := 3;
+    constant WIDTH_c : integer := 3;
+    constant LOG2W_c : integer := 1;
+    constant LOG2H_c : integer := 1;
     
     type mem_t is array (0 to FFT_SIZE_c*FFT_SIZE_c-1) of integer;
     
     constant MEM_RE_CONTENT_c: mem_t := (
         1 * 2**FIXED_POINT_WIDTH_c, 
-        others => 0);
+        2 * 2**FIXED_POINT_WIDTH_c, 
+        3 * 2**FIXED_POINT_WIDTH_c, 
+        4 * 2**FIXED_POINT_WIDTH_c, 
+        5 * 2**FIXED_POINT_WIDTH_c, 
+        6 * 2**FIXED_POINT_WIDTH_c, 
+        7 * 2**FIXED_POINT_WIDTH_c, 
+        8 * 2**FIXED_POINT_WIDTH_c, 
+        9 * 2**FIXED_POINT_WIDTH_c, 
+        10 * 2**FIXED_POINT_WIDTH_c, 
+        11 * 2**FIXED_POINT_WIDTH_c, 
+        12 * 2**FIXED_POINT_WIDTH_c, 
+        13 * 2**FIXED_POINT_WIDTH_c, 
+        14 * 2**FIXED_POINT_WIDTH_c, 
+        15 * 2**FIXED_POINT_WIDTH_c, 
+        16 * 2**FIXED_POINT_WIDTH_c);
         
     constant MEM_IM_CONTENT_c: mem_t := ( 
-        others => 0);
+        21 * 2**FIXED_POINT_WIDTH_c, 
+        22 * 2**FIXED_POINT_WIDTH_c, 
+        23 * 2**FIXED_POINT_WIDTH_c, 
+        24 * 2**FIXED_POINT_WIDTH_c, 
+        25 * 2**FIXED_POINT_WIDTH_c, 
+        26 * 2**FIXED_POINT_WIDTH_c, 
+        27 * 2**FIXED_POINT_WIDTH_c, 
+        28 * 2**FIXED_POINT_WIDTH_c, 
+        29 * 2**FIXED_POINT_WIDTH_c, 
+        30 * 2**FIXED_POINT_WIDTH_c, 
+        31 * 2**FIXED_POINT_WIDTH_c, 
+        32 * 2**FIXED_POINT_WIDTH_c, 
+        33 * 2**FIXED_POINT_WIDTH_c, 
+        34 * 2**FIXED_POINT_WIDTH_c, 
+        35 * 2**FIXED_POINT_WIDTH_c, 
+        36 * 2**FIXED_POINT_WIDTH_c);
     
     signal clk_s: std_logic;
     signal reset_s: std_logic;
     
     -- Matrix multiplier core's address map
-    constant N_REG_ADDR_C : integer := 0;
-    constant M_REG_ADDR_C : integer := 4;
-    --constant P_REG_ADDR_C : integer := 8;
-    constant CMD_REG_ADDR_C : integer := 8;
-    constant STATUS_REG_ADDR_C : integer := 12;
+    constant LOG2W_REG_ADDR_C : integer := 0;
+    constant WIDTH_REG_ADDR_C : integer := 4;
+    constant LOG2H_REG_ADDR_C : integer := 8;
+    constant HEIGHT_REG_ADDR_C : integer := 12;
+    constant CMD_REG_ADDR_C : integer := 16;
+    constant STATUS_REG_ADDR_C : integer := 20;
 
     -- Matrix multiplier internal memory map
     constant MEMORY_RE_OFFSET_C : integer := 0;
-    constant MEMORY_IM_OFFSET_C : integer := 256*4;
+    constant MEMORY_IM_OFFSET_C : integer := 512*4;--256*4;
 
     ------------------- AXI Interfaces signals -------------------
     -- Parameters of Axi-Lite Slave Bus Interface S00_AXI
@@ -151,11 +183,13 @@ begin
     -- Initialize the Matrix Multiplier core --
     ----------------------------------------------------------------------
     report "Loading the matrix dimensions information into the Matrix Multiplier core!";
-    -- Set the value for the first dimension (parameter N) of matrix A and C
+ 
+ 
+    -- Set the value for LOG2W
     wait until falling_edge(clk_s);
-    s00_axi_awaddr_s <= conv_std_logic_vector(N_REG_ADDR_C, C_S00_AXI_ADDR_WIDTH_c);
+    s00_axi_awaddr_s <= conv_std_logic_vector(LOG2W_REG_ADDR_C, C_S00_AXI_ADDR_WIDTH_c);
     s00_axi_awvalid_s <= '1';
-    s00_axi_wdata_s <= conv_std_logic_vector(HEIGHT_c, C_S00_AXI_DATA_WIDTH_c);
+    s00_axi_wdata_s <= conv_std_logic_vector(LOG2W_c, C_S00_AXI_DATA_WIDTH_c);
     s00_axi_wvalid_s <= '1';
     s00_axi_wstrb_s <= "1111";
     s00_axi_bready_s <= '1';
@@ -170,16 +204,16 @@ begin
     wait until s00_axi_bvalid_s = '0';
     wait until falling_edge(clk_s);
     s00_axi_bready_s <= '0';
-    wait until falling_edge(clk_s);
+    wait until falling_edge(clk_s); 
     
     -- wait for 5 falling edges of AXI-lite clock signal
     for i in 1 to 5 loop
         wait until falling_edge(clk_s);
     end loop;
-
-    -- Set the value for the second dimension of matrix A and the first dimenzion of matrix B (parameter M)
+    
+    -- Set the value for WIDTH
     wait until falling_edge(clk_s);
-    s00_axi_awaddr_s <= conv_std_logic_vector(M_REG_ADDR_C, C_S00_AXI_ADDR_WIDTH_c);
+    s00_axi_awaddr_s <= conv_std_logic_vector(WIDTH_REG_ADDR_C, C_S00_AXI_ADDR_WIDTH_c);
     s00_axi_awvalid_s <= '1';
     s00_axi_wdata_s <= conv_std_logic_vector(WIDTH_c, C_S00_AXI_DATA_WIDTH_c);
     s00_axi_wvalid_s <= '1';
@@ -203,6 +237,58 @@ begin
         wait until falling_edge(clk_s);
     end loop;
     
+    -- Set the value for LOG2H
+    wait until falling_edge(clk_s);
+    s00_axi_awaddr_s <= conv_std_logic_vector(LOG2H_REG_ADDR_C, C_S00_AXI_ADDR_WIDTH_c);
+    s00_axi_awvalid_s <= '1';
+    s00_axi_wdata_s <= conv_std_logic_vector(LOG2H_c, C_S00_AXI_DATA_WIDTH_c);
+    s00_axi_wvalid_s <= '1';
+    s00_axi_wstrb_s <= "1111";
+    s00_axi_bready_s <= '1';
+    wait until s00_axi_awready_s = '1';
+    wait until s00_axi_awready_s = '0';
+    wait until falling_edge(clk_s);
+    s00_axi_awaddr_s <= conv_std_logic_vector(0, C_S00_AXI_ADDR_WIDTH_c);
+    s00_axi_awvalid_s <= '0';
+    s00_axi_wdata_s <= conv_std_logic_vector(0, C_S00_AXI_DATA_WIDTH_c);
+    s00_axi_wvalid_s <= '0';
+    s00_axi_wstrb_s <= "0000";
+    wait until s00_axi_bvalid_s = '0';
+    wait until falling_edge(clk_s);
+    s00_axi_bready_s <= '0';
+    wait until falling_edge(clk_s); 
+    
+    -- wait for 5 falling edges of AXI-lite clock signal
+    for i in 1 to 5 loop
+        wait until falling_edge(clk_s);
+    end loop;
+    
+    -- Set the value for HEIGHT
+    wait until falling_edge(clk_s);
+    s00_axi_awaddr_s <= conv_std_logic_vector(HEIGHT_REG_ADDR_C, C_S00_AXI_ADDR_WIDTH_c);
+    s00_axi_awvalid_s <= '1';
+    s00_axi_wdata_s <= conv_std_logic_vector(HEIGHT_c, C_S00_AXI_DATA_WIDTH_c);
+    s00_axi_wvalid_s <= '1';
+    s00_axi_wstrb_s <= "1111";
+    s00_axi_bready_s <= '1';
+    wait until s00_axi_awready_s = '1';
+    wait until s00_axi_awready_s = '0';
+    wait until falling_edge(clk_s);
+    s00_axi_awaddr_s <= conv_std_logic_vector(0, C_S00_AXI_ADDR_WIDTH_c);
+    s00_axi_awvalid_s <= '0';
+    s00_axi_wdata_s <= conv_std_logic_vector(0, C_S00_AXI_DATA_WIDTH_c);
+    s00_axi_wvalid_s <= '0';
+    s00_axi_wstrb_s <= "0000";
+    wait until s00_axi_bvalid_s = '0';
+    wait until falling_edge(clk_s);
+    s00_axi_bready_s <= '0';
+    wait until falling_edge(clk_s);
+    
+    -- wait for 5 falling edges of AXI-lite clock signal
+    for i in 1 to 5 loop
+        wait until falling_edge(clk_s);
+    end loop;
+
     -- wait for 5 falling edges of AXI-lite clock signal
     for i in 1 to 5 loop
         wait until falling_edge(clk_s);
@@ -223,7 +309,7 @@ begin
     wait until falling_edge(clk_s);
 
     -- Write some data using AXI4 interface and burst mode
-    transfer_size_v := HEIGHT_c*WIDTH_c;
+    transfer_size_v := (HEIGHT_c+1)*(WIDTH_c+1);
     wait until falling_edge(clk_s);
     s01_axi_awaddr_s <= conv_std_logic_vector(MEMORY_RE_OFFSET_C, s01_axi_awaddr_s'length);
     -- Set the number of data that will be transfered in one burst
@@ -243,8 +329,7 @@ begin
     wait until falling_edge(clk_s);
     wait until falling_edge(clk_s);
     for data_counter in 1 to transfer_size_v-2 loop
-        s01_axi_wdata_s <= conv_std_logic_vector(MEM_RE_CONTENT_c(data_counter),
-        s01_axi_wdata_s'length);
+        s01_axi_wdata_s <= conv_std_logic_vector(MEM_RE_CONTENT_c(data_counter), s01_axi_wdata_s'length);
         s01_axi_wvalid_s <= '1';
         s01_axi_wstrb_s <= "1111";
         s01_axi_wlast_s <= '0';
@@ -289,7 +374,7 @@ begin
     wait until falling_edge(clk_s);
 
     -- Write some data using AXI4 interface and burst mode
-    transfer_size_v := HEIGHT_c*WIDTH_c;
+    transfer_size_v := (HEIGHT_c+1)*(WIDTH_c+1);
     wait until falling_edge(clk_s);
     s01_axi_awaddr_s <= conv_std_logic_vector(MEMORY_IM_OFFSET_C, s01_axi_awaddr_s'length);
     -- Set the number of data that will be transfered in one burst
@@ -309,8 +394,7 @@ begin
     wait until falling_edge(clk_s);
     wait until falling_edge(clk_s);
     for data_counter in 1 to transfer_size_v-2 loop
-        s01_axi_wdata_s <= conv_std_logic_vector(MEM_IM_CONTENT_c(data_counter),
-        s01_axi_wdata_s'length);
+        s01_axi_wdata_s <= conv_std_logic_vector(MEM_IM_CONTENT_c(data_counter), s01_axi_wdata_s'length);
         s01_axi_wvalid_s <= '1';
         s01_axi_wstrb_s <= "1111";
         s01_axi_wlast_s <= '0';
@@ -420,11 +504,11 @@ begin
     end loop;
 
     -------------------------------------------------------------------------------------------
-    -- Read the elements of matrix C from the Matrix Multiplier core --
+    -- Read the elements of matrix RE --
     -------------------------------------------------------------------------------------------
     report "Reading the results of the RE matrix!";
     -- Read some data using AXI4 interface
-    transfer_size_v := HEIGHT_c*WIDTH_c;
+    transfer_size_v := (HEIGHT_c+1)*(WIDTH_c+1);
     wait until falling_edge(clk_s);
     s01_axi_araddr_s <= conv_std_logic_vector(MEMORY_RE_OFFSET_C, s01_axi_araddr_s'length);
     -- Set the number of data that will be transfered in one burst
@@ -454,11 +538,11 @@ begin
     end loop;
 
     -------------------------------------------------------------------------------------------
-    -- Read the elements of matrix C from the Matrix Multiplier core --
+    -- Read the elements of matrix IM --
     -------------------------------------------------------------------------------------------
     report "Reading the results of the IM matrix!";
     -- Read some data using AXI4 interface
-    transfer_size_v := HEIGHT_c*WIDTH_c;
+    transfer_size_v := (HEIGHT_c+1)*(WIDTH_c+1);
     wait until falling_edge(clk_s);
     s01_axi_araddr_s <= conv_std_logic_vector(MEMORY_IM_OFFSET_C, s01_axi_araddr_s'length);
     -- Set the number of data that will be transfered in one burst

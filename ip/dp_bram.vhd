@@ -41,30 +41,29 @@ end dp_bram;
 
 architecture beh of dp_bram is
 
-    type ram_type is array (2**log2c(FFT_SIZE*FFT_SIZE)-1 downto 0) of std_logic_vector(DATA_WIDTH-1 downto 0);
-    shared variable RAM: ram_type;
+    type ram_type is array ((FFT_SIZE*FFT_SIZE)-1 downto 0) of std_logic_vector(DATA_WIDTH-1 downto 0);
+    signal RAM: ram_type := (others => (others => '0'));
     
 begin
 
-    process(ckla)
+    process(ckla, clkb)
     begin
         if ckla'event and ckla = '1' then
             rda_o <= '0';
             wra_o <= '0';
+            doa <= RAM(conv_integer(addra));
             if ena = '1' then
                 if rda_i = '1' then
-                    doa <= RAM(conv_integer(addra));
                     rda_o <= '1';
                 elsif wra_i = '1' then
-                    RAM(conv_integer(addra)) := dia;
+                    RAM(conv_integer(addra)) <= dia;
                     wra_o <= '1';
+                else
+                    doa <= (others => '0');
                 end if;
             end if;
         end if;
-    end process;
-            
-    process(clkb)
-    begin
+
         if clkb'event and clkb = '1' then
             rdb_o <= '0';
             wrb_o <= '0';
@@ -73,8 +72,10 @@ begin
                     dob <= RAM(conv_integer(addrb_rd));
                     rdb_o <= '1';
                 elsif wrb_i = '1' then
-                    RAM(conv_integer(addrb_wr)) := dib;
+                    RAM(conv_integer(addrb_wr)) <= dib;
                     wrb_o <= '1';
+                else
+                    dob <= (others => '0');
                 end if;
             end if;
         end if;
