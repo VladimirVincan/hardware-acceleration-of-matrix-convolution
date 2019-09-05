@@ -11,9 +11,9 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="178565720000fs"></ZoomStartTime>
-      <ZoomEndTime time="201945720001fs"></ZoomEndTime>
-      <Cursor1Time time="192645720000fs"></Cursor1Time>
+      <ZoomStartTime time="153583333333fs"></ZoomStartTime>
+      <ZoomEndTime time="270483333334fs"></ZoomEndTime>
+      <Cursor1Time time="195700000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="212"></NameColumnWidth>
@@ -821,58 +821,6 @@
          <obj_property name="ElementShortName">ready</obj_property>
          <obj_property name="ObjectShortName">ready</obj_property>
       </wvobject>
-      <wvobject type="other" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/DATA_WIDTH">
-         <obj_property name="ElementShortName">DATA_WIDTH</obj_property>
-         <obj_property name="ObjectShortName">DATA_WIDTH</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/FFT_SIZE">
-         <obj_property name="ElementShortName">FFT_SIZE</obj_property>
-         <obj_property name="ObjectShortName">FFT_SIZE</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/FIXED_POINT_WIDTH">
-         <obj_property name="ElementShortName">FIXED_POINT_WIDTH</obj_property>
-         <obj_property name="ObjectShortName">FIXED_POINT_WIDTH</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/C_S00_AXI_DATA_WIDTH">
-         <obj_property name="ElementShortName">C_S00_AXI_DATA_WIDTH</obj_property>
-         <obj_property name="ObjectShortName">C_S00_AXI_DATA_WIDTH</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/C_S00_AXI_ADDR_WIDTH">
-         <obj_property name="ElementShortName">C_S00_AXI_ADDR_WIDTH</obj_property>
-         <obj_property name="ObjectShortName">C_S00_AXI_ADDR_WIDTH</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/C_S01_AXI_ID_WIDTH">
-         <obj_property name="ElementShortName">C_S01_AXI_ID_WIDTH</obj_property>
-         <obj_property name="ObjectShortName">C_S01_AXI_ID_WIDTH</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/C_S01_AXI_DATA_WIDTH">
-         <obj_property name="ElementShortName">C_S01_AXI_DATA_WIDTH</obj_property>
-         <obj_property name="ObjectShortName">C_S01_AXI_DATA_WIDTH</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/C_S01_AXI_ADDR_WIDTH">
-         <obj_property name="ElementShortName">C_S01_AXI_ADDR_WIDTH</obj_property>
-         <obj_property name="ObjectShortName">C_S01_AXI_ADDR_WIDTH</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/C_S01_AXI_AWUSER_WIDTH">
-         <obj_property name="ElementShortName">C_S01_AXI_AWUSER_WIDTH</obj_property>
-         <obj_property name="ObjectShortName">C_S01_AXI_AWUSER_WIDTH</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/C_S01_AXI_ARUSER_WIDTH">
-         <obj_property name="ElementShortName">C_S01_AXI_ARUSER_WIDTH</obj_property>
-         <obj_property name="ObjectShortName">C_S01_AXI_ARUSER_WIDTH</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/C_S01_AXI_WUSER_WIDTH">
-         <obj_property name="ElementShortName">C_S01_AXI_WUSER_WIDTH</obj_property>
-         <obj_property name="ObjectShortName">C_S01_AXI_WUSER_WIDTH</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/C_S01_AXI_RUSER_WIDTH">
-         <obj_property name="ElementShortName">C_S01_AXI_RUSER_WIDTH</obj_property>
-         <obj_property name="ObjectShortName">C_S01_AXI_RUSER_WIDTH</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/C_S01_AXI_BUSER_WIDTH">
-         <obj_property name="ElementShortName">C_S01_AXI_BUSER_WIDTH</obj_property>
-         <obj_property name="ObjectShortName">C_S01_AXI_BUSER_WIDTH</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group462">
       <obj_property name="label">s00</obj_property>
@@ -1097,7 +1045,6 @@
    <wvobject type="group" fp_name="group554">
       <obj_property name="label">s01</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/axi_fft2_v1_0_S01_AXI_inst/mem_addr_o">
          <obj_property name="ElementShortName">mem_addr_o[9:0]</obj_property>
          <obj_property name="ObjectShortName">mem_addr_o[9:0]</obj_property>
@@ -1479,7 +1426,6 @@
    <wvobject type="group" fp_name="group405">
       <obj_property name="label">mem_subsystem</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/mem_subsystem_inst/clk">
          <obj_property name="ElementShortName">clk</obj_property>
          <obj_property name="ObjectShortName">clk</obj_property>
@@ -1816,6 +1762,7 @@
          <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
          <obj_property name="radix_fractionWidth">16</obj_property>
          <obj_property name="radix_otherWidth">0</obj_property>
+         <obj_property name="isExpanded"></obj_property>
          <wvobject type="array" fp_name="/axi_matrix_mult_tb/axi_matrix_multiplier/mem_subsystem_inst/re_memory/RAM[15]">
             <obj_property name="ElementShortName">[15][31:0]</obj_property>
             <obj_property name="ObjectShortName">[15][31:0]</obj_property>

@@ -51,15 +51,15 @@ begin
         if ckla'event and ckla = '1' then
             rda_o <= '0';
             wra_o <= '0';
-            doa <= RAM(conv_integer(addra));
             if ena = '1' then
+                doa <= RAM(conv_integer(addra));
                 if rda_i = '1' then
                     rda_o <= '1';
                 elsif wra_i = '1' then
                     RAM(conv_integer(addra)) <= dia;
                     wra_o <= '1';
-                else
-                    doa <= (others => '0');
+--                else
+--                    doa <= (others => '0');
                 end if;
             end if;
         end if;

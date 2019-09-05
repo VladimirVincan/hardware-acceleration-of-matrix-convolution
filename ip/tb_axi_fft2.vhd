@@ -37,6 +37,13 @@ architecture beh of axi_matrix_mult_tb is
         14 * 2**FIXED_POINT_WIDTH_c, 
         15 * 2**FIXED_POINT_WIDTH_c, 
         16 * 2**FIXED_POINT_WIDTH_c);
+
+--    constant MEM_RE_CONTENT_c: mem_t := (
+--        1 * 2**FIXED_POINT_WIDTH_c, 
+--        others => 0);
+        
+--    constant MEM_IM_CONTENT_c: mem_t := (
+--        others => 0); 
         
     constant MEM_IM_CONTENT_c: mem_t := ( 
         21 * 2**FIXED_POINT_WIDTH_c, 
@@ -524,14 +531,14 @@ begin
     s01_axi_arlen_s <= (others => '0');
     s01_axi_arburst_s <= "00";
     s01_axi_arvalid_s <= '0';
-    for data_counter in 1 to transfer_size_v loop
+    for data_counter in 1 to transfer_size_v-1 loop
         wait until s01_axi_rvalid_s = '1';
         wait until s01_axi_rvalid_s = '0';
         wait until falling_edge(clk_s);
     end loop;
     wait until falling_edge(clk_s);
     s01_axi_rready_s <= '0';
-    
+     
     -- wait for 5 falling edges of AXI-lite clock signal
     for i in 1 to 5 loop
         wait until falling_edge(clk_s);
@@ -558,7 +565,7 @@ begin
     s01_axi_arlen_s <= (others => '0');
     s01_axi_arburst_s <= "00";
     s01_axi_arvalid_s <= '0';
-    for data_counter in 1 to transfer_size_v loop
+    for data_counter in 1 to transfer_size_v-1 loop
         wait until s01_axi_rvalid_s = '1';
         wait until s01_axi_rvalid_s = '0';
         wait until falling_edge(clk_s);
