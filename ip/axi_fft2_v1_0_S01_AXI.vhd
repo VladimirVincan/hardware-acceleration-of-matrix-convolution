@@ -17,7 +17,7 @@ entity axi_fft2_v1_0_S01_AXI is
 		-- Width of S_AXI data bus
 		C_S_AXI_DATA_WIDTH	: integer	:= 32;
 		-- Width of S_AXI address bus
-		C_S_AXI_ADDR_WIDTH	: integer	:= log2c(64*64);  -- 10;
+		C_S_AXI_ADDR_WIDTH	: integer	:= 12;--log2c(64*64);  -- 10;
 		-- Width of optional user defined signal in write address channel
 		C_S_AXI_AWUSER_WIDTH	: integer	:= 0;
 		-- Width of optional user defined signal in read address channel
@@ -31,7 +31,7 @@ entity axi_fft2_v1_0_S01_AXI is
 	);
 	port (
 		-- Users to add ports here
-        mem_addr_o : out std_logic_vector(C_S_AXI_ADDR_WIDTH downto 0); -- +1 for RE and IM
+        mem_addr_o : out std_logic_vector(C_S_AXI_ADDR_WIDTH -((C_S_AXI_DATA_WIDTH/32)+ 1) - 1 downto 0); -- +1 for RE and IM
         mem_data_o : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
         mem_wr_o : out std_logic;
         
@@ -221,7 +221,7 @@ architecture arch_imp of axi_fft2_v1_0_S01_AXI is
 	constant ADDR_LSB  : integer := (C_S_AXI_DATA_WIDTH/32)+ 1;
 	constant OPT_MEM_ADDR_BITS : integer := 7;
 	constant USER_NUM_MEM: integer := 1;
-	constant low : std_logic_vector (C_S_AXI_ADDR_WIDTH - 1 downto 0) := "0000000000";
+	constant low : std_logic_vector (C_S_AXI_ADDR_WIDTH - 1 downto 0) := (others => '0');--"0000000000";
 	------------------------------------------------
 	---- Signals for user logic memory space example
 	--------------------------------------------------
@@ -549,29 +549,25 @@ begin
 
 	-- Add user logic here
     mem_wr_o <= axi_wready and S_AXI_WVALID;
-    mem_addr_o <= axi_araddr(C_S_AXI_ADDR_WIDTH - 1 downto ADDR_LSB)
-    when axi_arv_arr_flag = '1' else
-    axi_awaddr(C_S_AXI_ADDR_WIDTH - 1 downto ADDR_LSB)
-    when axi_awv_awr_flag = '1' else
-    (others => '0');
+    mem_addr_o <= 
+        axi_araddr(C_S_AXI_ADDR_WIDTH - 1 downto ADDR_LSB) when axi_arv_arr_flag = '1' else
+        axi_awaddr(C_S_AXI_ADDR_WIDTH - 1 downto ADDR_LSB) when axi_awv_awr_flag = '1' else
+        (others => '0');
     mem_data_o <= S_AXI_WDATA;
-    --Output memory read data
-    addr_field_s <= axi_araddr(C_S_AXI_ADDR_WIDTH - 1
-    downto C_S_AXI_ADDR_WIDTH - 2);
     
-    process(a_axi_data_i, b_axi_data_i, c_axi_data_i, axi_rvalid, addr_field_s) is
+    --Output memory read data
+    addr_field_s <= axi_araddr(C_S_AXI_ADDR_WIDTH-1);
+
+    process(mem_re_axi_data_i, mem_im_axi_data_i, axi_rvalid, addr_field_s) is
     begin
         if (axi_rvalid = '1') then
         -- When there is a valid read address (S_AXI_ARVALID) with
         -- acceptance of read address by the slave (axi_arready), output the read data
             case addr_field_s is
-                when "00" =>
-                    axi_rdata <= std_logic_vector(to_unsigned(0, C_S_AXI_DATA_WIDTH-WIDTH))& a_axi_data_i;
-                when "01" =>
-                    axi_rdata <= std_logic_vector(to_unsigned(0, C_S_AXI_DATA_WIDTH-WIDTH))&b_axi_data_i;
+                when '0' =>
+                    axi_rdata <= std_logic_vector(to_unsigned(0, C_S_AXI_DATA_WIDTH-DATA_WIDTH)) & mem_re_axi_data_i;
                 when others =>
-                    axi_rdata <= std_logic_vector(to_unsigned(0, C_S_AXI_DATA_WIDTH-(2*WIDTH+SIZE)))&
-                    c_axi_data_i;
+                    axi_rdata <= std_logic_vector(to_unsigned(0, C_S_AXI_DATA_WIDTH-DATA_WIDTH)) & mem_im_axi_data_i;
             end case;
         else
             axi_rdata <= (others => '0');

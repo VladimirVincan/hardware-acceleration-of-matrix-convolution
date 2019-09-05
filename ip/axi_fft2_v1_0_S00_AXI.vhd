@@ -27,9 +27,9 @@ entity axi_fft2_v1_0_S00_AXI is
         height_wr_o : out std_logic;
         cmd_wr_o : out std_logic;
         
-        log2w_axi_i : in std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
+        log2w_axi_i : in std_logic_vector(log2c(log2c(FFT_SIZE))-1 downto 0);
         width_axi_i : in std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
-        log2h_axi_i : in std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
+        log2h_axi_i : in std_logic_vector(log2c(log2c(FFT_SIZE))-1 downto 0);
         height_axi_i : in std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
         cmd_axi_i : in std_logic;
         status_axi_i : in std_logic;
@@ -453,13 +453,13 @@ begin
 	    case loc_addr is
 	      when b"0000" =>
 --	        reg_data_out <= slv_reg0;
-            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE))&log2w_axi_i;
+            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(log2c(FFT_SIZE)))&log2w_axi_i;
 	      when b"0001" =>
 --	        reg_data_out <= slv_reg1;
             reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE))&width_axi_i;
 	      when b"0010" =>
 --	        reg_data_out <= slv_reg2;
-            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE))&log2h_axi_i;
+            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(log2c(FFT_SIZE)))&log2h_axi_i;
 	      when b"0011" =>
 --	        reg_data_out <= slv_reg3;
             reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE))&height_axi_i;

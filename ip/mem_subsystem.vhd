@@ -20,9 +20,9 @@ entity mem_subsystem is
         height_wr_i : in std_logic;
         cmd_wr_i : in std_logic;
         
-        log2w_axi_o : out std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
+        log2w_axi_o : out std_logic_vector(log2c(log2c(FFT_SIZE))-1 downto 0);
         width_axi_o : out std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
-        log2h_axi_o : out std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
+        log2h_axi_o : out std_logic_vector(log2c(log2c(FFT_SIZE))-1 downto 0);
         height_axi_o : out std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
         cmd_axi_o : out std_logic;
         status_axi_o : out std_logic;
@@ -35,9 +35,9 @@ entity mem_subsystem is
         mem_im_axi_data_o : out std_logic_vector(DATA_WIDTH-1 downto 0);
         
         -- Interface to the matrix multiply module
-        log2w_o : out std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
+        log2w_o : out std_logic_vector(log2c(log2c(FFT_SIZE))-1 downto 0);
         width_o : out std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
-        log2h_o : out std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
+        log2h_o : out std_logic_vector(log2c(log2c(FFT_SIZE))-1 downto 0);
         height_o : out std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
         start_o : out std_logic;
         ready_i : in std_logic;
@@ -58,7 +58,8 @@ end mem_subsystem;
 
 architecture struct of mem_subsystem is
 
-    signal log2w_s, width_s, log2h_s, height_s: std_logic_vector(log2c(FFT_SIZE) -1 downto 0);
+    signal log2w_s, log2h_s : std_logic_vector(log2c(log2c(FFT_SIZE)) -1 downto 0);
+    signal width_s, height_s: std_logic_vector(log2c(FFT_SIZE) -1 downto 0);
     signal cmd_s, status_s: std_logic;
     
     --signal rd_i_s, rd_o_s, wr_i_s, wr_o_s: std_logic;
@@ -88,7 +89,7 @@ begin
             if reset = '1' then
                 log2w_s <= (others => '0');
             elsif log2w_wr_i = '1' then
-                log2w_s <= reg_data_i;
+                log2w_s <= reg_data_i (log2c(log2c(FFT_SIZE))-1 downto 0);
             end if;
         end if;
     end process;
@@ -112,7 +113,7 @@ begin
             if reset = '1' then
                 log2h_s <= (others => '0');
             elsif log2h_wr_i = '1' then
-                log2h_s <= reg_data_i;
+                log2h_s <= reg_data_i (log2c(log2c(FFT_SIZE))-1 downto 0);
             end if;
         end if;
     end process;
