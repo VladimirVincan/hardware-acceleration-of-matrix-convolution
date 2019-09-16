@@ -32,7 +32,7 @@ entity axi_fft2_v1_0_S01_AXI is
 	port (
 		-- Users to add ports here
         mem_addr_o : out std_logic_vector(C_S_AXI_ADDR_WIDTH -((C_S_AXI_DATA_WIDTH/32)+ 1) - 1 downto 0); -- +1 for RE and IM
-        mem_data_o : out std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
+        mem_data_o : out std_logic_vector(DATA_WIDTH-1 downto 0);
         mem_wr_o : out std_logic;
         
         mem_re_axi_data_i : in std_logic_vector(DATA_WIDTH-1 downto 0);
@@ -484,69 +484,7 @@ begin
 	    end if;
 	  end if;
 	end  process;
-	-- ------------------------------------------
-	-- -- Example code to access user logic memory region
-	-- ------------------------------------------
-
---	gen_mem_sel: if (USER_NUM_MEM >= 1) generate
---	begin
---	  mem_select  <= "1";
---	  mem_address <= axi_araddr(ADDR_LSB+OPT_MEM_ADDR_BITS downto ADDR_LSB) when axi_arv_arr_flag = '1' else
---	                 axi_awaddr(ADDR_LSB+OPT_MEM_ADDR_BITS downto ADDR_LSB) when axi_awv_awr_flag = '1' else
---	                 (others => '0');
---	end generate gen_mem_sel;
-	 
---	-- implement Block RAM(s)
---	BRAM_GEN : for i in 0 to USER_NUM_MEM-1 generate
---	  signal mem_rden : std_logic;
---	  signal mem_wren : std_logic;
---	begin
---	  mem_wren <= axi_wready and S_AXI_WVALID ;
---	  mem_rden <= axi_arv_arr_flag ;
 	
---	 BYTE_BRAM_GEN : for mem_byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) generate
---	   signal byte_ram : BYTE_RAM_TYPE;
---	   signal data_in  : std_logic_vector(8-1 downto 0);
---	   signal data_out : std_logic_vector(8-1 downto 0);
---	 begin
---	   --assigning 8 bit data
---	   data_in  <= S_AXI_WDATA((mem_byte_index*8+7) downto mem_byte_index*8);
---	   data_out <= byte_ram(to_integer(unsigned(mem_address)));
---	   BYTE_RAM_PROC : process( S_AXI_ACLK ) is
---	   begin
---	     if ( rising_edge (S_AXI_ACLK) ) then
---	       if ( mem_wren = '1' and S_AXI_WSTRB(mem_byte_index) = '1' ) then
---	         byte_ram(to_integer(unsigned(mem_address))) <= data_in;
---	       end if;
---	     end if;
-	  
---	   end process BYTE_RAM_PROC;
---	   process( S_AXI_ACLK ) is
---	     begin
---	       if ( rising_edge (S_AXI_ACLK) ) then
---	         if ( mem_rden = '1') then 
---	           mem_data_out(i)((mem_byte_index*8+7) downto mem_byte_index*8) <= data_out;
---	         end if;
---	       end if;
---	   end process;
-	 
---	 end generate BYTE_BRAM_GEN;
-
---	end generate BRAM_GEN;
---	--Output register or memory read data
-
---	process(mem_data_out, axi_rvalid ) is
---	begin
---	  if (axi_rvalid = '1') then
---	    -- When there is a valid read address (S_AXI_ARVALID) with 
---	    -- acceptance of read address by the slave (axi_arready), 
---	    -- output the read dada 
---	    axi_rdata <= mem_data_out(0);  -- memory range 0 read data
---	  else
---	    axi_rdata <= (others => '0');
---	  end if;  
---	end process;
-
 	-- Add user logic here
     mem_wr_o <= axi_wready and S_AXI_WVALID;
     mem_addr_o <= 

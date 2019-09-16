@@ -62,20 +62,22 @@ begin
 --                    doa <= (others => '0');
                 end if;
             end if;
-        end if;
+        --end if;
 
-        if clkb'event and clkb = '1' then
-            rdb_o <= '0';
-            wrb_o <= '0';
+        --if clkb'event and clkb = '1' then
+--            rdb_o <= '0';
+--            wrb_o <= '0';
             if enb = '1' then
                 if rdb_i = '1' then
                     dob <= RAM(conv_integer(addrb_rd));
                     rdb_o <= '1';
+                    wrb_o <= '0';
                 elsif wrb_i = '1' then
                     RAM(conv_integer(addrb_wr)) <= dib;
                     wrb_o <= '1';
-                else
-                    dob <= (others => '0');
+                    rdb_o <= '0';
+--                else
+--                    dob <= (others => '0');
                 end if;
             end if;
         end if;

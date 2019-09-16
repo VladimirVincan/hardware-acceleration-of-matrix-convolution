@@ -67,6 +67,9 @@ architecture struct of mem_subsystem is
     signal rd_re_s, rd_im_s, wr_re_s, wr_im_s : std_logic;
     signal rd_and_s, wr_and_s : std_logic;
     
+    signal mem_data_wr_re_o, mem_data_wr_im_o : std_logic;
+    signal mem_data_rd_re_o, mem_data_rd_im_o : std_logic;
+    
 begin
 
     log2w_o <= log2w_s;
@@ -158,6 +161,8 @@ begin
     -- Address decoder
     addr_dec: process (mem_addr_i)
     begin
+        mem_data_wr_o <= mem_data_wr_re_o and mem_data_wr_im_o;
+        mem_data_rd_o <= mem_data_rd_re_o and mem_data_rd_im_o;
         -- Default assignments
         en_re_s <= '0';
         en_im_s <= '0';
@@ -168,6 +173,8 @@ begin
                 en_im_s <= '1';
         end case;
     end process;
+    
+    
     
     -- Memory for storing the elements of RE values
     re_memory: entity work.dp_bram(beh)
@@ -191,9 +198,9 @@ begin
             clkb => clk,
             enb => '1',
             wrb_i => mem_data_wr_i,
-            wrb_o => mem_data_wr_o,
+            wrb_o => mem_data_wr_re_o,
             rdb_i => mem_data_rd_i,
-            rdb_o => mem_data_rd_o,
+            rdb_o => mem_data_rd_re_o,
             addrb_rd => mem_data_rd_addr_i,
             addrb_wr => mem_data_wr_addr_i,
             dib => mem_dataRE_i,
@@ -220,9 +227,9 @@ begin
             clkb => clk,
             enb => '1',
             wrb_i => mem_data_wr_i,
-            wrb_o => mem_data_wr_o,
+            wrb_o => mem_data_wr_im_o,
             rdb_i => mem_data_rd_i,
-            rdb_o => mem_data_rd_o,
+            rdb_o => mem_data_rd_im_o,
             addrb_rd => mem_data_rd_addr_i,
             addrb_wr => mem_data_wr_addr_i,
             dib => mem_dataIM_i,
