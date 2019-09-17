@@ -20,8 +20,8 @@ SC_MODULE(top)
  private:
   // hard_ip::fft2 fft2;
   // soft_ip::conv conv;
-  // memory::memory mem_a, mem_b, mem_c;
-  memory mem;
+  memory mem_a, mem_b, mem_c;
+  // memory mem;
   generator gen;
 
   // sc_signal<int> s_height, s_width, s_log2h, s_log2w;

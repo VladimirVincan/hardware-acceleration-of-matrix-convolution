@@ -3,6 +3,7 @@
 
 #include <systemc>
 #include <tlm>
+#include "utils.hpp"
 
 class memory :
 	public sc_core::sc_module,
@@ -22,11 +23,6 @@ public:
 	unsigned int transport_dbg(pl_t&);
 
 protected:
-  static const int MATRIX_SIZE = 64;
-  static const int DATA_WIDTH = 32;
-  static const int CHARS_AMOUNT = DATA_WIDTH / 8;
-	static const int RAM_SIZE = MATRIX_SIZE * MATRIX_SIZE * CHARS_AMOUNT;
-
 	unsigned char ram[RAM_SIZE];
 };
 

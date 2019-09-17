@@ -4,10 +4,10 @@ top::top(sc_module_name n)
   : sc_module(n)
   // , fft2("fft2")
   // , conv("conv")
-  // , mem_a("mem_a")
-  // , mem_b("mem_b")
-  // , mem_c("mem_c")
-  , mem("mem")
+  , mem_a("mem_a")
+  , mem_b("mem_b")
+  , mem_c("mem_c")
+  // , mem("mem")
   , gen("gen")
 {
   cout << name() << " constructed." << endl;
@@ -26,6 +26,8 @@ top::top(sc_module_name n)
   // conv.mem_b.bind(mem_b.tsoc);
   // conv.mem_c.bind(mem_c.tsoc);
 
-  gen.isoc(mem.tsoc);
+  gen.isoc_a(mem_a.tsoc);
+  gen.isoc_b(mem_b.tsoc);
+  gen.isoc_c(mem_c.tsoc);
 }
 

@@ -21,13 +21,7 @@ using namespace sc_dt;
                generator::gen() read part - only used to check if values are correctly
                                             initialized
 
-
-  [TODO] I tried to create utility functions:
-
-               sc_fixed_fast<DATA_WIDTH, FIXED_POINT_WIDTH> to_fixed (unsigned char *buf)
-               void to_char (unsigned char *buf, sc_fixed_fast<DATA_WIDTH, FIXED_POINT_WIDTH> val)
-
-         in order to make the generator::gen() code more readable, but it did not want to compile.
+               generator::gen() start part - after initialization, convolve matrices
  */
 
 class generator :
@@ -37,7 +31,7 @@ class generator :
 public:
 	generator(sc_core::sc_module_name);
 
-	tlm::tlm_initiator_socket<> isoc;
+	tlm::tlm_initiator_socket<> isoc_a, isoc_b, isoc_c;
 
 	typedef tlm::tlm_base_protocol_types::tlm_payload_type pl_t;
 	typedef tlm::tlm_base_protocol_types::tlm_phase_type phase_t;
@@ -47,8 +41,8 @@ public:
 
 protected:
 	void gen();
-	bool dmi_valid;
-	unsigned char* dmi_mem;
+	bool dmi_valid_a, dmi_valid_b, dmi_valid_c;
+	unsigned char *dmi_mem_a, *dmi_mem_b, *dmi_mem_c;
 
   // typedef sc_fixed_fast<DATA_WIDTH, FIXED_POINT_WIDTH> fixed_float_t;
 };
