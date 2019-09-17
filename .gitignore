@@ -14,6 +14,7 @@ ip_repo/
 !sim/
 !waveform/
 !diagrams
+!esl/
 .*
 rtl/conv2*
 
