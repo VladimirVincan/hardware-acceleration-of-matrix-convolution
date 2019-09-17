@@ -4,6 +4,7 @@
 #define SC_INCLUDE_FX
 #include <systemc>
 #include <tlm>
+#include <tlm_utils/tlm_quantumkeeper.h>
 #include "utils.hpp"
 
 using namespace std;
@@ -38,6 +39,10 @@ public:
 
 	tlm::tlm_sync_enum nb_transport_bw(pl_t&, phase_t&, sc_core::sc_time&);
 	void invalidate_direct_mem_ptr(sc_dt::uint64, sc_dt::uint64);
+
+  sc_core::sc_out<int> width;
+  sc_core::sc_out<int> height;
+	sc_core::sc_out<bool> start;
 
 protected:
 	void gen();

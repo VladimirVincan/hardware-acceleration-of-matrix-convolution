@@ -1,5 +1,4 @@
 #include "generator.hpp"
-#include <tlm_utils/tlm_quantumkeeper.h>
 
 using namespace sc_core;
 using namespace sc_dt;
@@ -12,7 +11,9 @@ generator::generator(sc_module_name name) :
 	isoc_a("isoc_a"),
 	isoc_b("isoc_b"),
 	isoc_c("isoc_c"),
-	dmi_valid_a(false)
+	dmi_valid_a(false),
+	dmi_valid_b(false),
+	dmi_valid_c(false)
 {
 	SC_THREAD(gen);
 	isoc_a(*this);
@@ -105,6 +106,16 @@ void generator::gen()
   write_val = to_fixed(buf);
 	msg = "Read matrix B - address: " + std::to_string(addr) + " data: " + std::to_string(write_val);
   SC_REPORT_INFO("generator", msg.c_str()) ;
+
+  /*
+    ----------------------------------------
+    READ PART
+    ----------------------------------------
+  */
+
+  height->write(8);
+  width->write(8);
+  start->write(true);
 }
 
 tlm_sync_enum generator::nb_transport_bw(pl_t& pl, phase_t& phase, sc_time& offset)
