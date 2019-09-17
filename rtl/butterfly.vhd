@@ -102,6 +102,18 @@ begin
        state_n <= state_r;
        botRE_n <= botRE_r;
        botIM_n <= botIM_r;
+       
+       state_n <= idle;
+       mult1_n <= (others => '0');
+       mult2_n <= (others => '0');
+       mult3_n <= (others => '0');
+       mult4_n <= (others => '0');
+        
+       topRE_o <= (others => '0');
+       topIM_o <= (others => '0');
+       bottomRE_o <= (others => '0');
+       bottomIM_o <= (others => '0');
+       ready <= '0';  
 
        case state_r is 
            when init => 

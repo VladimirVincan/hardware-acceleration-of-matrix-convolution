@@ -37,13 +37,13 @@ architecture Behavioral of fft is
     type state_t is (idle, wait_start_0, rd, wait_data_rd_i_1, wait_data_rd_i_0, wr_next, wait_data_wr_i_1, wait_data_wr_i_0, bit_reversal, reverse, main, butterfly_start_1, wait_butterfly_ready_0, wait_butterfly_ready_1, do_butterfly, l1, l2, l3, l4, l5);
     signal state_r, state_n : state_t;
    
-    signal size_r : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
-    signal log2s_r : STD_LOGIC_VECTOR (log2c(log2c(FFT_SIZE))-1 downto 0);
+    signal size_r, size_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
+    signal log2s_r, log2s_n : STD_LOGIC_VECTOR (log2c(log2c(FFT_SIZE))-1 downto 0);
 
     signal i_r, i_n : STD_LOGIC_VECTOR(log2c(log2c(FFT_SIZE))-1 downto 0);
     signal j_r, j_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
     signal k_r, k_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
-    signal k_max : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
+    signal k_max_n, k_max_r : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
     
     signal reversed_r, reversed_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
     signal temp_r, temp_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
@@ -53,8 +53,8 @@ architecture Behavioral of fft is
 -- FFT MEMORY
     subtype rom_word_t is std_logic_vector (WIDTH-1 downto 0);
     type rom_t is array (0 to FFT_SIZE-1) of rom_word_t;
-    signal dataRE : rom_t := (others => (others => '0'));
-    signal dataIM : rom_t := (others => (others => '0'));
+    signal dataRE, dataRE_n : rom_t := (others => (others => '0'));
+    signal dataIM, dataIM_n : rom_t := (others => (others => '0'));
 
 -- BUTTERFLY INTERFACE
     signal butterfly_start_r, butterfly_start_n : STD_LOGIC := '0';
@@ -106,11 +106,15 @@ begin
             i_r <= (others => '0');
             j_r <= (others => '0');
             k_r <= (others => '0');
+            k_max_r <= (others => '0');
             
             reversed_r <= (others => '0');
             temp_r <= (others => '0');
             m_r <= (others => '0');
             m2_r <= (others => '0');
+            
+            size_r <= (others => '0');
+            log2s_r <= (others => '0');
 
         -- FFT MEMORY
             --dataRE <= (others => (others => '0'));
@@ -131,11 +135,18 @@ begin
             i_r <= i_n;
             j_r <= j_n;
             k_r <= k_n;
+            k_max_r <= k_max_n;
             
             reversed_r <= reversed_n;
             temp_r <= temp_n;
             m2_r <= m2_n;
             m_r <= m_n;
+            
+            size_r <= size_n;
+            log2s_r <= log2s_n;
+            
+--            dataRE <= dataRE_n;
+--            dataIM <= dataIM_n;
             
         -- BUTTERFLY INTERFACE
             butterfly_start_r <= butterfly_start_n;
@@ -151,6 +162,7 @@ begin
     -- Combinatorial Circuits
     process (state_r, start, butterfly_ready_r, data_rd_i, data_wr_i) begin
     -- Default Assignments
+        state_n <= state_r;     
         
     -- FFT OUTPUT INTERFACE (9 signals)
         data_i_addr_o <= (others => '0');
@@ -162,15 +174,19 @@ begin
         data_wr_o <= '0';
         
         ready <= '0';
-        
+
     -- INNER_SIGNALS
         i_n <= i_r;
         j_n <= j_r;
         k_n <= k_r;
+        k_max_n <= k_max_r;
         m2_n <= m2_r;
         m_n <= m_r;
         reversed_n <= reversed_r;
         temp_n <= temp_r;
+        
+        size_n <= size_r;
+        log2s_n <= log2s_r;
         
     -- BUTTERFLY OUTPUT INTERFACE (5+2 signals)
         butterfly_start_n <= '0';
@@ -180,11 +196,14 @@ begin
         botRE_i_n <= (others => '0');
         botIM_i_n <= (others => '0');
 
+--        dataRE_n <= dataRE;
+--        dataIM_n <= dataIM;
+        
         case state_r is 
             when idle => 
                 ready <= '1';
-                size_r <= size;
-                log2s_r <= log2s;
+                size_n <= size;
+                log2s_n <= log2s;
                 if (start = '1') then
                     state_n <= wait_start_0;
                 end if; 
@@ -237,8 +256,8 @@ begin
                 end if;
                     
             when rd => 
-                dataRE(to_integer(unsigned(j_r))) <= dataRE_i; 
-                dataIM(to_integer(unsigned(j_r))) <= dataIM_i;
+--                dataRE_n(to_integer(unsigned(j_r))) <= dataRE_i; 
+--                dataIM_n(to_integer(unsigned(j_r))) <= dataIM_i;
                 j_n <= STD_LOGIC_VECTOR(unsigned(j_r) + 1);
                 if unsigned(j_n) = unsigned(size_r) then
                     state_n <= main;
@@ -258,7 +277,7 @@ begin
                 
             when l4 =>
                 k_n <= j_r;
-                k_max <= STD_LOGIC_VECTOR(unsigned(size_r) - unsigned(m2_r) - (unsigned(m2_r) - unsigned(j_r) - 1)); 
+                k_max_n <= STD_LOGIC_VECTOR(unsigned(size_r) - unsigned(m2_r) - (unsigned(m2_r) - unsigned(j_r) - 1)); 
                 state_n <= l5;
                 
             when l5 =>
@@ -309,7 +328,7 @@ begin
                 dataRE(to_integer(unsigned(k_r) + unsigned(m2_r))) <= botRE_o_r;
                 dataIM(to_integer(unsigned(k_r) + unsigned(m2_r))) <= botIM_o_r;
                 k_n <= STD_LOGIC_VECTOR(unsigned(k_r) + unsigned(m_r));
-                if (k_n = k_max) then
+                if (k_n = k_max_n) then
                     j_n <= STD_LOGIC_VECTOR(unsigned(j_r) + 1);
                     if (j_n = STD_LOGIC_VECTOR(unsigned(m2_r) - 1)) then
                         i_n <= STD_LOGIC_VECTOR(unsigned(i_r) + 1);
@@ -353,5 +372,12 @@ begin
                 end if;
                 
         end case;
+    end process;
+    
+    rd_mem : process (state_r) is begin
+        if state_r = rd then
+         dataRE_n(to_integer(unsigned(j_r))) <= dataRE_i; 
+         dataIM_n(to_integer(unsigned(j_r))) <= dataIM_i;
+        end if;
     end process;
 end Behavioral;

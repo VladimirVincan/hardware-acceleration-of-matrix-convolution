@@ -96,6 +96,7 @@ begin
            
     -- State and Data Registers
     process (rst, clk) begin
+        
         if rst = '1' then 
         -- INNER SIGNALS & STATES
             state_r <= idle;
@@ -143,11 +144,13 @@ begin
      -- Combinatorial Circuits
     process (state_r, start, fft_ready_r, fft_data_rd_o_r, fft_data_wr_o_r) begin
     -- Default Assignments
-        
+        state_n <= state_r;
+
     -- FFT2 OUTPUT INTERFACE (3 + 4 signals)
         data_i_addr_o <= (others => '0');
         data_o_addr_o <= (others => '0'); 
         data_rd_o <= '0';
+        data_wr_o <= '0';
         -- fft_data_wr_o_r <= '0';
         -- fft_data_rd_o_r <= '0';       
         ready <= '0';
