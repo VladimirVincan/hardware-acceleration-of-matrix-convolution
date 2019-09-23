@@ -15,39 +15,31 @@ class convolution :
 public:
   convolution(sc_core::sc_module_name);
 
-  // generator interface
-  sc_core::sc_in<int> width_in;
-  sc_core::sc_in<int> height_in;
-	sc_core::sc_in<bool> start_in;
-
-  // fft2 interface
-  sc_core::sc_in<int> data_o_addr_i;
-  sc_core::sc_out<double> dataRE_o;
-  sc_core::sc_out<double> dataIM_o;
-  sc_core::sc_in<bool> data_rd_i;
-  sc_core::sc_out<bool> data_rd_o;
-
-  sc_core::sc_out<int> data_i_addr_i;
+  // convolution interface
+  sc_core::sc_out<int> data_o_addr_o;
   sc_core::sc_in<double> dataRE_i;
   sc_core::sc_in<double> dataIM_i;
+  sc_core::sc_out<bool> data_rd_o;
+  sc_core::sc_in<bool> data_rd_i;
+
+  sc_core::sc_out<int> data_i_addr_o;
+  sc_core::sc_out<double> dataRE_o;
+  sc_core::sc_out<double> dataIM_o;
   sc_core::sc_in<bool> data_wr_i;
   sc_core::sc_out<bool> data_wr_o;
 
-  sc_core::sc_out<int> width_o, height_o, log2w_o, log2h_o;
+  sc_core::sc_in<int> width_i, height_i, log2w_i, log2h_i;
 
   sc_core::sc_out<bool> start_fft2;
   sc_core::sc_in<bool> ready_fft2;
 
 protected:
-  void convolve();
+  void transform();
 
   bool start;
   int width, height, log2w, log2h;
 
-  unsigned int addr;
-	sc_time offset;
-  unsigned char buf[CHARS_AMOUNT];
-	tlm_command cmd = TLM_READ_COMMAND;
+  int addr;
   string msg;
 
   enum fsm {

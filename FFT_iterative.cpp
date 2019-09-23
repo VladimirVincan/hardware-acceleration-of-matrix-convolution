@@ -42,7 +42,7 @@ void FFT_complex_iterative(
   double *dataIM
 )
 {
-  for (int i=0; i < log2size; ++i){
+  for (int i=0; i < log2size-1; ++i){
     int m = 1 << (i+1);
     int m2 = 1 << i; // "half of m"
     for (int j=0; j < m2; ++j){
@@ -79,7 +79,6 @@ void FFT2D_complex_iterative(
     max_size = height;
   else
     max_size = width;
-
   double *dataRE = new double [max_size];
   double *dataIM = new double [max_size];
   for (int i=0;i<max_size;++i)
@@ -91,7 +90,7 @@ void FFT2D_complex_iterative(
     for (int j = 0; j < width; ++j){
       int reversed = 0;
       int temp = j;
-      for (int k = 0; k < log2w; ++k){
+      for (int k = 0; k < log2w-1; ++k){
         reversed = reversed << 1;
         reversed = reversed | (temp&1);
         temp = temp >> 1;
@@ -113,7 +112,7 @@ void FFT2D_complex_iterative(
     for (int i=0;i<height; ++i){
       int reversed = 0;
       int temp = i;
-      for (int k = 0; k < log2h; ++k){
+      for (int k = 0; k < log2h-1; ++k){
         reversed = reversed << 1;
         reversed = reversed | (temp&1);
         temp = temp >> 1;
@@ -193,6 +192,19 @@ void matrix_convolution(
       cIM[i][j] = - (aRE[i][j] * bIM[i][j] + aIM[i][j] * bRE[i][j]);
     }
 
+  // printf("aRE=\n");
+  // for (int i = 0; i < height; ++i){
+  //   for (int j = 0; j < width; ++j)
+  //     printf("%.2f ", aRE[i][j]);
+  //   printf("\n");
+  // }
+  // printf("\naIM=\n");
+  // for (int i = 0; i < height; ++i){
+  //   for (int j = 0; j < width; ++j)
+  //     printf("%.2f ", aIM[i][j]);
+  //   printf("\n");
+  // }
+
   FFT2D_complex_iterative(
     height, log2h,
     width, log2w,
@@ -206,18 +218,21 @@ void matrix_convolution(
 
 namespace {
 extern "C" {
-#ifdef PYTHON3_MODULE
+#ifndef PYTHON3_MODULE
 int main(){
-  int n = 4;
-  int height = 4, width = 4;
-  initTwiddle(4);
+  // 4,3; 8,4; 16,5; 32,6; 64,7; ....
+  int n = 8, height = 8, width = 8;
+  n = height = width = 128;
+  int log2h, log2w;
+  log2h = log2w = 8;
+  initTwiddle(n);
 
   double **a;
   alloc_matrix(height, width, &a);
   for (int i=0;i<height;++i)
     for (int j=0;j<width;++j)
       a[i][j] = 0;
-  a[3][3] = 1;
+  a[0][0] = 1;
 
   double **b;
   alloc_matrix(height, width, &b);
@@ -235,26 +250,26 @@ int main(){
     for (int j=0;j<width;++j)
       c[i][j] = 0;
 
-  matrix_convolution(n,n,2,2,a,b,c);
+  matrix_convolution(n,n,log2w,log2h,a,b,c);
 
-  printf("a=\n");
-  for (int i = 0; i < height; ++i){
-    for (int j = 0; j < width; ++j)
-      printf("%.2f ", a[i][j]);
-    printf("\n");
-  }
-  printf("\nb=\n");
-  for (int i = 0; i < height; ++i){
-    for (int j = 0; j < width; ++j)
-      printf("%.2f ", b[i][j]);
-    printf("\n");
-  }
-  printf("\nc=\n");
-  for (int i = 0; i < height; ++i){
-    for (int j = 0; j < width; ++j)
-      printf("%.2f ", c[i][j]);
-    printf("\n");
-  }
+  // printf("a=\n");
+  // for (int i = 0; i < height; ++i){
+  //   for (int j = 0; j < width; ++j)
+  //     printf("%.2f ", a[i][j]);
+  //   printf("\n");
+  // }
+  // printf("\nb=\n");
+  // for (int i = 0; i < height; ++i){
+  //   for (int j = 0; j < width; ++j)
+  //     printf("%.2f ", b[i][j]);
+  //   printf("\n");
+  // }
+  // printf("\nc=\n");
+  // for (int i = 0; i < height; ++i){
+  //   for (int j = 0; j < width; ++j)
+  //     printf("%.2f ", c[i][j]);
+  //   printf("\n");
+  // }
 
   return 0;
 }

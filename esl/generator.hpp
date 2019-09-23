@@ -9,6 +9,8 @@
 
 using namespace std;
 using namespace sc_dt;
+using namespace tlm;
+using namespace sc_core;
 
 
 /*

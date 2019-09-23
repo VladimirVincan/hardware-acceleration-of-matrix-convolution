@@ -116,6 +116,9 @@ void generator::gen()
   height->write(8);
   width->write(8);
   start->write(true);
+
+  wait(sc_time(3,SC_NS));
+  start->write(false);
 }
 
 tlm_sync_enum generator::nb_transport_bw(pl_t& pl, phase_t& phase, sc_time& offset)
