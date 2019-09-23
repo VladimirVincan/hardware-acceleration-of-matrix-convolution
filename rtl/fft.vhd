@@ -53,8 +53,8 @@ architecture Behavioral of fft is
 -- FFT MEMORY
     subtype rom_word_t is std_logic_vector (WIDTH-1 downto 0);
     type rom_t is array (0 to FFT_SIZE-1) of rom_word_t;
-    signal dataRE, dataRE_n : rom_t := (others => (others => '0'));
-    signal dataIM, dataIM_n : rom_t := (others => (others => '0'));
+    signal dataRE : rom_t := (others => (others => '0'));
+    signal dataIM : rom_t := (others => (others => '0'));
 
 -- BUTTERFLY INTERFACE
     signal butterfly_start_r, butterfly_start_n : STD_LOGIC := '0';
@@ -256,8 +256,8 @@ begin
                 end if;
                     
             when rd => 
---                dataRE_n(to_integer(unsigned(j_r))) <= dataRE_i; 
---                dataIM_n(to_integer(unsigned(j_r))) <= dataIM_i;
+                dataRE(to_integer(unsigned(j_r))) <= dataRE_i; 
+                dataIM(to_integer(unsigned(j_r))) <= dataIM_i;
                 j_n <= STD_LOGIC_VECTOR(unsigned(j_r) + 1);
                 if unsigned(j_n) = unsigned(size_r) then
                     state_n <= main;
@@ -374,10 +374,10 @@ begin
         end case;
     end process;
     
-    rd_mem : process (state_r) is begin
-        if state_r = rd then
-         dataRE_n(to_integer(unsigned(j_r))) <= dataRE_i; 
-         dataIM_n(to_integer(unsigned(j_r))) <= dataIM_i;
-        end if;
-    end process;
+--    rd_mem : process (state_r) is begin
+--        if state_r = rd then
+--         dataRE_n(to_integer(unsigned(j_r))) <= dataRE_i; 
+--         dataIM_n(to_integer(unsigned(j_r))) <= dataIM_i;
+--        end if;
+--    end process;
 end Behavioral;
