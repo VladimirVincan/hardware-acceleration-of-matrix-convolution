@@ -64,26 +64,48 @@ architecture Behavioral of butterfly is
     signal wCOS : rom_t := init_twiddle_real;
     signal wSIN : rom_t := init_twiddle_imag;
     
-    signal botRE_r, botRE_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
-    signal botIM_r, botIM_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
+    signal sumRE_r, sumRE_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0) := (others => '0');
+    signal sumIM_r, sumIM_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0) := (others => '0');
     
     signal mult1_r, mult2_r, mult3_r, mult4_r : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
     signal mult1_n, mult2_n, mult3_n, mult4_n : STD_LOGIC_VECTOR (2*WIDTH-1 downto 0);
     
-    type state_t is (init, idle, state1, state2, state3);
+    signal topRE_o_n, topIM_o_n, bottomRE_o_n, bottomIM_o_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0) := (others => '0');
+    signal topRE_o_r, topIM_o_r, bottomRE_o_r, bottomIM_o_r : STD_LOGIC_VECTOR (WIDTH-1 downto 0) := (others => '0');
+    
+    signal topRE_i_n, topIM_i_n, bottomRE_i_n, bottomIM_i_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0) := (others => '0');
+    signal topRE_i_r, topIM_i_r, bottomRE_i_r, bottomIM_i_r : STD_LOGIC_VECTOR (WIDTH-1 downto 0) := (others => '0');
+    
+    signal k_r, k_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE/2)-1 downto 0) := (others => '0');
+    signal size_r, size_n : STD_LOGIC_VECTOR (log2c(log2c(FFT_SIZE))-1 downto 0) := (others => '0');
+    
+    type state_t is (idle, state1, state2, state3);
     signal state_r, state_n : state_t;
     
 begin
     -- State and Data Registers
     process (rst, clk) begin
         if rst = '1' then 
-            state_r <= init;
+            state_r <= idle;
             mult1_r <= (others => '0');
             mult2_r <= (others => '0');
             mult3_r <= (others => '0');
             mult4_r <= (others => '0');
-            botRE_r <= (others => '0');
-            botIM_r <= (others => '0');
+            sumRE_r <= (others => '0');
+            sumIM_r <= (others => '0');
+            
+            topRE_i_r <= (others => '0');
+            topIM_i_r <= (others => '0');
+            bottomRE_i_r <= (others => '0');
+            bottomIM_i_r <= (others => '0');
+            
+            topRE_o_r <= (others => '0');
+            topIM_o_r <= (others => '0');
+            bottomRE_o_r <= (others => '0');
+            bottomIM_o_r <= (others => '0');
+            
+            k_r <= (others => '0');
+            size_r <= (others => '0');
             
         elsif (clk'event and clk = '1') then
             state_r <= state_n;
@@ -91,71 +113,95 @@ begin
             mult2_r <= mult2_n (WIDTH + FIXED_POINT_WIDTH - 1 downto WIDTH - FIXED_POINT_WIDTH);
             mult3_r <= mult3_n (WIDTH + FIXED_POINT_WIDTH - 1 downto WIDTH - FIXED_POINT_WIDTH);
             mult4_r <= mult4_n (WIDTH + FIXED_POINT_WIDTH - 1 downto WIDTH - FIXED_POINT_WIDTH);
-            botRE_r <= botRE_n;
-            botIM_r <= botIM_n;
+            sumRE_r <= sumRE_n;
+            sumIM_r <= sumIM_n;
+            
+            topRE_i_r <= topRE_i_n;
+            topIM_i_r <= topIM_i_n;
+            bottomRE_i_r <= bottomRE_i_n;
+            bottomIM_i_r <= bottomIM_i_n;
+            
+            topRE_o_r <= topRE_o_n;
+            topIM_o_r <= topIM_o_n;
+            bottomRE_o_r <= bottomRE_o_n;
+            bottomIM_o_r <= bottomIM_o_n;
+            
+            k_r <= k_n;
+            size_r <= size_n;
         end if;
      end process;
         
    -- Combinatorial Circuits
    process (state_r, start) begin
        -- Default Assignments
-       state_n <= state_r;
-       botRE_n <= botRE_r;
-       botIM_n <= botIM_r;
-       
        state_n <= idle;
        mult1_n <= (others => '0');
        mult2_n <= (others => '0');
        mult3_n <= (others => '0');
        mult4_n <= (others => '0');
-        
-       topRE_o <= (others => '0');
-       topIM_o <= (others => '0');
-       bottomRE_o <= (others => '0');
-       bottomIM_o <= (others => '0');
        ready <= '0';  
+              
+       sumRE_n <= sumRE_r;
+       sumIM_n <= sumIM_r;
+       
+       topRE_i_n <= topRE_i_r;
+       topIM_i_n <= topIM_i_r;
+       bottomRE_i_n <= bottomRE_i_r;
+       bottomIM_i_n <= bottomIM_i_r;
+
+       topRE_o_n <= topRE_o_r;
+       topIM_o_n <= topIM_o_r;
+       bottomRE_o_n <= bottomRE_o_r;
+       bottomIM_o_n <= bottomIM_o_r;
+       
+       k_n <= k_r;
+       size_n <= size_r;
 
        case state_r is 
-           when init => 
-                state_n <= idle;
-                mult1_n <= (others => '0');
-                mult2_n <= (others => '0');
-                mult3_n <= (others => '0');
-                mult4_n <= (others => '0');
-       
-                topRE_o <= (others => '0');
-                topIM_o <= (others => '0');
-                bottomRE_o <= (others => '0');
-                bottomIM_o <= (others => '0');
-                ready <= '0';   
            when idle => 
                ready <= '1';
+               
+               topRE_i_n <= topRE_i;
+               topIM_i_n <= topIM_i;
+               bottomRE_i_n <= bottomRE_i;
+               bottomIM_i_n <= bottomIM_i;
+               k_n <= k;
+               size_n <= size;
+               
                if (start = '1') then
                    state_n <= state1;
                end if;
            when state1 => 
                ready <= '0';
                if (start = '0') then
-                   mult1_n <= std_logic_vector(signed(bottomRE_i) 
+                   mult1_n <= std_logic_vector(signed(bottomRE_i_r) 
                                              * signed(wCOS(to_integer(unsigned(k)),to_integer(unsigned(size)))));
-                   mult2_n <= std_logic_vector(signed(bottomIM_i) 
+                   mult2_n <= std_logic_vector(signed(bottomIM_i_r) 
                                              * signed(wSIN(to_integer(unsigned(k)),to_integer(unsigned(size)))));
-                   mult3_n <= std_logic_vector(signed(bottomRE_i) 
+                   mult3_n <= std_logic_vector(signed(bottomRE_i_r) 
                                              * signed(wSIN(to_integer(unsigned(k)),to_integer(unsigned(size)))));
-                   mult4_n <= std_logic_vector(signed(bottomIM_i) 
+                   mult4_n <= std_logic_vector(signed(bottomIM_i_r) 
                                              * signed(wCOS(to_integer(unsigned(k)),to_integer(unsigned(size)))));
                    state_n <= state2;
+               else 
+                   state_n <= state1;
                end if;
            when state2 =>
-               botRE_n <= std_logic_vector(signed(mult1_r) - signed(mult2_r));
-               botIM_n <= std_logic_vector(signed(mult3_r) + signed(mult4_r));
+               sumRE_n <= std_logic_vector(signed(mult1_r) - signed(mult2_r));
+               sumIM_n <= std_logic_vector(signed(mult3_r) + signed(mult4_r));
                state_n <= state3;
            when state3 =>
-               topRE_o <= std_logic_vector(signed(topRE_i) + signed(botRE_r));
-               topIM_o <= std_logic_vector(signed(topIM_i) + signed(botIM_r));
-               bottomRE_o <= std_logic_vector(signed(topRE_i) - signed(botRE_r));
-               bottomIM_o <= std_logic_vector(signed(topIM_i) - signed(botIM_r));
+               topRE_o_n <= std_logic_vector(signed(topRE_i_r) + signed(sumRE_r));
+               topIM_o_n <= std_logic_vector(signed(topIM_i_r) + signed(sumIM_r));
+               bottomRE_o_n <= std_logic_vector(signed(topRE_i_r) - signed(sumRE_r));
+               bottomIM_o_n <= std_logic_vector(signed(topIM_i_r) - signed(sumIM_r));
                state_n <= idle;
          end case;
    end process;
+   
+   topRE_o <= topRE_o_r;
+   topIM_o <= topIM_o_r;
+   bottomRE_o <= bottomRE_o_r;
+   bottomIM_o <= bottomIM_o_r;
+   
 end Behavioral;

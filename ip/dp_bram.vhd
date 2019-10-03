@@ -9,8 +9,7 @@ entity dp_bram is
         FFT_SIZE : integer := 8
     );
     port (
-        ckla : in std_logic;
-        clkb : in std_logic;
+        clk : in std_logic;
         
         ena : in std_logic;
         enb : in std_logic;
@@ -46,13 +45,13 @@ architecture beh of dp_bram is
     
 begin
 
-    process(ckla, clkb)
+    process(clk)
     begin
-        if ckla'event and ckla = '1' then
+        if clk'event and clk = '1' then
             rda_o <= '0';
             wra_o <= '0';
+            doa <= RAM(conv_integer(addra));
             if ena = '1' then
-                doa <= RAM(conv_integer(addra));
                 if rda_i = '1' then
                     rda_o <= '1';
                 elsif wra_i = '1' then
@@ -62,20 +61,18 @@ begin
 --                    doa <= (others => '0');
                 end if;
             end if;
-        --end if;
 
-        --if clkb'event and clkb = '1' then
---            rdb_o <= '0';
---            wrb_o <= '0';
+            rdb_o <= '0';
+            wrb_o <= '0';
+            dob <= RAM(conv_integer(addrb_rd));
             if enb = '1' then
                 if rdb_i = '1' then
-                    dob <= RAM(conv_integer(addrb_rd));
                     rdb_o <= '1';
-                    wrb_o <= '0';
+                    --wrb_o <= '0';
                 elsif wrb_i = '1' then
                     RAM(conv_integer(addrb_wr)) <= dib;
                     wrb_o <= '1';
-                    rdb_o <= '0';
+                    --rdb_o <= '0';
 --                else
 --                    dob <= (others => '0');
                 end if;

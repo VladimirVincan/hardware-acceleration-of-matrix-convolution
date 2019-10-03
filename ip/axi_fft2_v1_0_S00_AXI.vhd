@@ -20,12 +20,16 @@ entity axi_fft2_v1_0_S00_AXI is
 	);
 	port (
 		-- Users to add ports here
-        reg_data_o : out std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
+        --reg_data_o : out std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
+        reg_data_o : out std_logic_vector(maxc(DATA_WIDTH,log2c(FFT_SIZE*FFT_SIZE))-1 downto 0);
         log2w_wr_o : out std_logic;
         width_wr_o : out std_logic;
         log2h_wr_o : out std_logic;
         height_wr_o : out std_logic;
         cmd_wr_o : out std_logic;
+        addr_wr_o : out std_logic;
+        dataRE_wr_o : out std_logic;
+        dataIM_wr_o : out std_logic;
         
         log2w_axi_i : in std_logic_vector(log2c(log2c(FFT_SIZE))-1 downto 0);
         width_axi_i : in std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
@@ -33,6 +37,9 @@ entity axi_fft2_v1_0_S00_AXI is
         height_axi_i : in std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
         cmd_axi_i : in std_logic;
         status_axi_i : in std_logic;
+		addr_axi_i : in std_logic_vector(log2c(FFT_SIZE*FFT_SIZE)-1 downto 0);
+        dataRE_axi_i : in std_logic_vector(DATA_WIDTH-1 downto 0);
+        dataIM_axi_i : in std_logic_vector(DATA_WIDTH-1 downto 0);
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -123,17 +130,6 @@ architecture arch_imp of axi_fft2_v1_0_S00_AXI is
 	------------------------------------------------
 	---- Signals for user logic register space example
 	--------------------------------------------------
-	---- Number of Slave Registers 10
---	signal slv_reg0	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
---	signal slv_reg1	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
---	signal slv_reg2	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
---	signal slv_reg3	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
---	signal slv_reg4	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
---	signal slv_reg5	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
---	signal slv_reg6	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
---	signal slv_reg7	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
---	signal slv_reg8	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
---	signal slv_reg9	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
 	signal slv_reg_rden	: std_logic;
 	signal slv_reg_wren	: std_logic;
 	signal reg_data_out	:std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0);
@@ -241,122 +237,42 @@ begin
             log2h_wr_o <= '0';
             height_wr_o <= '0';
             cmd_wr_o <= '0';
---	      slv_reg0 <= (others => '0');
---	      slv_reg1 <= (others => '0');
---	      slv_reg2 <= (others => '0');
---	      slv_reg3 <= (others => '0');
---	      slv_reg4 <= (others => '0');
---	      slv_reg5 <= (others => '0');
---	      slv_reg6 <= (others => '0');
---	      slv_reg7 <= (others => '0');
---	      slv_reg8 <= (others => '0');
---	      slv_reg9 <= (others => '0');
+            addr_wr_o <= '0';
+            dataRE_wr_o <= '0';
+            dataIM_wr_o <= '0';
 	    else
 	      log2w_wr_o <= '0';
           width_wr_o <= '0';
           log2h_wr_o <= '0';
           height_wr_o <= '0';
           cmd_wr_o <= '0';
+          addr_wr_o <= '0';
+          dataRE_wr_o <= '0';
+          dataIM_wr_o <= '0';
             
-	      loc_addr := axi_awaddr(ADDR_LSB + OPT_MEM_ADDR_BITS downto ADDR_LSB);
+	      --loc_addr := axi_awaddr(ADDR_LSB + OPT_MEM_ADDR_BITS downto ADDR_LSB);
 	      if (slv_reg_wren = '1') then
-	        case loc_addr is
+	        case axi_awaddr(ADDR_LSB + OPT_MEM_ADDR_BITS downto ADDR_LSB) is
 	          when b"0000" =>
---	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
---	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
---	                -- Respective byte enables are asserted as per write strobes                   
---	                -- slave registor 0
---	                slv_reg0(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
---	              end if;
---	            end loop;
                 log2w_wr_o <= '1';
 	          when b"0001" =>
---	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
---	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
---	                -- Respective byte enables are asserted as per write strobes                   
---	                -- slave registor 1
---	                slv_reg1(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
---	              end if;
---	            end loop;
                 width_wr_o <= '1';
 	          when b"0010" =>
---	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
---	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
---	                -- Respective byte enables are asserted as per write strobes                   
---	                -- slave registor 2
---	                slv_reg2(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
---	              end if;
---	            end loop;
                 log2h_wr_o <= '1';
 	          when b"0011" =>
---	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
---	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
---	                -- Respective byte enables are asserted as per write strobes                   
---	                -- slave registor 3
---	                slv_reg3(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
---	              end if;
---	            end loop;
                 height_wr_o <= '1';
 	          when b"0100" =>
---	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
---	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
---	                -- Respective byte enables are asserted as per write strobes                   
---	                -- slave registor 4
---	                slv_reg4(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
---	              end if;
---	            end loop;
                 cmd_wr_o <= '1';
---	          when b"0101" =>
---	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
---	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
---	                -- Respective byte enables are asserted as per write strobes                   
---	                -- slave registor 5
---	                slv_reg5(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
---	              end if;
---	            end loop;
---	          when b"0110" =>
---	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
---	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
---	                -- Respective byte enables are asserted as per write strobes                   
---	                -- slave registor 6
---	                slv_reg6(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
---	              end if;
---	            end loop;
---	          when b"0111" =>
---	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
---	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
---	                -- Respective byte enables are asserted as per write strobes                   
---	                -- slave registor 7
---	                slv_reg7(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
---	              end if;
---	            end loop;
+	          --when b"0101" =>
+	          when b"0110" =>
+                addr_wr_o <= '1';
+	          when b"0111" =>
+	            dataRE_wr_o <= '1';
+	          when b"1000" =>
+	            dataIM_wr_o <= '1';
 --	          when b"1000" =>
---	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
---	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
---	                -- Respective byte enables are asserted as per write strobes                   
---	                -- slave registor 8
---	                slv_reg8(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
---	              end if;
---	            end loop;
 --	          when b"1001" =>
---	            for byte_index in 0 to (C_S_AXI_DATA_WIDTH/8-1) loop
---	              if ( S_AXI_WSTRB(byte_index) = '1' ) then
---	                -- Respective byte enables are asserted as per write strobes                   
---	                -- slave registor 9
---	                slv_reg9(byte_index*8+7 downto byte_index*8) <= S_AXI_WDATA(byte_index*8+7 downto byte_index*8);
---	              end if;
---	            end loop;
 	          when others =>
---	            slv_reg0 <= slv_reg0;
---	            slv_reg1 <= slv_reg1;
---	            slv_reg2 <= slv_reg2;
---	            slv_reg3 <= slv_reg3;
---	            slv_reg4 <= slv_reg4;
---	            slv_reg5 <= slv_reg5;
---	            slv_reg6 <= slv_reg6;
---	            slv_reg7 <= slv_reg7;
---	            slv_reg8 <= slv_reg8;
---	            slv_reg9 <= slv_reg9;
 	        end case;
 	      end if;
 	    end if;
@@ -444,7 +360,6 @@ begin
 	-- and the slave is ready to accept the read address.
 	slv_reg_rden <= axi_arready and S_AXI_ARVALID and (not axi_rvalid) ;
 
---	process (slv_reg0, slv_reg1, slv_reg2, slv_reg3, slv_reg4, slv_reg5, slv_reg6, slv_reg7, slv_reg8, slv_reg9, axi_araddr, S_AXI_ARESETN, slv_reg_rden)
 	process (log2w_axi_i, width_axi_i, log2h_axi_i, height_axi_i, cmd_axi_i, status_axi_i, axi_araddr, S_AXI_ARESETN, slv_reg_rden)
 	variable loc_addr :std_logic_vector(OPT_MEM_ADDR_BITS downto 0);
 	begin
@@ -452,31 +367,23 @@ begin
 	    loc_addr := axi_araddr(ADDR_LSB + OPT_MEM_ADDR_BITS downto ADDR_LSB);
 	    case loc_addr is
 	      when b"0000" =>
---	        reg_data_out <= slv_reg0;
-            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(log2c(FFT_SIZE)))&log2w_axi_i;
+            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(log2c(FFT_SIZE))) & log2w_axi_i;
 	      when b"0001" =>
---	        reg_data_out <= slv_reg1;
-            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE))&width_axi_i;
+            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE)) & width_axi_i;
 	      when b"0010" =>
---	        reg_data_out <= slv_reg2;
-            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(log2c(FFT_SIZE)))&log2h_axi_i;
+            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(log2c(FFT_SIZE))) & log2h_axi_i;
 	      when b"0011" =>
---	        reg_data_out <= slv_reg3;
-            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE))&height_axi_i;
+            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE)) & height_axi_i;
 	      when b"0100" =>
---	        reg_data_out <= slv_reg4;
-            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-1)&cmd_axi_i;
+            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-1) & cmd_axi_i;
 	      when b"0101" =>
---	        reg_data_out <= slv_reg5;
-            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-1)&status_axi_i;
---	      when b"0110" =>
---	        reg_data_out <= slv_reg6;
---	      when b"0111" =>
---	        reg_data_out <= slv_reg7;
---	      when b"1000" =>
---	        reg_data_out <= slv_reg8;
---	      when b"1001" =>
---	        reg_data_out <= slv_reg9;
+            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-1) & status_axi_i;
+	      when b"0110" =>
+	        reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE*FFT_SIZE)) & addr_axi_i;
+	      when b"0111" =>
+	        reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-DATA_WIDTH) & dataRE_axi_i;
+	      when b"1000" =>
+	        reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-DATA_WIDTH) & dataIM_axi_i;
 	      when others =>
 	        reg_data_out  <= (others => '0');
 	    end case;
@@ -505,7 +412,7 @@ begin
     process (S_AXI_ACLK)
     begin
         if (S_AXI_ACLK'event and S_AXI_ACLK = '1') then
-            reg_data_o <= S_AXI_WDATA(log2c(FFT_SIZE)-1 downto 0);
+            reg_data_o <= S_AXI_WDATA(maxc(DATA_WIDTH,log2c(FFT_SIZE*FFT_SIZE))-1 downto 0);
         end if;
     end process;
 	-- User logic ends

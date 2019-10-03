@@ -13,12 +13,16 @@ entity mem_subsystem is
         reset : in std_logic;
         
         -- Interface to the AXI controllers
-        reg_data_i : in std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
+        reg_data_i : in std_logic_vector(maxc(log2c(FFT_SIZE*FFT_SIZE),DATA_WIDTH)-1 downto 0);
         log2w_wr_i : in std_logic;
         width_wr_i : in std_logic;
         log2h_wr_i : in std_logic;
         height_wr_i : in std_logic;
         cmd_wr_i : in std_logic;
+        
+        addr_wr_i : in std_logic;
+        dataRE_wr_i : in std_logic;
+        dataIM_wr_i : in std_logic;
         
         log2w_axi_o : out std_logic_vector(log2c(log2c(FFT_SIZE))-1 downto 0);
         width_axi_o : out std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
@@ -27,12 +31,16 @@ entity mem_subsystem is
         cmd_axi_o : out std_logic;
         status_axi_o : out std_logic;
         
-        mem_addr_i : in std_logic_vector(log2c(FFT_SIZE*FFT_SIZE) downto 0); -- +1 for RE and IM
-        mem_data_i : in std_logic_vector(DATA_WIDTH-1 downto 0);
-        mem_wr_i : in std_logic;
+        addr_axi_o : out std_logic_vector(log2c(FFT_SIZE*FFT_SIZE)-1 downto 0);
+        dataRE_axi_o : out std_logic_vector(DATA_WIDTH-1 downto 0);
+        dataIM_axi_o : out std_logic_vector(DATA_WIDTH-1 downto 0);
         
-        mem_re_axi_data_o : out std_logic_vector(DATA_WIDTH-1 downto 0);
-        mem_im_axi_data_o : out std_logic_vector(DATA_WIDTH-1 downto 0);
+--        mem_addr_i : in std_logic_vector(log2c(FFT_SIZE*FFT_SIZE) downto 0); -- +1 for RE and IM
+--        mem_data_i : in std_logic_vector(DATA_WIDTH-1 downto 0);
+--        mem_wr_i : in std_logic;
+        
+--        mem_re_axi_data_o : out std_logic_vector(DATA_WIDTH-1 downto 0);
+--        mem_im_axi_data_o : out std_logic_vector(DATA_WIDTH-1 downto 0);
         
         -- Interface to the fft2 module
         log2w_o : out std_logic_vector(log2c(log2c(FFT_SIZE))-1 downto 0);
@@ -63,12 +71,14 @@ architecture struct of mem_subsystem is
     signal cmd_s, status_s: std_logic;
     
     --signal rd_i_s, rd_o_s, wr_i_s, wr_o_s: std_logic;
-    signal en_re_s, en_im_s : std_logic;
-    signal rd_re_s, rd_im_s, wr_re_s, wr_im_s : std_logic;
-    signal rd_and_s, wr_and_s : std_logic;
+--    signal en_re_s, en_im_s : std_logic;
+--    signal rd_re_s, rd_im_s, wr_re_s, wr_im_s : std_logic;
+--    signal rd_and_s, wr_and_s : std_logic;
     
     signal mem_data_wr_re_o, mem_data_wr_im_o : std_logic;
     signal mem_data_rd_re_o, mem_data_rd_im_o : std_logic;
+
+    signal addr_s : std_logic_vector(log2c(FFT_SIZE*FFT_SIZE)-1 downto 0);
     
 begin
 
@@ -84,6 +94,7 @@ begin
     height_axi_o <= height_s;
     cmd_axi_o <= cmd_s;
     status_axi_o <= status_s;
+    addr_axi_o <= addr_s;
     
     -- log2w register
     process(clk)
@@ -104,7 +115,7 @@ begin
             if reset = '1' then
                 width_s <= (others => '0');
             elsif width_wr_i = '1' then
-                width_s <= reg_data_i;
+                width_s <= reg_data_i(log2c(FFT_SIZE)-1 downto 0);
             end if;
         end if;
     end process;
@@ -128,7 +139,7 @@ begin
             if reset = '1' then
                 height_s <= (others => '0');
             elsif height_wr_i = '1' then
-                height_s <= reg_data_i;
+                height_s <= reg_data_i(log2c(FFT_SIZE)-1 downto 0);
             end if;
         end if;
     end process;
@@ -155,26 +166,39 @@ begin
                 status_s <= ready_i;
             end if;
         end if;
-    end process
-    ;
-    ---------------------- MEMORIES ----------------------
-    -- Address decoder
-    addr_dec: process (mem_addr_i)
-    begin
-        mem_data_wr_o <= mem_data_wr_re_o and mem_data_wr_im_o;
-        mem_data_rd_o <= mem_data_rd_re_o and mem_data_rd_im_o;
-        -- Default assignments
-        en_re_s <= '0';
-        en_im_s <= '0';
-        case mem_addr_i(log2c(FFT_SIZE*FFT_SIZE)) is
-            when '0' =>
-                en_re_s <= '1';
-            when others =>
-                en_im_s <= '1';
-        end case;
     end process;
     
+    -- ADDR register
+    process(clk)
+    begin
+        if clk'event and clk = '1' then
+            if reset = '1' then
+                addr_s <= (others => '0');
+            elsif addr_wr_i = '1' then
+                addr_s <= reg_data_i (log2c(FFT_SIZE*FFT_SIZE)-1 downto 0);
+            end if;
+        end if;
+    end process;
     
+    ---------------------- MEMORIES ----------------------
+--     Address decoder
+--    addr_dec: process (mem_addr_i)
+--    begin
+--        mem_data_wr_o <= mem_data_wr_re_o and mem_data_wr_im_o;
+--        mem_data_rd_o <= mem_data_rd_re_o and mem_data_rd_im_o;
+--        -- Default assignments
+--        en_re_s <= '0';
+--        en_im_s <= '0';
+--        case mem_addr_i(log2c(FFT_SIZE*FFT_SIZE)) is
+--            when '0' =>
+--                en_re_s <= '1';
+--            when others =>
+--                en_im_s <= '1';
+--        end case;
+--    end process;
+    
+    mem_data_wr_o <= mem_data_wr_re_o and mem_data_wr_im_o;
+    mem_data_rd_o <= mem_data_rd_re_o and mem_data_rd_im_o;
     
     -- Memory for storing the elements of RE values
     re_memory: entity work.dp_bram(beh)
@@ -185,17 +209,17 @@ begin
         )
         port map
         (
-            ckla => clk,
-            ena => en_re_s,
-            wra_i => mem_wr_i,
+            clk => clk,
+            
+            ena => dataRE_wr_i,
+            wra_i => dataRE_wr_i,
             wra_o => open,
             rda_i => '0',
             rda_o => open,
-            addra => mem_addr_i(log2c(FFT_SIZE*FFT_SIZE)-1 downto 0),
-            dia => mem_data_i(DATA_WIDTH-1 downto 0),
-            doa => mem_re_axi_data_o,
+            addra => addr_s,
+            dia => reg_data_i(DATA_WIDTH-1 downto 0),
+            doa => dataRE_axi_o, --open, --mem_re_axi_data_o,
             
-            clkb => clk,
             enb => '1',
             wrb_i => mem_data_wr_i,
             wrb_o => mem_data_wr_re_o,
@@ -214,17 +238,17 @@ begin
             FFT_SIZE => FFT_SIZE
         )
         port map (
-            ckla => clk,
-            ena => en_im_s,
-            wra_i => mem_wr_i,
+            clk => clk,
+            
+            ena => dataIM_wr_i,
+            wra_i => dataIM_wr_i,
             wra_o => open,
             rda_i => '0',
             rda_o => open,
-            addra => mem_addr_i(log2c(FFT_SIZE*FFT_SIZE)-1 downto 0),
-            dia => mem_data_i(DATA_WIDTH-1 downto 0),
-            doa => mem_im_axi_data_o,
+            addra => addr_s,
+            dia => reg_data_i(DATA_WIDTH-1 downto 0),
+            doa => dataIM_axi_o, --open, --mem_im_axi_data_o,
             
-            clkb => clk,
             enb => '1',
             wrb_i => mem_data_wr_i,
             wrb_o => mem_data_wr_im_o,

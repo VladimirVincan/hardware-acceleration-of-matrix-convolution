@@ -83,7 +83,7 @@ begin
     
     stim_proc: process begin
         rst <= '1';
-        wait for 100ns;
+        wait for 300ns;
         rst <= '0';
         if ready /= '1' then
             wait until ready = '1';
