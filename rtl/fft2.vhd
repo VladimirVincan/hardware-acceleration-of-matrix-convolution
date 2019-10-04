@@ -97,47 +97,47 @@ begin
     -- State and Data Registers
     process (rst, clk) begin
         
-        if rst = '1' then 
-        -- INNER SIGNALS & STATES
-            state_r <= idle;
-            
-            i_r <= '0';
-            j_r <= (others => '0');
-            
-            log2w_r <= (others => '0');
-            width_r <= (others => '0');
-            
-            log2h_r <= (others => '0');
-            height_r <= (others => '0');
-            
-        -- FFT INTERFACE
-            fft_start_r <= '0';
-            
-            log2s_r <= (others => '0');
-            size_r <= (others => '0');
-            
-            -- fft_data_i_addr_o_r <= (others => '0');
-            -- fft_data_o_addr_o_r <= (others => '0');
-                           
-        elsif (clk'event and clk = '1') then
-        -- INNER SIGNALS
-            state_r <= state_n;
-                                    
-            i_r <= i_n;
-            j_r <= j_n;
-            
-            log2w_r <= log2w_n;
-            width_r <= width_n;
-            
-            log2h_r <= log2h_n;
-            height_r <= height_n;
-            
-        -- FFT INTERFACE
-            fft_start_r <= fft_start_n;
-            
-            log2s_r <= log2s_n;
-            size_r <= size_n;
-
+        if (clk'event and clk = '1') then
+            if rst = '1' then 
+            -- INNER SIGNALS & STATES
+                state_r <= idle;
+                
+                i_r <= '0';
+                j_r <= (others => '0');
+                
+                log2w_r <= (others => '0');
+                width_r <= (others => '0');
+                
+                log2h_r <= (others => '0');
+                height_r <= (others => '0');
+                
+            -- FFT INTERFACE
+                fft_start_r <= '0';
+                
+                log2s_r <= (others => '0');
+                size_r <= (others => '0');
+                
+                -- fft_data_i_addr_o_r <= (others => '0');
+                -- fft_data_o_addr_o_r <= (others => '0');
+             else                  
+            -- INNER SIGNALS
+                state_r <= state_n;
+                                        
+                i_r <= i_n;
+                j_r <= j_n;
+                
+                log2w_r <= log2w_n;
+                width_r <= width_n;
+                
+                log2h_r <= log2h_n;
+                height_r <= height_n;
+                
+            -- FFT INTERFACE
+                fft_start_r <= fft_start_n;
+                
+                log2s_r <= log2s_n;
+                size_r <= size_n;
+            end if;
         end if;
      end process;
      

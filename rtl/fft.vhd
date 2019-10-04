@@ -126,125 +126,126 @@ begin
 
     -- State and Data Registers
     process (rst, clk) begin
-        if rst = '1' then 
-        -- INNER SIGNALS & STATES
-            state_r <= idle;
-            
-            i_r <= (others => '0');
-            j_r <= (others => '0');
-            k_r <= (others => '0');
-            k_max_r <= (others => '0');
-            
-            reversed_r <= (others => '0');
-            temp_r <= (others => '0');
-            m_r <= (others => '0');
-            m2_r <= (others => '0');
-            
---            addr_r <= (others => '0');
---            dataRE_r <= (others => '0');
---            dataIM_r <= (others => '0');
---            wr_r <= '0';
---            rd_r <= '0';
-
-        -- FFT MEMORY
-            dataRE <= (others => (others => '0'));
-            dataIM <= (others => (others => '0'));
-            
-        -- BUTTERFLY INTERFACE
-            butterfly_start_r <= '0';
-            butterfly_ready_r <= '0';
-            
-            topRE_i_r <= (others => '0');
-            topIM_i_r <= (others => '0');
-            botRE_i_r <= (others => '0');
-            botIM_i_r <= (others => '0');
-            
-            topRE_o_r <= (others => '0');
-            topIM_o_r <= (others => '0');
-            botRE_o_r <= (others => '0');
-            botIM_o_r <= (others => '0');
-            
-        -- FFT INTERFACE
-            data_i_addr_o_r <= (others => '0');
-            dataRE_i_r <= (others => '0');
-            dataIM_i_r <= (others => '0');
-            data_rd_o_r <= '0';
-            data_rd_i_r <= '0';
-            
-            data_o_addr_o_r <= (others => '0');
-            dataRE_o_r <= (others => '0');
-            dataIM_o_r <= (others => '0');
-            data_wr_o_r <= '0';
-            data_wr_i_r <= '0';
-            
-            log2s_r <= (others => '0');
-            size_r <= (others => '0');
-                        
-        elsif (clk'event and clk = '1') then
-        -- INNER SIGNALS
-            state_r <= state_n;
-                        
-            i_r <= i_n;
-            j_r <= j_n;
-            k_r <= k_n;
-            k_max_r <= k_max_n;
-            
-            reversed_r <= reversed_n;
-            temp_r <= temp_n;
-            m2_r <= m2_n;
-            m_r <= m_n;
-            
---            addr_r <= addr_n;
---            dataRE_r <= dataRE_n;
---            dataIM_r <= dataIM_n;
---            wr_r <= wr_n;
---            rd_r <= rd_n;
-            
-        -- FFT MEMORY
---            dataRE <= dataRE_n;
---            dataIM <= dataIM_n;
-            dataRE_top_o <= dataRE(to_integer(unsigned(addr_top)));
-            dataIM_top_o <= dataIM(to_integer(unsigned(addr_top)));
-            dataRE_bot_o <= dataRE(to_integer(unsigned(addr_bot)));
-            dataIM_bot_o <= dataIM(to_integer(unsigned(addr_bot)));
-            
-            if wr_top_s = '1' then
-                   dataRE(to_integer(unsigned(addr_top))) <= dataRE_top_i;
-                   dataIM(to_integer(unsigned(addr_top))) <= dataIM_top_i;
+        if (clk'event and clk = '1') then
+            if rst = '1' then 
+            -- INNER SIGNALS & STATES
+                state_r <= idle;
+                
+                i_r <= (others => '0');
+                j_r <= (others => '0');
+                k_r <= (others => '0');
+                k_max_r <= (others => '0');
+                
+                reversed_r <= (others => '0');
+                temp_r <= (others => '0');
+                m_r <= (others => '0');
+                m2_r <= (others => '0');
+                
+    --            addr_r <= (others => '0');
+    --            dataRE_r <= (others => '0');
+    --            dataIM_r <= (others => '0');
+    --            wr_r <= '0';
+    --            rd_r <= '0';
+    
+            -- FFT MEMORY
+                dataRE <= (others => (others => '0'));
+                dataIM <= (others => (others => '0'));
+                
+            -- BUTTERFLY INTERFACE
+                butterfly_start_r <= '0';
+                butterfly_ready_r <= '0';
+                
+                topRE_i_r <= (others => '0');
+                topIM_i_r <= (others => '0');
+                botRE_i_r <= (others => '0');
+                botIM_i_r <= (others => '0');
+                
+                topRE_o_r <= (others => '0');
+                topIM_o_r <= (others => '0');
+                botRE_o_r <= (others => '0');
+                botIM_o_r <= (others => '0');
+                
+            -- FFT INTERFACE
+                data_i_addr_o_r <= (others => '0');
+                dataRE_i_r <= (others => '0');
+                dataIM_i_r <= (others => '0');
+                data_rd_o_r <= '0';
+                data_rd_i_r <= '0';
+                
+                data_o_addr_o_r <= (others => '0');
+                dataRE_o_r <= (others => '0');
+                dataIM_o_r <= (others => '0');
+                data_wr_o_r <= '0';
+                data_wr_i_r <= '0';
+                
+                log2s_r <= (others => '0');
+                size_r <= (others => '0');
+            else        
+            -- INNER SIGNALS
+                state_r <= state_n;
+                            
+                i_r <= i_n;
+                j_r <= j_n;
+                k_r <= k_n;
+                k_max_r <= k_max_n;
+                
+                reversed_r <= reversed_n;
+                temp_r <= temp_n;
+                m2_r <= m2_n;
+                m_r <= m_n;
+                
+    --            addr_r <= addr_n;
+    --            dataRE_r <= dataRE_n;
+    --            dataIM_r <= dataIM_n;
+    --            wr_r <= wr_n;
+    --            rd_r <= rd_n;
+                
+            -- FFT MEMORY
+    --            dataRE <= dataRE_n;
+    --            dataIM <= dataIM_n;
+                dataRE_top_o <= dataRE(to_integer(unsigned(addr_top)));
+                dataIM_top_o <= dataIM(to_integer(unsigned(addr_top)));
+                dataRE_bot_o <= dataRE(to_integer(unsigned(addr_bot)));
+                dataIM_bot_o <= dataIM(to_integer(unsigned(addr_bot)));
+                
+                if wr_top_s = '1' then
+                       dataRE(to_integer(unsigned(addr_top))) <= dataRE_top_i;
+                       dataIM(to_integer(unsigned(addr_top))) <= dataIM_top_i;
+                end if;
+                if wr_bot_s = '1' then
+                       dataRE(to_integer(unsigned(addr_bot))) <= dataRE_bot_i;
+                       dataIM(to_integer(unsigned(addr_bot))) <= dataIM_bot_i;
+                end if;
+            -- BUTTERFLY INTERFACE
+                butterfly_start_r <= butterfly_start_n;
+                butterfly_ready_r <= butterfly_ready_n;
+                
+                topRE_i_r <= topRE_i_n;
+                topIM_i_r <= topIM_i_n;
+                botRE_i_r <= botRE_i_n;
+                botIM_i_r <= botIM_i_n;
+                
+                topRE_o_r <= topRE_o_n;
+                topIM_o_r <= topIM_o_n;
+                botRE_o_r <= botRE_o_n;
+                botIM_o_r <= botIM_o_n;
+                
+            -- FFT INTERFACE
+                data_i_addr_o_r <= data_i_addr_o_n;
+                dataRE_i_r <= dataRE_i_n;
+                dataIM_i_r <= dataIM_i_n;
+                data_rd_o_r <= data_rd_o_n;
+                data_rd_i_r <= data_rd_i_n;
+                
+                data_o_addr_o_r <= data_o_addr_o_n;
+                dataRE_o_r <= dataRE_o_n;
+                dataIM_o_r <= dataIM_o_n;
+                data_wr_o_r <= data_wr_o_n;
+                data_wr_i_r <= data_wr_i_n;
+                
+                log2s_r <= log2s_n;
+                size_r <= size_n;
             end if;
-            if wr_bot_s = '1' then
-                   dataRE(to_integer(unsigned(addr_bot))) <= dataRE_bot_i;
-                   dataIM(to_integer(unsigned(addr_bot))) <= dataIM_bot_i;
-            end if;
-        -- BUTTERFLY INTERFACE
-            butterfly_start_r <= butterfly_start_n;
-            butterfly_ready_r <= butterfly_ready_n;
-            
-            topRE_i_r <= topRE_i_n;
-            topIM_i_r <= topIM_i_n;
-            botRE_i_r <= botRE_i_n;
-            botIM_i_r <= botIM_i_n;
-            
-            topRE_o_r <= topRE_o_n;
-            topIM_o_r <= topIM_o_n;
-            botRE_o_r <= botRE_o_n;
-            botIM_o_r <= botIM_o_n;
-            
-        -- FFT INTERFACE
-            data_i_addr_o_r <= data_i_addr_o_n;
-            dataRE_i_r <= dataRE_i_n;
-            dataIM_i_r <= dataIM_i_n;
-            data_rd_o_r <= data_rd_o_n;
-            data_rd_i_r <= data_rd_i_n;
-            
-            data_o_addr_o_r <= data_o_addr_o_n;
-            dataRE_o_r <= dataRE_o_n;
-            dataIM_o_r <= dataIM_o_n;
-            data_wr_o_r <= data_wr_o_n;
-            data_wr_i_r <= data_wr_i_n;
-            
-            log2s_r <= log2s_n;
-            size_r <= size_n;
         end if;
      end process;
         

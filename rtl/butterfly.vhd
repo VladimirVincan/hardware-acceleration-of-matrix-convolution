@@ -85,49 +85,50 @@ architecture Behavioral of butterfly is
 begin
     -- State and Data Registers
     process (rst, clk) begin
-        if rst = '1' then 
-            state_r <= idle;
-            mult1_r <= (others => '0');
-            mult2_r <= (others => '0');
-            mult3_r <= (others => '0');
-            mult4_r <= (others => '0');
-            sumRE_r <= (others => '0');
-            sumIM_r <= (others => '0');
-            
-            topRE_i_r <= (others => '0');
-            topIM_i_r <= (others => '0');
-            bottomRE_i_r <= (others => '0');
-            bottomIM_i_r <= (others => '0');
-            
-            topRE_o_r <= (others => '0');
-            topIM_o_r <= (others => '0');
-            bottomRE_o_r <= (others => '0');
-            bottomIM_o_r <= (others => '0');
-            
-            k_r <= (others => '0');
-            size_r <= (others => '0');
-            
-        elsif (clk'event and clk = '1') then
-            state_r <= state_n;
-            mult1_r <= mult1_n (WIDTH + FIXED_POINT_WIDTH - 1 downto WIDTH - FIXED_POINT_WIDTH);
-            mult2_r <= mult2_n (WIDTH + FIXED_POINT_WIDTH - 1 downto WIDTH - FIXED_POINT_WIDTH);
-            mult3_r <= mult3_n (WIDTH + FIXED_POINT_WIDTH - 1 downto WIDTH - FIXED_POINT_WIDTH);
-            mult4_r <= mult4_n (WIDTH + FIXED_POINT_WIDTH - 1 downto WIDTH - FIXED_POINT_WIDTH);
-            sumRE_r <= sumRE_n;
-            sumIM_r <= sumIM_n;
-            
-            topRE_i_r <= topRE_i_n;
-            topIM_i_r <= topIM_i_n;
-            bottomRE_i_r <= bottomRE_i_n;
-            bottomIM_i_r <= bottomIM_i_n;
-            
-            topRE_o_r <= topRE_o_n;
-            topIM_o_r <= topIM_o_n;
-            bottomRE_o_r <= bottomRE_o_n;
-            bottomIM_o_r <= bottomIM_o_n;
-            
-            k_r <= k_n;
-            size_r <= size_n;
+        if (clk'event and clk = '1') then
+            if rst = '1' then 
+                state_r <= idle;
+                mult1_r <= (others => '0');
+                mult2_r <= (others => '0');
+                mult3_r <= (others => '0');
+                mult4_r <= (others => '0');
+                sumRE_r <= (others => '0');
+                sumIM_r <= (others => '0');
+                
+                topRE_i_r <= (others => '0');
+                topIM_i_r <= (others => '0');
+                bottomRE_i_r <= (others => '0');
+                bottomIM_i_r <= (others => '0');
+                
+                topRE_o_r <= (others => '0');
+                topIM_o_r <= (others => '0');
+                bottomRE_o_r <= (others => '0');
+                bottomIM_o_r <= (others => '0');
+                
+                k_r <= (others => '0');
+                size_r <= (others => '0');
+            else    
+                state_r <= state_n;
+                mult1_r <= mult1_n (WIDTH + FIXED_POINT_WIDTH - 1 downto WIDTH - FIXED_POINT_WIDTH);
+                mult2_r <= mult2_n (WIDTH + FIXED_POINT_WIDTH - 1 downto WIDTH - FIXED_POINT_WIDTH);
+                mult3_r <= mult3_n (WIDTH + FIXED_POINT_WIDTH - 1 downto WIDTH - FIXED_POINT_WIDTH);
+                mult4_r <= mult4_n (WIDTH + FIXED_POINT_WIDTH - 1 downto WIDTH - FIXED_POINT_WIDTH);
+                sumRE_r <= sumRE_n;
+                sumIM_r <= sumIM_n;
+                
+                topRE_i_r <= topRE_i_n;
+                topIM_i_r <= topIM_i_n;
+                bottomRE_i_r <= bottomRE_i_n;
+                bottomIM_i_r <= bottomIM_i_n;
+                
+                topRE_o_r <= topRE_o_n;
+                topIM_o_r <= topIM_o_n;
+                bottomRE_o_r <= bottomRE_o_n;
+                bottomIM_o_r <= bottomIM_o_n;
+                
+                k_r <= k_n;
+                size_r <= size_n;
+            end if;
         end if;
      end process;
         
