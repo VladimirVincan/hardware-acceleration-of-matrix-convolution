@@ -11,9 +11,9 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="4519080000fs"></ZoomStartTime>
-      <ZoomEndTime time="28059080001fs"></ZoomEndTime>
-      <Cursor1Time time="14519080000fs"></Cursor1Time>
+      <ZoomStartTime time="73333333fs"></ZoomStartTime>
+      <ZoomEndTime time="1185333334fs"></ZoomEndTime>
+      <Cursor1Time time="1000000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="226"></NameColumnWidth>
@@ -31,7 +31,6 @@
    <wvobject type="group" fp_name="group167">
       <obj_property name="label">tb</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/tb_fft/data_i_addr_o">
          <obj_property name="ElementShortName">data_i_addr_o[2:0]</obj_property>
          <obj_property name="ObjectShortName">data_i_addr_o[2:0]</obj_property>
@@ -209,10 +208,6 @@
          <obj_property name="ElementShortName">state_r</obj_property>
          <obj_property name="ObjectShortName">state_r</obj_property>
       </wvobject>
-      <wvobject type="other" fp_name="/tb_fft/uut/state_n">
-         <obj_property name="ElementShortName">state_n</obj_property>
-         <obj_property name="ObjectShortName">state_n</obj_property>
-      </wvobject>
       <wvobject type="logic" fp_name="/tb_fft/uut/data_rd_i_r">
          <obj_property name="ElementShortName">data_rd_i_r</obj_property>
          <obj_property name="ObjectShortName">data_rd_i_r</obj_property>
@@ -221,17 +216,9 @@
          <obj_property name="ElementShortName">data_rd_o_r</obj_property>
          <obj_property name="ObjectShortName">data_rd_o_r</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_fft/uut/size_n">
-         <obj_property name="ElementShortName">size_n[2:0]</obj_property>
-         <obj_property name="ObjectShortName">size_n[2:0]</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/tb_fft/uut/size_r">
          <obj_property name="ElementShortName">size_r[2:0]</obj_property>
          <obj_property name="ObjectShortName">size_r[2:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_fft/uut/log2s_n">
-         <obj_property name="ElementShortName">log2s_n[1:0]</obj_property>
-         <obj_property name="ObjectShortName">log2s_n[1:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_fft/uut/log2s_r">
          <obj_property name="ElementShortName">log2s_r[1:0]</obj_property>
@@ -241,57 +228,37 @@
          <obj_property name="ElementShortName">i_r[1:0]</obj_property>
          <obj_property name="ObjectShortName">i_r[1:0]</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_fft/uut/i_n">
-         <obj_property name="ElementShortName">i_n[1:0]</obj_property>
-         <obj_property name="ObjectShortName">i_n[1:0]</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/tb_fft/uut/j_r">
          <obj_property name="ElementShortName">j_r[2:0]</obj_property>
          <obj_property name="ObjectShortName">j_r[2:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_fft/uut/j_n">
-         <obj_property name="ElementShortName">j_n[2:0]</obj_property>
-         <obj_property name="ObjectShortName">j_n[2:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_fft/uut/k_r">
          <obj_property name="ElementShortName">k_r[2:0]</obj_property>
          <obj_property name="ObjectShortName">k_r[2:0]</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_fft/uut/k_n">
-         <obj_property name="ElementShortName">k_n[2:0]</obj_property>
-         <obj_property name="ObjectShortName">k_n[2:0]</obj_property>
+      <wvobject type="array" fp_name="/tb_fft/uut/jj_r">
+         <obj_property name="ElementShortName">jj_r[2:0]</obj_property>
+         <obj_property name="ObjectShortName">jj_r[2:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_fft/uut/kk_r">
+         <obj_property name="ElementShortName">kk_r[2:0]</obj_property>
+         <obj_property name="ObjectShortName">kk_r[2:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_fft/uut/reversed_r">
          <obj_property name="ElementShortName">reversed_r[2:0]</obj_property>
          <obj_property name="ObjectShortName">reversed_r[2:0]</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_fft/uut/reversed_n">
-         <obj_property name="ElementShortName">reversed_n[2:0]</obj_property>
-         <obj_property name="ObjectShortName">reversed_n[2:0]</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/tb_fft/uut/temp_r">
          <obj_property name="ElementShortName">temp_r[2:0]</obj_property>
          <obj_property name="ObjectShortName">temp_r[2:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_fft/uut/temp_n">
-         <obj_property name="ElementShortName">temp_n[2:0]</obj_property>
-         <obj_property name="ObjectShortName">temp_n[2:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_fft/uut/m2_r">
          <obj_property name="ElementShortName">m2_r[2:0]</obj_property>
          <obj_property name="ObjectShortName">m2_r[2:0]</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_fft/uut/m2_n">
-         <obj_property name="ElementShortName">m2_n[2:0]</obj_property>
-         <obj_property name="ObjectShortName">m2_n[2:0]</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/tb_fft/uut/m_r">
          <obj_property name="ElementShortName">m_r[2:0]</obj_property>
          <obj_property name="ObjectShortName">m_r[2:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_fft/uut/m_n">
-         <obj_property name="ElementShortName">m_n[2:0]</obj_property>
-         <obj_property name="ObjectShortName">m_n[2:0]</obj_property>
       </wvobject>
       <wvobject type="group" fp_name="group1706">
          <obj_property name="label">memory</obj_property>
