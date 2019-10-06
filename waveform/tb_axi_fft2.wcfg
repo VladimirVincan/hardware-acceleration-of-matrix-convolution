@@ -11,9 +11,9 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="101150000000fs"></ZoomStartTime>
-      <ZoomEndTime time="113090000001fs"></ZoomEndTime>
-      <Cursor1Time time="106500000000fs"></Cursor1Time>
+      <ZoomStartTime time="110694170000fs"></ZoomStartTime>
+      <ZoomEndTime time="116664170001fs"></ZoomEndTime>
+      <Cursor1Time time="114759170000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="212"></NameColumnWidth>
@@ -31,6 +31,7 @@
    <wvobject type="group" fp_name="group882">
       <obj_property name="label">tb</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/tb_axi_fft2/s00_axi_aclk_s">
          <obj_property name="ElementShortName">s00_axi_aclk_s</obj_property>
          <obj_property name="ObjectShortName">s00_axi_aclk_s</obj_property>
@@ -1035,28 +1036,30 @@
          <obj_property name="ObjectShortName">state_r</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/i_r">
-         <obj_property name="ElementShortName">i_r[0:0]</obj_property>
-         <obj_property name="ObjectShortName">i_r[0:0]</obj_property>
+         <obj_property name="ElementShortName">i_r[1:0]</obj_property>
+         <obj_property name="ObjectShortName">i_r[1:0]</obj_property>
          <obj_property name="CustomSignalColor">#0000FF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/j_r">
-         <obj_property name="ElementShortName">j_r[1:0]</obj_property>
-         <obj_property name="ObjectShortName">j_r[1:0]</obj_property>
+         <obj_property name="ElementShortName">j_r[2:0]</obj_property>
+         <obj_property name="ObjectShortName">j_r[2:0]</obj_property>
          <obj_property name="CustomSignalColor">#0000FF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/k_r">
-         <obj_property name="ElementShortName">k_r[1:0]</obj_property>
-         <obj_property name="ObjectShortName">k_r[1:0]</obj_property>
+         <obj_property name="ElementShortName">k_r[2:0]</obj_property>
+         <obj_property name="ObjectShortName">k_r[2:0]</obj_property>
          <obj_property name="CustomSignalColor">#0000FF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/k_max_r">
-         <obj_property name="ElementShortName">k_max_r[1:0]</obj_property>
-         <obj_property name="ObjectShortName">k_max_r[1:0]</obj_property>
-         <obj_property name="CustomSignalColor">#0000FF</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
+      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/jj_r">
+         <obj_property name="ElementShortName">jj_r[1:0]</obj_property>
+         <obj_property name="ObjectShortName">jj_r[1:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/kk_r">
+         <obj_property name="ElementShortName">kk_r[1:0]</obj_property>
+         <obj_property name="ObjectShortName">kk_r[1:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/reversed_r">
          <obj_property name="ElementShortName">reversed_r[1:0]</obj_property>
@@ -1076,9 +1079,17 @@
          <obj_property name="CustomSignalColor">#0000FF</obj_property>
          <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/m_r">
-         <obj_property name="ElementShortName">m_r[1:0]</obj_property>
-         <obj_property name="ObjectShortName">m_r[1:0]</obj_property>
+      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/log2s_r">
+         <obj_property name="ElementShortName">log2s_r[0:0]</obj_property>
+         <obj_property name="ObjectShortName">log2s_r[0:0]</obj_property>
+         <obj_property name="CustomSignalColor">#0000FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/size_r">
+         <obj_property name="ElementShortName">size_r[1:0]</obj_property>
+         <obj_property name="ObjectShortName">size_r[1:0]</obj_property>
+         <obj_property name="CustomSignalColor">#0000FF</obj_property>
+         <obj_property name="UseCustomSignalColor">true</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/dataRE">
          <obj_property name="ElementShortName">dataRE[0:3][31:0]</obj_property>
@@ -1172,109 +1183,41 @@
          <obj_property name="ElementShortName">data_i_addr_o_r[1:0]</obj_property>
          <obj_property name="ObjectShortName">data_i_addr_o_r[1:0]</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/data_i_addr_o_n">
-         <obj_property name="ElementShortName">data_i_addr_o_n[1:0]</obj_property>
-         <obj_property name="ObjectShortName">data_i_addr_o_n[1:0]</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/dataRE_i_r">
          <obj_property name="ElementShortName">dataRE_i_r[31:0]</obj_property>
          <obj_property name="ObjectShortName">dataRE_i_r[31:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/dataRE_i_n">
-         <obj_property name="ElementShortName">dataRE_i_n[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dataRE_i_n[31:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/dataIM_i_r">
          <obj_property name="ElementShortName">dataIM_i_r[31:0]</obj_property>
          <obj_property name="ObjectShortName">dataIM_i_r[31:0]</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/dataIM_i_n">
-         <obj_property name="ElementShortName">dataIM_i_n[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dataIM_i_n[31:0]</obj_property>
-      </wvobject>
       <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/data_rd_o_r">
          <obj_property name="ElementShortName">data_rd_o_r</obj_property>
          <obj_property name="ObjectShortName">data_rd_o_r</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/data_rd_o_n">
-         <obj_property name="ElementShortName">data_rd_o_n</obj_property>
-         <obj_property name="ObjectShortName">data_rd_o_n</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/data_rd_i_r">
          <obj_property name="ElementShortName">data_rd_i_r</obj_property>
          <obj_property name="ObjectShortName">data_rd_i_r</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/data_rd_i_n">
-         <obj_property name="ElementShortName">data_rd_i_n</obj_property>
-         <obj_property name="ObjectShortName">data_rd_i_n</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/data_o_addr_o_r">
          <obj_property name="ElementShortName">data_o_addr_o_r[1:0]</obj_property>
          <obj_property name="ObjectShortName">data_o_addr_o_r[1:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/data_o_addr_o_n">
-         <obj_property name="ElementShortName">data_o_addr_o_n[1:0]</obj_property>
-         <obj_property name="ObjectShortName">data_o_addr_o_n[1:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/dataRE_o_r">
          <obj_property name="ElementShortName">dataRE_o_r[31:0]</obj_property>
          <obj_property name="ObjectShortName">dataRE_o_r[31:0]</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/dataRE_o_n">
-         <obj_property name="ElementShortName">dataRE_o_n[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dataRE_o_n[31:0]</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/dataIM_o_r">
          <obj_property name="ElementShortName">dataIM_o_r[31:0]</obj_property>
          <obj_property name="ObjectShortName">dataIM_o_r[31:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/dataIM_o_n">
-         <obj_property name="ElementShortName">dataIM_o_n[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dataIM_o_n[31:0]</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/data_wr_o_r">
          <obj_property name="ElementShortName">data_wr_o_r</obj_property>
          <obj_property name="ObjectShortName">data_wr_o_r</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/data_wr_o_n">
-         <obj_property name="ElementShortName">data_wr_o_n</obj_property>
-         <obj_property name="ObjectShortName">data_wr_o_n</obj_property>
-      </wvobject>
       <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/data_wr_i_r">
          <obj_property name="ElementShortName">data_wr_i_r</obj_property>
          <obj_property name="ObjectShortName">data_wr_i_r</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/data_wr_i_n">
-         <obj_property name="ElementShortName">data_wr_i_n</obj_property>
-         <obj_property name="ObjectShortName">data_wr_i_n</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/log2s_r">
-         <obj_property name="ElementShortName">log2s_r[0:0]</obj_property>
-         <obj_property name="ObjectShortName">log2s_r[0:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/log2s_n">
-         <obj_property name="ElementShortName">log2s_n[0:0]</obj_property>
-         <obj_property name="ObjectShortName">log2s_n[0:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/size_r">
-         <obj_property name="ElementShortName">size_r[1:0]</obj_property>
-         <obj_property name="ObjectShortName">size_r[1:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/size_n">
-         <obj_property name="ElementShortName">size_n[1:0]</obj_property>
-         <obj_property name="ObjectShortName">size_n[1:0]</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/FFT_SIZE">
-         <obj_property name="ElementShortName">FFT_SIZE</obj_property>
-         <obj_property name="ObjectShortName">FFT_SIZE</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/FIXED_POINT_WIDTH">
-         <obj_property name="ElementShortName">FIXED_POINT_WIDTH</obj_property>
-         <obj_property name="ObjectShortName">FIXED_POINT_WIDTH</obj_property>
-      </wvobject>
-      <wvobject type="other" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/WIDTH">
-         <obj_property name="ElementShortName">WIDTH</obj_property>
-         <obj_property name="ObjectShortName">WIDTH</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>

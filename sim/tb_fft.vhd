@@ -167,7 +167,7 @@ begin
         size <= conv_std_logic_vector(7,size'length);
         for i in 0 to FFT_SIZE-1 loop
             init_addr_i <= conv_std_logic_vector(i,init_addr_i'length);
-            init_data_i <= arr2_c(i);
+            init_data_i <= arr3_c(i);
             wait until falling_edge(clk);
         end loop;
         init_wr_i <= '0';  

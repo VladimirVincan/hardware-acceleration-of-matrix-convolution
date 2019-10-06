@@ -48,7 +48,7 @@ architecture Behavioral of fft is
     signal k_r, k_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE) downto 0);
     signal jj_r, jj_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
     signal kk_r, kk_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
-    signal k_max_n, k_max_r : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
+    signal k_max_n, k_max_r : STD_LOGIC_VECTOR(log2c(FFT_SIZE) downto 0);
     
     signal reversed_r, reversed_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
     signal temp_r, temp_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
@@ -404,12 +404,12 @@ begin
                 
             when l4 => -- 9
                 k_n <= j_r;
-                k_max_n <= STD_LOGIC_VECTOR(unsigned(size_r) - unsigned(m2_r) - (unsigned(m2_r) - unsigned(j_r) - 1)); 
+                --k_max_n <= STD_LOGIC_VECTOR((unsigned('0' & size_r)+1 - unsigned('0' & m2_r)) + (unsigned(j_r) + 1)); 
                 state_n <= set_rd_addr;
                 
             when set_rd_addr => -- 10
-                addr_top <= k_r;
-                addr_bot <= std_logic_vector(unsigned(k_r) + unsigned(m2_r));
+                addr_top <= k_r (log2c(FFT_SIZE)-1 downto 0);
+                addr_bot <= std_logic_vector(unsigned(k_r(log2c(FFT_SIZE)-1 downto 0)) + unsigned(m2_r));
                 rd_s <= '1';
                 state_n <= l5; 
                             
@@ -418,8 +418,8 @@ begin
 --                topIM_i_n <= dataIM(to_integer(unsigned(k_r)));
 --                botRE_i_n <= dataRE(to_integer(unsigned(k_r) + unsigned(m2_r)));
 --                botIM_i_n <= dataIM(to_integer(unsigned(k_r) + unsigned(m2_r)));
-                addr_top <= k_r;
-                addr_bot <= std_logic_vector(unsigned(k_r) + unsigned(m2_r));
+                addr_top <= k_r(log2c(FFT_SIZE)-1 downto 0);
+                addr_bot <= std_logic_vector(unsigned(k_r(log2c(FFT_SIZE)-1 downto 0)) + unsigned(m2_r));
                 topRE_i_n <= dataRE_top_o;
                 topIM_i_n <= dataIM_top_o;
                 botRE_i_n <= dataRE_bot_o;
@@ -432,8 +432,8 @@ begin
                 end if;  
                   
             when wait_butterfly_ready_0 => -- 12
-                addr_top <= k_r;
-                addr_bot <= std_logic_vector(unsigned(k_r) + unsigned(m2_r));
+                addr_top <= k_r(log2c(FFT_SIZE)-1 downto 0);
+                addr_bot <= std_logic_vector(unsigned(k_r(log2c(FFT_SIZE)-1 downto 0)) + unsigned(m2_r));
                 if (butterfly_ready_r = '0') then
                     state_n <= wait_butterfly_ready_1;
                 else
@@ -446,8 +446,8 @@ begin
 --                dataIM(to_integer(unsigned(k_r))) <= topIM_o_r;
 --                dataRE(to_integer(unsigned(k_r) + unsigned(m2_r))) <= botRE_o_r;
 --                dataIM(to_integer(unsigned(k_r) + unsigned(m2_r))) <= botIM_o_r;
-                addr_top <= k_r;
-                addr_bot <= std_logic_vector(unsigned(k_r) + unsigned(m2_r));
+                addr_top <= k_r(log2c(FFT_SIZE)-1 downto 0);
+                addr_bot <= std_logic_vector(unsigned(k_r(log2c(FFT_SIZE)-1 downto 0)) + unsigned(m2_r));
                 if butterfly_ready_r = '1' then 
                     dataRE_top_i <= topRE_o_r;
                     dataIM_top_i <= topIM_o_r;
@@ -480,11 +480,12 @@ begin
 --                end if;
 
             when do_butterfly_1 =>
-                k_n <= STD_LOGIC_VECTOR(unsigned(k_r) + unsigned(m2_r(m2_r'length-2 downto 0) & '0')); -- m_r
+                k_n <= STD_LOGIC_VECTOR(unsigned(k_r) + unsigned(m2_r & '0')); -- m_r
                 state_n <= do_butterfly_2;
                 
             when do_butterfly_2 =>
-                if (unsigned(k_r) = unsigned(k_max_r)) then --k_max_n) then
+                --if (unsigned(k_r) = unsigned(k_max_r)) then --k_max_n) then
+                if (unsigned(k_r) > unsigned(size_r)) then 
                     j_n <= STD_LOGIC_VECTOR(unsigned(j_r) + 1);
                     state_n <= do_butterfly_3;
                 else
@@ -492,7 +493,7 @@ begin
                 end if;
                 
             when do_butterfly_3 => 
-                if (j_r = STD_LOGIC_VECTOR(unsigned(m2_r))) then
+                if (j_r = STD_LOGIC_VECTOR(unsigned('0' & m2_r))) then
                     i_n <= STD_LOGIC_VECTOR(unsigned(i_r) + 1);
                     state_n <= do_butterfly_4;
                 else 
@@ -501,7 +502,7 @@ begin
                 end if;
                 
              when do_butterfly_4 =>
-                if (unsigned(i_r) = unsigned(log2s_r)+1) then
+                if (unsigned(i_r) = unsigned('0'&log2s_r)+1) then
                      j_n <= (others => '0');
                      state_n <= wait_data_wr_i_0;
                 else 
@@ -511,7 +512,7 @@ begin
             when wait_data_wr_i_0 => -- 15
                 data_wr_i_n <= data_wr_i;
                 data_wr_o_n <= '0';
-                addr_top <= j_r;
+                addr_top <= j_r(log2c(FFT_SIZE)-1 downto 0);
                 rd_s <= '1';
                 if data_wr_i_r = '0' then
                     state_n <= wait_data_wr_i_1;
@@ -521,17 +522,17 @@ begin
                                
             when wait_data_wr_i_1 => -- 16
                 data_wr_i_n <= data_wr_i;
-                data_o_addr_o_n <= j_r;
+                data_o_addr_o_n <= j_r(log2c(FFT_SIZE)-1 downto 0);
 --                dataRE_o_n <= dataRE(to_integer(unsigned(j_r)));
 --                dataIM_o_n <= dataIM(to_integer(unsigned(j_r)));
-                addr_top <= j_r;
+                addr_top <= j_r(log2c(FFT_SIZE)-1 downto 0);
                 rd_s <= '1';
                 dataRE_o_n <= dataRE_top_o;
                 dataIM_o_n <= dataIM_top_o;
                 data_wr_o_n <= '1'; 
                 if data_wr_i = '1' then
                     j_n <= STD_LOGIC_VECTOR(unsigned(j_r) + 1);
-                    if j_n = size_r then
+                    if j_n(log2c(FFT_SIZE)-1 downto 0) = size_r then
                         state_n <= idle;
                     else
                         state_n <= wait_data_wr_i_0;

@@ -225,16 +225,16 @@
          <obj_property name="ObjectShortName">log2s_r[1:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_fft/uut/i_r">
-         <obj_property name="ElementShortName">i_r[1:0]</obj_property>
-         <obj_property name="ObjectShortName">i_r[1:0]</obj_property>
+         <obj_property name="ElementShortName">i_r[2:0]</obj_property>
+         <obj_property name="ObjectShortName">i_r[2:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_fft/uut/j_r">
-         <obj_property name="ElementShortName">j_r[2:0]</obj_property>
-         <obj_property name="ObjectShortName">j_r[2:0]</obj_property>
+         <obj_property name="ElementShortName">j_r[3:0]</obj_property>
+         <obj_property name="ObjectShortName">j_r[3:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_fft/uut/k_r">
-         <obj_property name="ElementShortName">k_r[2:0]</obj_property>
-         <obj_property name="ObjectShortName">k_r[2:0]</obj_property>
+         <obj_property name="ElementShortName">k_r[3:0]</obj_property>
+         <obj_property name="ObjectShortName">k_r[3:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_fft/uut/jj_r">
          <obj_property name="ElementShortName">jj_r[2:0]</obj_property>
@@ -243,6 +243,10 @@
       <wvobject type="array" fp_name="/tb_fft/uut/kk_r">
          <obj_property name="ElementShortName">kk_r[2:0]</obj_property>
          <obj_property name="ObjectShortName">kk_r[2:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_fft/uut/k_max_r">
+         <obj_property name="ElementShortName">k_max_r[3:0]</obj_property>
+         <obj_property name="ObjectShortName">k_max_r[3:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_fft/uut/reversed_r">
          <obj_property name="ElementShortName">reversed_r[2:0]</obj_property>
@@ -263,7 +267,6 @@
       <wvobject type="group" fp_name="group1706">
          <obj_property name="label">memory</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject type="array" fp_name="/tb_fft/uut/dataRE">
             <obj_property name="ElementShortName">dataRE[0:7][31:0]</obj_property>
             <obj_property name="ObjectShortName">dataRE[0:7][31:0]</obj_property>
@@ -369,7 +372,6 @@
    <wvobject type="group" fp_name="group169">
       <obj_property name="label">fft_butterfly</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="logic" fp_name="/tb_fft/uut/butterfly_start_r">
          <obj_property name="ElementShortName">butterfly_start_r</obj_property>
          <obj_property name="ObjectShortName">butterfly_start_r</obj_property>
