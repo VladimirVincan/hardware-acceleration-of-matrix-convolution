@@ -11,22 +11,18 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="110694170000fs"></ZoomStartTime>
-      <ZoomEndTime time="116664170001fs"></ZoomEndTime>
-      <Cursor1Time time="114759170000fs"></Cursor1Time>
+      <ZoomStartTime time="212733333667fs"></ZoomStartTime>
+      <ZoomEndTime time="452333333668fs"></ZoomEndTime>
+      <Cursor1Time time="252666667000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="212"></NameColumnWidth>
-      <ValueColumnWidth column_width="91"></ValueColumnWidth>
+      <ValueColumnWidth column_width="87"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="9" />
+   <WVObjectSize size="8" />
    <wvobject type="logic" fp_name="/tb_axi_fft2/clk_s">
       <obj_property name="ElementShortName">clk_s</obj_property>
       <obj_property name="ObjectShortName">clk_s</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb_axi_fft2/reset_s">
-      <obj_property name="ElementShortName">reset_s</obj_property>
-      <obj_property name="ObjectShortName">reset_s</obj_property>
    </wvobject>
    <wvobject type="group" fp_name="group882">
       <obj_property name="label">tb</obj_property>
@@ -41,9 +37,8 @@
          <obj_property name="ObjectShortName">s00_axi_aresetn_s</obj_property>
       </wvobject>
       <wvobject type="group" fp_name="group1242">
-         <obj_property name="label">tb_write</obj_property>
+         <obj_property name="label">axi write</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject type="array" fp_name="/tb_axi_fft2/s00_axi_awaddr_s">
             <obj_property name="ElementShortName">s00_axi_awaddr_s[5:0]</obj_property>
             <obj_property name="ObjectShortName">s00_axi_awaddr_s[5:0]</obj_property>
@@ -96,9 +91,8 @@
          </wvobject>
       </wvobject>
       <wvobject type="group" fp_name="group1243">
-         <obj_property name="label">tb_read</obj_property>
+         <obj_property name="label">axi read</obj_property>
          <obj_property name="DisplayName">label</obj_property>
-         <obj_property name="isExpanded"></obj_property>
          <wvobject type="array" fp_name="/tb_axi_fft2/s00_axi_araddr_s">
             <obj_property name="ElementShortName">s00_axi_araddr_s[5:0]</obj_property>
             <obj_property name="ObjectShortName">s00_axi_araddr_s[5:0]</obj_property>
@@ -138,21 +132,54 @@
             <obj_property name="ObjectShortName">s00_axi_rready_s</obj_property>
          </wvobject>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/dataRE_s">
-         <obj_property name="ElementShortName">dataRE_s[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dataRE_s[31:0]</obj_property>
-         <obj_property name="Radix">REALRADIX</obj_property>
-         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
-         <obj_property name="radix_fractionWidth">16</obj_property>
-         <obj_property name="radix_otherWidth">0</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/dataIM_s">
-         <obj_property name="ElementShortName">dataIM_s[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dataIM_s[31:0]</obj_property>
-         <obj_property name="Radix">REALRADIX</obj_property>
-         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
-         <obj_property name="radix_fractionWidth">16</obj_property>
-         <obj_property name="radix_otherWidth">0</obj_property>
+      <wvobject type="group" fp_name="group2372">
+         <obj_property name="label">bram</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="logic" fp_name="/tb_axi_fft2/tb_en_o">
+            <obj_property name="ElementShortName">tb_en_o</obj_property>
+            <obj_property name="ObjectShortName">tb_en_o</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_axi_fft2/tb_addr_o">
+            <obj_property name="ElementShortName">tb_addr_o[5:0]</obj_property>
+            <obj_property name="ObjectShortName">tb_addr_o[5:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_axi_fft2/tb_dataRE_i">
+            <obj_property name="ElementShortName">tb_dataRE_i[31:0]</obj_property>
+            <obj_property name="ObjectShortName">tb_dataRE_i[31:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">16</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_axi_fft2/tb_dataRE_o">
+            <obj_property name="ElementShortName">tb_dataRE_o[31:0]</obj_property>
+            <obj_property name="ObjectShortName">tb_dataRE_o[31:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">16</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_axi_fft2/tb_dataIM_i">
+            <obj_property name="ElementShortName">tb_dataIM_i[31:0]</obj_property>
+            <obj_property name="ObjectShortName">tb_dataIM_i[31:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">16</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_axi_fft2/tb_dataIM_o">
+            <obj_property name="ElementShortName">tb_dataIM_o[31:0]</obj_property>
+            <obj_property name="ObjectShortName">tb_dataIM_o[31:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">16</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_axi_fft2/tb_we_o">
+            <obj_property name="ElementShortName">tb_we_o[3:0]</obj_property>
+            <obj_property name="ObjectShortName">tb_we_o[3:0]</obj_property>
+         </wvobject>
       </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/MEM_RE_CONTENT_c">
          <obj_property name="ElementShortName">MEM_RE_CONTENT_c[0:15]</obj_property>
@@ -198,22 +225,6 @@
          <obj_property name="ElementShortName">cmd_wr_o</obj_property>
          <obj_property name="ObjectShortName">cmd_wr_o</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/axi_fft2_v1_0_S00_AXI_inst/addr_wr_o">
-         <obj_property name="ElementShortName">addr_wr_o</obj_property>
-         <obj_property name="ObjectShortName">addr_wr_o</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/axi_fft2_v1_0_S00_AXI_inst/dataRE_wr_o">
-         <obj_property name="ElementShortName">dataRE_wr_o</obj_property>
-         <obj_property name="ObjectShortName">dataRE_wr_o</obj_property>
-         <obj_property name="CustomSignalColor">#FF0000</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/axi_fft2_v1_0_S00_AXI_inst/dataIM_wr_o">
-         <obj_property name="ElementShortName">dataIM_wr_o</obj_property>
-         <obj_property name="ObjectShortName">dataIM_wr_o</obj_property>
-         <obj_property name="CustomSignalColor">#FF0000</obj_property>
-         <obj_property name="UseCustomSignalColor">true</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/axi_fft2_v1_0_S00_AXI_inst/log2w_axi_i">
          <obj_property name="ElementShortName">log2w_axi_i[0:0]</obj_property>
          <obj_property name="ObjectShortName">log2w_axi_i[0:0]</obj_property>
@@ -237,18 +248,6 @@
       <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/axi_fft2_v1_0_S00_AXI_inst/status_axi_i">
          <obj_property name="ElementShortName">status_axi_i</obj_property>
          <obj_property name="ObjectShortName">status_axi_i</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/axi_fft2_v1_0_S00_AXI_inst/addr_axi_i">
-         <obj_property name="ElementShortName">addr_axi_i[3:0]</obj_property>
-         <obj_property name="ObjectShortName">addr_axi_i[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/axi_fft2_v1_0_S00_AXI_inst/dataRE_axi_i">
-         <obj_property name="ElementShortName">dataRE_axi_i[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dataRE_axi_i[31:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/axi_fft2_v1_0_S00_AXI_inst/dataIM_axi_i">
-         <obj_property name="ElementShortName">dataIM_axi_i[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dataIM_axi_i[31:0]</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/axi_fft2_v1_0_S00_AXI_inst/S_AXI_ACLK">
          <obj_property name="ElementShortName">S_AXI_ACLK</obj_property>
@@ -434,10 +433,6 @@
          <obj_property name="ElementShortName">cmd_wr_i</obj_property>
          <obj_property name="ObjectShortName">cmd_wr_i</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/addr_wr_i">
-         <obj_property name="ElementShortName">addr_wr_i</obj_property>
-         <obj_property name="ObjectShortName">addr_wr_i</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/log2w_axi_o">
          <obj_property name="ElementShortName">log2w_axi_o[0:0]</obj_property>
          <obj_property name="ObjectShortName">log2w_axi_o[0:0]</obj_property>
@@ -461,30 +456,6 @@
       <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/status_axi_o">
          <obj_property name="ElementShortName">status_axi_o</obj_property>
          <obj_property name="ObjectShortName">status_axi_o</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/addr_axi_o">
-         <obj_property name="ElementShortName">addr_axi_o[3:0]</obj_property>
-         <obj_property name="ObjectShortName">addr_axi_o[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/dataRE_wr_i">
-         <obj_property name="ElementShortName">dataRE_wr_i</obj_property>
-         <obj_property name="ObjectShortName">dataRE_wr_i</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/dataIM_wr_i">
-         <obj_property name="ElementShortName">dataIM_wr_i</obj_property>
-         <obj_property name="ObjectShortName">dataIM_wr_i</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/addr_s">
-         <obj_property name="ElementShortName">addr_s[3:0]</obj_property>
-         <obj_property name="ObjectShortName">addr_s[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/dataRE_axi_o">
-         <obj_property name="ElementShortName">dataRE_axi_o[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dataRE_axi_o[31:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/dataIM_axi_o">
-         <obj_property name="ElementShortName">dataIM_axi_o[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dataIM_axi_o[31:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/log2w_o">
          <obj_property name="ElementShortName">log2w_o[0:0]</obj_property>
@@ -510,54 +481,6 @@
          <obj_property name="ElementShortName">ready_i</obj_property>
          <obj_property name="ObjectShortName">ready_i</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/mem_data_wr_addr_i">
-         <obj_property name="ElementShortName">mem_data_wr_addr_i[3:0]</obj_property>
-         <obj_property name="ObjectShortName">mem_data_wr_addr_i[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/mem_data_wr_i">
-         <obj_property name="ElementShortName">mem_data_wr_i</obj_property>
-         <obj_property name="ObjectShortName">mem_data_wr_i</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/mem_data_wr_o">
-         <obj_property name="ElementShortName">mem_data_wr_o</obj_property>
-         <obj_property name="ObjectShortName">mem_data_wr_o</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/mem_dataRE_i">
-         <obj_property name="ElementShortName">mem_dataRE_i[31:0]</obj_property>
-         <obj_property name="ObjectShortName">mem_dataRE_i[31:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/mem_dataIM_i">
-         <obj_property name="ElementShortName">mem_dataIM_i[31:0]</obj_property>
-         <obj_property name="ObjectShortName">mem_dataIM_i[31:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/mem_data_rd_addr_i">
-         <obj_property name="ElementShortName">mem_data_rd_addr_i[3:0]</obj_property>
-         <obj_property name="ObjectShortName">mem_data_rd_addr_i[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/mem_data_rd_i">
-         <obj_property name="ElementShortName">mem_data_rd_i</obj_property>
-         <obj_property name="ObjectShortName">mem_data_rd_i</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/mem_data_rd_o">
-         <obj_property name="ElementShortName">mem_data_rd_o</obj_property>
-         <obj_property name="ObjectShortName">mem_data_rd_o</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/mem_dataRE_o">
-         <obj_property name="ElementShortName">mem_dataRE_o[31:0]</obj_property>
-         <obj_property name="ObjectShortName">mem_dataRE_o[31:0]</obj_property>
-         <obj_property name="Radix">REALRADIX</obj_property>
-         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
-         <obj_property name="radix_fractionWidth">16</obj_property>
-         <obj_property name="radix_otherWidth">0</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/mem_dataIM_o">
-         <obj_property name="ElementShortName">mem_dataIM_o[31:0]</obj_property>
-         <obj_property name="ObjectShortName">mem_dataIM_o[31:0]</obj_property>
-         <obj_property name="Radix">REALRADIX</obj_property>
-         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
-         <obj_property name="radix_fractionWidth">16</obj_property>
-         <obj_property name="radix_otherWidth">0</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/log2w_s">
          <obj_property name="ElementShortName">log2w_s[0:0]</obj_property>
          <obj_property name="ObjectShortName">log2w_s[0:0]</obj_property>
@@ -582,213 +505,229 @@
          <obj_property name="ElementShortName">status_s</obj_property>
          <obj_property name="ObjectShortName">status_s</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/mem_data_wr_re_o">
-         <obj_property name="ElementShortName">mem_data_wr_re_o</obj_property>
-         <obj_property name="ObjectShortName">mem_data_wr_re_o</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/mem_data_wr_im_o">
-         <obj_property name="ElementShortName">mem_data_wr_im_o</obj_property>
-         <obj_property name="ObjectShortName">mem_data_wr_im_o</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/mem_data_rd_re_o">
-         <obj_property name="ElementShortName">mem_data_rd_re_o</obj_property>
-         <obj_property name="ObjectShortName">mem_data_rd_re_o</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/mem_data_rd_im_o">
-         <obj_property name="ElementShortName">mem_data_rd_im_o</obj_property>
-         <obj_property name="ObjectShortName">mem_data_rd_im_o</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group1134">
-      <obj_property name="label">dpram RE</obj_property>
+      <obj_property name="label">bramRE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/ena">
-         <obj_property name="ElementShortName">ena</obj_property>
-         <obj_property name="ObjectShortName">ena</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="group" fp_name="group2444">
+         <obj_property name="label">A Interface</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="logic" fp_name="/tb_axi_fft2/bramRE_inst/en_a_i">
+            <obj_property name="ElementShortName">en_a_i</obj_property>
+            <obj_property name="ObjectShortName">en_a_i</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/tb_axi_fft2/bramRE_inst/reset_a_i">
+            <obj_property name="ElementShortName">reset_a_i</obj_property>
+            <obj_property name="ObjectShortName">reset_a_i</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_axi_fft2/bramRE_inst/addr_a_i">
+            <obj_property name="ElementShortName">addr_a_i[5:0]</obj_property>
+            <obj_property name="ObjectShortName">addr_a_i[5:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_axi_fft2/bramRE_inst/data_a_i">
+            <obj_property name="ElementShortName">data_a_i[31:0]</obj_property>
+            <obj_property name="ObjectShortName">data_a_i[31:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">16</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_axi_fft2/bramRE_inst/data_a_o">
+            <obj_property name="ElementShortName">data_a_o[31:0]</obj_property>
+            <obj_property name="ObjectShortName">data_a_o[31:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">16</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_axi_fft2/bramRE_inst/we_a_i">
+            <obj_property name="ElementShortName">we_a_i[3:0]</obj_property>
+            <obj_property name="ObjectShortName">we_a_i[3:0]</obj_property>
+         </wvobject>
       </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/enb">
-         <obj_property name="ElementShortName">enb</obj_property>
-         <obj_property name="ObjectShortName">enb</obj_property>
+      <wvobject type="group" fp_name="group2445">
+         <obj_property name="label">B Interface</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject type="logic" fp_name="/tb_axi_fft2/bramRE_inst/en_b_i">
+            <obj_property name="ElementShortName">en_b_i</obj_property>
+            <obj_property name="ObjectShortName">en_b_i</obj_property>
+         </wvobject>
+         <wvobject type="logic" fp_name="/tb_axi_fft2/bramRE_inst/reset_b_i">
+            <obj_property name="ElementShortName">reset_b_i</obj_property>
+            <obj_property name="ObjectShortName">reset_b_i</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_axi_fft2/bramRE_inst/addr_b_i">
+            <obj_property name="ElementShortName">addr_b_i[5:0]</obj_property>
+            <obj_property name="ObjectShortName">addr_b_i[5:0]</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_axi_fft2/bramRE_inst/data_b_i">
+            <obj_property name="ElementShortName">data_b_i[31:0]</obj_property>
+            <obj_property name="ObjectShortName">data_b_i[31:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">16</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_axi_fft2/bramRE_inst/data_b_o">
+            <obj_property name="ElementShortName">data_b_o[31:0]</obj_property>
+            <obj_property name="ObjectShortName">data_b_o[31:0]</obj_property>
+            <obj_property name="Radix">REALRADIX</obj_property>
+            <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+            <obj_property name="radix_fractionWidth">16</obj_property>
+            <obj_property name="radix_otherWidth">0</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb_axi_fft2/bramRE_inst/we_b_i">
+            <obj_property name="ElementShortName">we_b_i[3:0]</obj_property>
+            <obj_property name="ObjectShortName">we_b_i[3:0]</obj_property>
+         </wvobject>
       </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/wra_i">
-         <obj_property name="ElementShortName">wra_i</obj_property>
-         <obj_property name="ObjectShortName">wra_i</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/wrb_i">
-         <obj_property name="ElementShortName">wrb_i</obj_property>
-         <obj_property name="ObjectShortName">wrb_i</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/wra_o">
-         <obj_property name="ElementShortName">wra_o</obj_property>
-         <obj_property name="ObjectShortName">wra_o</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/wrb_o">
-         <obj_property name="ElementShortName">wrb_o</obj_property>
-         <obj_property name="ObjectShortName">wrb_o</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/rda_i">
-         <obj_property name="ElementShortName">rda_i</obj_property>
-         <obj_property name="ObjectShortName">rda_i</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/rdb_i">
-         <obj_property name="ElementShortName">rdb_i</obj_property>
-         <obj_property name="ObjectShortName">rdb_i</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/rda_o">
-         <obj_property name="ElementShortName">rda_o</obj_property>
-         <obj_property name="ObjectShortName">rda_o</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/rdb_o">
-         <obj_property name="ElementShortName">rdb_o</obj_property>
-         <obj_property name="ObjectShortName">rdb_o</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/addra">
-         <obj_property name="ElementShortName">addra[3:0]</obj_property>
-         <obj_property name="ObjectShortName">addra[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/addrb_rd">
-         <obj_property name="ElementShortName">addrb_rd[3:0]</obj_property>
-         <obj_property name="ObjectShortName">addrb_rd[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/addrb_wr">
-         <obj_property name="ElementShortName">addrb_wr[3:0]</obj_property>
-         <obj_property name="ObjectShortName">addrb_wr[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/dia">
-         <obj_property name="ElementShortName">dia[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dia[31:0]</obj_property>
-         <obj_property name="Radix">REALRADIX</obj_property>
-         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
-         <obj_property name="radix_fractionWidth">16</obj_property>
-         <obj_property name="radix_otherWidth">0</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/dib">
-         <obj_property name="ElementShortName">dib[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dib[31:0]</obj_property>
-         <obj_property name="Radix">REALRADIX</obj_property>
-         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
-         <obj_property name="radix_fractionWidth">16</obj_property>
-         <obj_property name="radix_otherWidth">0</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/doa">
-         <obj_property name="ElementShortName">doa[31:0]</obj_property>
-         <obj_property name="ObjectShortName">doa[31:0]</obj_property>
-         <obj_property name="Radix">REALRADIX</obj_property>
-         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
-         <obj_property name="radix_fractionWidth">16</obj_property>
-         <obj_property name="radix_otherWidth">0</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/dob">
-         <obj_property name="ElementShortName">dob[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dob[31:0]</obj_property>
-         <obj_property name="Radix">REALRADIX</obj_property>
-         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
-         <obj_property name="radix_fractionWidth">16</obj_property>
-         <obj_property name="radix_otherWidth">0</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/re_memory/RAM">
-         <obj_property name="ElementShortName">RAM[15:0][31:0]</obj_property>
-         <obj_property name="ObjectShortName">RAM[15:0][31:0]</obj_property>
-         <obj_property name="Radix">REALRADIX</obj_property>
-         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
-         <obj_property name="radix_fractionWidth">16</obj_property>
-         <obj_property name="radix_otherWidth">0</obj_property>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramRE_inst/ram_s">
+         <obj_property name="ElementShortName">ram_s[0:63][7:0]</obj_property>
+         <obj_property name="ObjectShortName">ram_s[0:63][7:0]</obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group1156">
-      <obj_property name="label">dpram IM</obj_property>
+      <obj_property name="label">bramIM</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/ena">
-         <obj_property name="ElementShortName">ena</obj_property>
-         <obj_property name="ObjectShortName">ena</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/tb_axi_fft2/bramIM_inst/en_a_i">
+         <obj_property name="ElementShortName">en_a_i</obj_property>
+         <obj_property name="ObjectShortName">en_a_i</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/enb">
-         <obj_property name="ElementShortName">enb</obj_property>
-         <obj_property name="ObjectShortName">enb</obj_property>
+      <wvobject type="logic" fp_name="/tb_axi_fft2/bramIM_inst/reset_a_i">
+         <obj_property name="ElementShortName">reset_a_i</obj_property>
+         <obj_property name="ObjectShortName">reset_a_i</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/wra_i">
-         <obj_property name="ElementShortName">wra_i</obj_property>
-         <obj_property name="ObjectShortName">wra_i</obj_property>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/addr_a_i">
+         <obj_property name="ElementShortName">addr_a_i[5:0]</obj_property>
+         <obj_property name="ObjectShortName">addr_a_i[5:0]</obj_property>
       </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/wrb_i">
-         <obj_property name="ElementShortName">wrb_i</obj_property>
-         <obj_property name="ObjectShortName">wrb_i</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/wra_o">
-         <obj_property name="ElementShortName">wra_o</obj_property>
-         <obj_property name="ObjectShortName">wra_o</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/wrb_o">
-         <obj_property name="ElementShortName">wrb_o</obj_property>
-         <obj_property name="ObjectShortName">wrb_o</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/rda_i">
-         <obj_property name="ElementShortName">rda_i</obj_property>
-         <obj_property name="ObjectShortName">rda_i</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/rdb_i">
-         <obj_property name="ElementShortName">rdb_i</obj_property>
-         <obj_property name="ObjectShortName">rdb_i</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/rda_o">
-         <obj_property name="ElementShortName">rda_o</obj_property>
-         <obj_property name="ObjectShortName">rda_o</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/rdb_o">
-         <obj_property name="ElementShortName">rdb_o</obj_property>
-         <obj_property name="ObjectShortName">rdb_o</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/addra">
-         <obj_property name="ElementShortName">addra[3:0]</obj_property>
-         <obj_property name="ObjectShortName">addra[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/addrb_rd">
-         <obj_property name="ElementShortName">addrb_rd[3:0]</obj_property>
-         <obj_property name="ObjectShortName">addrb_rd[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/addrb_wr">
-         <obj_property name="ElementShortName">addrb_wr[3:0]</obj_property>
-         <obj_property name="ObjectShortName">addrb_wr[3:0]</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/dia">
-         <obj_property name="ElementShortName">dia[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dia[31:0]</obj_property>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/data_a_i">
+         <obj_property name="ElementShortName">data_a_i[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_a_i[31:0]</obj_property>
          <obj_property name="Radix">REALRADIX</obj_property>
          <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
          <obj_property name="radix_fractionWidth">16</obj_property>
          <obj_property name="radix_otherWidth">0</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/dib">
-         <obj_property name="ElementShortName">dib[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dib[31:0]</obj_property>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/data_a_o">
+         <obj_property name="ElementShortName">data_a_o[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_a_o[31:0]</obj_property>
          <obj_property name="Radix">REALRADIX</obj_property>
          <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
          <obj_property name="radix_fractionWidth">16</obj_property>
          <obj_property name="radix_otherWidth">0</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/doa">
-         <obj_property name="ElementShortName">doa[31:0]</obj_property>
-         <obj_property name="ObjectShortName">doa[31:0]</obj_property>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/we_a_i">
+         <obj_property name="ElementShortName">we_a_i[3:0]</obj_property>
+         <obj_property name="ObjectShortName">we_a_i[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_axi_fft2/bramIM_inst/en_b_i">
+         <obj_property name="ElementShortName">en_b_i</obj_property>
+         <obj_property name="ObjectShortName">en_b_i</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_axi_fft2/bramIM_inst/reset_b_i">
+         <obj_property name="ElementShortName">reset_b_i</obj_property>
+         <obj_property name="ObjectShortName">reset_b_i</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/addr_b_i">
+         <obj_property name="ElementShortName">addr_b_i[5:0]</obj_property>
+         <obj_property name="ObjectShortName">addr_b_i[5:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/data_b_i">
+         <obj_property name="ElementShortName">data_b_i[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_b_i[31:0]</obj_property>
          <obj_property name="Radix">REALRADIX</obj_property>
          <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
          <obj_property name="radix_fractionWidth">16</obj_property>
          <obj_property name="radix_otherWidth">0</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/dob">
-         <obj_property name="ElementShortName">dob[31:0]</obj_property>
-         <obj_property name="ObjectShortName">dob[31:0]</obj_property>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/data_b_o">
+         <obj_property name="ElementShortName">data_b_o[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_b_o[31:0]</obj_property>
          <obj_property name="Radix">REALRADIX</obj_property>
          <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
          <obj_property name="radix_fractionWidth">16</obj_property>
          <obj_property name="radix_otherWidth">0</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/mem_subsystem_inst/im_memory/RAM">
-         <obj_property name="ElementShortName">RAM[15:0][31:0]</obj_property>
-         <obj_property name="ObjectShortName">RAM[15:0][31:0]</obj_property>
-         <obj_property name="Radix">REALRADIX</obj_property>
-         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
-         <obj_property name="radix_fractionWidth">16</obj_property>
-         <obj_property name="radix_otherWidth">0</obj_property>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/we_b_i">
+         <obj_property name="ElementShortName">we_b_i[3:0]</obj_property>
+         <obj_property name="ObjectShortName">we_b_i[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/ram_s">
+         <obj_property name="ElementShortName">ram_s[0:63][7:0]</obj_property>
+         <obj_property name="ObjectShortName">ram_s[0:63][7:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_axi_fft2/bramIM_inst/en_a_i">
+         <obj_property name="ElementShortName">en_a_i</obj_property>
+         <obj_property name="ObjectShortName">en_a_i</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_axi_fft2/bramIM_inst/reset_a_i">
+         <obj_property name="ElementShortName">reset_a_i</obj_property>
+         <obj_property name="ObjectShortName">reset_a_i</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/addr_a_i">
+         <obj_property name="ElementShortName">addr_a_i[5:0]</obj_property>
+         <obj_property name="ObjectShortName">addr_a_i[5:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_axi_fft2/bramIM_inst/addr_a_i[3]">
+         <obj_property name="ElementShortName">[3]</obj_property>
+         <obj_property name="ObjectShortName">[3]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_axi_fft2/bramIM_inst/addr_a_i[2]">
+         <obj_property name="ElementShortName">[2]</obj_property>
+         <obj_property name="ObjectShortName">[2]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_axi_fft2/bramIM_inst/addr_a_i[1]">
+         <obj_property name="ElementShortName">[1]</obj_property>
+         <obj_property name="ObjectShortName">[1]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_axi_fft2/bramIM_inst/addr_a_i[0]">
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">[0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/data_a_i">
+         <obj_property name="ElementShortName">data_a_i[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_a_i[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/data_a_o">
+         <obj_property name="ElementShortName">data_a_o[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_a_o[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/we_a_i">
+         <obj_property name="ElementShortName">we_a_i[3:0]</obj_property>
+         <obj_property name="ObjectShortName">we_a_i[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_axi_fft2/bramIM_inst/en_b_i">
+         <obj_property name="ElementShortName">en_b_i</obj_property>
+         <obj_property name="ObjectShortName">en_b_i</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb_axi_fft2/bramIM_inst/reset_b_i">
+         <obj_property name="ElementShortName">reset_b_i</obj_property>
+         <obj_property name="ObjectShortName">reset_b_i</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/addr_b_i">
+         <obj_property name="ElementShortName">addr_b_i[5:0]</obj_property>
+         <obj_property name="ObjectShortName">addr_b_i[5:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/data_b_i">
+         <obj_property name="ElementShortName">data_b_i[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_b_i[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/data_b_o">
+         <obj_property name="ElementShortName">data_b_o[31:0]</obj_property>
+         <obj_property name="ObjectShortName">data_b_o[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/we_b_i">
+         <obj_property name="ElementShortName">we_b_i[3:0]</obj_property>
+         <obj_property name="ObjectShortName">we_b_i[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb_axi_fft2/bramIM_inst/ram_s">
+         <obj_property name="ElementShortName">ram_s[0:63][7:0]</obj_property>
+         <obj_property name="ObjectShortName">ram_s[0:63][7:0]</obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group1019">
@@ -797,14 +736,23 @@
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/data_i_addr_o">
          <obj_property name="ElementShortName">data_i_addr_o[3:0]</obj_property>
          <obj_property name="ObjectShortName">data_i_addr_o[3:0]</obj_property>
+         <obj_property name="Radix">BINARYRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/dataRE_i">
          <obj_property name="ElementShortName">dataRE_i[31:0]</obj_property>
          <obj_property name="ObjectShortName">dataRE_i[31:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/dataIM_i">
          <obj_property name="ElementShortName">dataIM_i[31:0]</obj_property>
          <obj_property name="ObjectShortName">dataIM_i[31:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/data_rd_o">
          <obj_property name="ElementShortName">data_rd_o</obj_property>
@@ -821,10 +769,18 @@
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/dataRE_o">
          <obj_property name="ElementShortName">dataRE_o[31:0]</obj_property>
          <obj_property name="ObjectShortName">dataRE_o[31:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/dataIM_o">
          <obj_property name="ElementShortName">dataIM_o[31:0]</obj_property>
          <obj_property name="ObjectShortName">dataIM_o[31:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/data_wr_o">
          <obj_property name="ElementShortName">data_wr_o</obj_property>
@@ -982,10 +938,18 @@
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/dataRE_i">
          <obj_property name="ElementShortName">dataRE_i[31:0]</obj_property>
          <obj_property name="ObjectShortName">dataRE_i[31:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/dataIM_i">
          <obj_property name="ElementShortName">dataIM_i[31:0]</obj_property>
          <obj_property name="ObjectShortName">dataIM_i[31:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/data_rd_o">
          <obj_property name="ElementShortName">data_rd_o</obj_property>
@@ -1002,10 +966,18 @@
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/dataRE_o">
          <obj_property name="ElementShortName">dataRE_o[31:0]</obj_property>
          <obj_property name="ObjectShortName">dataRE_o[31:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/dataIM_o">
          <obj_property name="ElementShortName">dataIM_o[31:0]</obj_property>
          <obj_property name="ObjectShortName">dataIM_o[31:0]</obj_property>
+         <obj_property name="Radix">REALRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/tb_axi_fft2/axi_matrix_multiplier/fft2_inst/fft/data_wr_o">
          <obj_property name="ElementShortName">data_wr_o</obj_property>

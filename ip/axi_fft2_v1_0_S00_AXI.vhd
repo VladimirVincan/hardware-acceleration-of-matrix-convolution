@@ -27,9 +27,9 @@ entity axi_fft2_v1_0_S00_AXI is
         log2h_wr_o : out std_logic;
         height_wr_o : out std_logic;
         cmd_wr_o : out std_logic;
-        addr_wr_o : out std_logic;
-        dataRE_wr_o : out std_logic;
-        dataIM_wr_o : out std_logic;
+--        addr_wr_o : out std_logic;
+--        dataRE_wr_o : out std_logic;
+--        dataIM_wr_o : out std_logic;
         
         log2w_axi_i : in std_logic_vector(log2c(log2c(FFT_SIZE))-1 downto 0);
         width_axi_i : in std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
@@ -37,9 +37,9 @@ entity axi_fft2_v1_0_S00_AXI is
         height_axi_i : in std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
         cmd_axi_i : in std_logic;
         status_axi_i : in std_logic;
-		addr_axi_i : in std_logic_vector(log2c(FFT_SIZE*FFT_SIZE)-1 downto 0);
-        dataRE_axi_i : in std_logic_vector(DATA_WIDTH-1 downto 0);
-        dataIM_axi_i : in std_logic_vector(DATA_WIDTH-1 downto 0);
+--		addr_axi_i : in std_logic_vector(log2c(FFT_SIZE*FFT_SIZE)-1 downto 0);
+--        dataRE_axi_i : in std_logic_vector(DATA_WIDTH-1 downto 0);
+--        dataIM_axi_i : in std_logic_vector(DATA_WIDTH-1 downto 0);
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -237,18 +237,18 @@ begin
             log2h_wr_o <= '0';
             height_wr_o <= '0';
             cmd_wr_o <= '0';
-            addr_wr_o <= '0';
-            dataRE_wr_o <= '0';
-            dataIM_wr_o <= '0';
+--            addr_wr_o <= '0';
+--            dataRE_wr_o <= '0';
+--            dataIM_wr_o <= '0';
 	    else
 	      log2w_wr_o <= '0';
           width_wr_o <= '0';
           log2h_wr_o <= '0';
           height_wr_o <= '0';
           cmd_wr_o <= '0';
-          addr_wr_o <= '0';
-          dataRE_wr_o <= '0';
-          dataIM_wr_o <= '0';
+--          addr_wr_o <= '0';
+--          dataRE_wr_o <= '0';
+--          dataIM_wr_o <= '0';
             
 	      --loc_addr := axi_awaddr(ADDR_LSB + OPT_MEM_ADDR_BITS downto ADDR_LSB);
 	      if (slv_reg_wren = '1') then
@@ -264,12 +264,12 @@ begin
 	          when b"0100" =>
                 cmd_wr_o <= '1';
 	          --when b"0101" =>
-	          when b"0110" =>
-                addr_wr_o <= '1';
-	          when b"0111" =>
-	            dataRE_wr_o <= '1';
-	          when b"1000" =>
-	            dataIM_wr_o <= '1';
+--	          when b"0110" =>
+--                addr_wr_o <= '1';
+--	          when b"0111" =>
+--	            dataRE_wr_o <= '1';
+--	          when b"1000" =>
+--	            dataIM_wr_o <= '1';
 --	          when b"1000" =>
 --	          when b"1001" =>
 	          when others =>
@@ -378,12 +378,12 @@ begin
             reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-1) & cmd_axi_i;
 	      when b"0101" =>
             reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-1) & status_axi_i;
-	      when b"0110" =>
-	        reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE*FFT_SIZE)) & addr_axi_i;
-	      when b"0111" =>
-	        reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-DATA_WIDTH) & dataRE_axi_i;
-	      when b"1000" =>
-	        reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-DATA_WIDTH) & dataIM_axi_i;
+--	      when b"0110" =>
+--	        reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE*FFT_SIZE)) & addr_axi_i;
+--	      when b"0111" =>
+--	        reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-DATA_WIDTH) & dataRE_axi_i;
+--	      when b"1000" =>
+--	        reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-DATA_WIDTH) & dataIM_axi_i;
 	      when others =>
 	        reg_data_out  <= (others => '0');
 	    end case;
