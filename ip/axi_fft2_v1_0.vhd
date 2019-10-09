@@ -11,6 +11,7 @@ entity axi_fft2_v1_0 is
         FFT_SIZE : integer := 8;
         FIXED_POINT_WIDTH : integer := 16;
         CHAR_WIDTH : integer := 8;
+        ADDR_WIDTH : integer := 5;
 		-- User parameters ends
 		-- Do not modify the parameters beyond this line
 
@@ -33,7 +34,7 @@ entity axi_fft2_v1_0 is
 		-- Users to add ports here
 		-- Interface to the BRAM modules
 		en_o     : out STD_LOGIC;
-        addr_o   : out STD_LOGIC_VECTOR (log2c(FFT_SIZE*FFT_SIZE*DATA_WIDTH/CHAR_WIDTH)-1 downto 0);
+        addr_o   : out STD_LOGIC_VECTOR (ADDR_WIDTH-1 downto 0); -- Does not work: (log2c(FFT_SIZE*FFT_SIZE*DATA_WIDTH/CHAR_WIDTH)-1 downto 0);
         dataRE_i : in STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
         dataIM_i : in STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
         dataRE_o : out STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
@@ -231,7 +232,7 @@ bram_if_inst: entity work.bram_if(Behavioral)
         clk => s00_axi_aclk,
         -- bram connector
         bram_en_o	    => en_o,
-        bramif_addr_o	=> addr_o(addr_o'length-1 downto 2),
+        bramif_addr_o	=> addr_o(log2c(FFT_SIZE*FFT_SIZE*DATA_WIDTH/CHAR_WIDTH)-1 downto 2),
         bramif_dataRE_i => dataRE_i,
         bramif_dataRE_o => dataRE_o,
         bramif_dataIM_i => dataIM_i,

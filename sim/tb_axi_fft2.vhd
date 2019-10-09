@@ -12,6 +12,7 @@ architecture beh of tb_axi_fft2 is
     constant DATA_WIDTH_c : integer := 32;
     constant FIXED_POINT_WIDTH_c : integer := 16;
     constant FFT_SIZE_c : integer := 4;
+    constant ADDR_WIDTH_c : integer := 6;
     constant CHAR_WIDTH_c : integer := 8;
     constant HEIGHT_c : integer := 3;
     constant WIDTH_c : integer := 3;
@@ -483,7 +484,8 @@ axi_matrix_multiplier: entity work.axi_fft2_v1_0(arch_imp)
     generic map(
         FIXED_POINT_WIDTH => FIXED_POINT_WIDTH_c,
         DATA_WIDTH        => DATA_WIDTH_c,
-        FFT_SIZE          => FFT_SIZE_c)
+        FFT_SIZE          => FFT_SIZE_c,
+        ADDR_WIDTH        => ADDR_WIDTH_c)
     port map (
         -- Ports of BRAM Interface
         en_o     => ip_en_o,
