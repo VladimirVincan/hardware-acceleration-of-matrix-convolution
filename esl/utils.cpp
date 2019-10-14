@@ -76,6 +76,11 @@ void to_char (unsigned char *buf, string s)
     }
 }
 
+void to_uchar(unsigned char *c, num_t d)
+{
+  to_char(c,d.to_bin());
+}
+
 // fix_t to_fixed (unsigned char *buf)
 // {
 //   int val_i;

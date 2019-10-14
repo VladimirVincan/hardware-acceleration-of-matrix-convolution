@@ -6,6 +6,7 @@
 #include <string.h>
 #include <bitset>
 #include <math.h>
+#include "typedefs.hpp"
 
 using namespace std;
 
@@ -18,5 +19,6 @@ static const int RAM_SIZE = MATRIX_SIZE * MATRIX_SIZE * CHARS_AMOUNT;
 
 double to_fixed (unsigned char *);
 void to_char (unsigned char *, string);
+void to_uchar (unsigned char *buf, num_t d);
 
 #endif // _UTILS_HPP_
