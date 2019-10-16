@@ -104,3 +104,41 @@ void to_uchar(unsigned char *c, num_t d)
 //     }
 // }
 
+int to_int (unsigned char *buf)
+{
+  int sum = 0;
+  sum += ((int)buf[0]) << 24;
+  sum += ((int)buf[1]) << 16;
+  sum += ((int)buf[2]) << 8;
+  sum += ((int)buf[3]);
+  return sum;
+}
+
+void to_uchar (unsigned char *buf, int d)
+{
+  buf[0] = (char) (d >> 24);
+  buf[1] = (char) (d >> 16);
+  buf[2] = (char) (d >> 8);
+  buf[3] = (char) (d);
+}
+
+int highest_bit(int n)
+{
+  int ret = 0;
+  while (n>0) n>>=1,++ret;
+  return ret;
+}
+
+int log(int n)
+{
+  // log(4) = 2
+  // log(5) = 3
+  // ...
+  // log(8) = 3
+  // log(9) = 4
+  // ...
+  int log_val = highest_bit(n) - 1;
+  // std::cout << "pow = " << (1<<log_val) << " log = " << log_val << std::endl;
+  if (1<<log_val != n) log_val+=1;
+  return log_val;
+}

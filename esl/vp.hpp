@@ -7,6 +7,7 @@
 #include "typedefs.hpp"
 #include "bram.hpp"
 #include "soft.hpp"
+#include "hard.hpp"
 #include "bram_ctrl.hpp"
 
 class Vp :  public sc_core::sc_module
@@ -18,6 +19,7 @@ protected:
   Soft soft;
   Bram bram_re, bram_im;
   BramCtrl bram_ctrl;
+  Hard hard;
 };
 
 #endif // VP_HPP_

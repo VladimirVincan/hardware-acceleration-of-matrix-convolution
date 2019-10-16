@@ -14,4 +14,13 @@ typedef sc_dt::sc_fixed_fast <W, I, Q, O> num_t;
 typedef tlm::tlm_base_protocol_types::tlm_payload_type pl_t;
 typedef tlm::tlm_base_protocol_types::tlm_phase_type ph_t;
 
+#define ADDR_WIDTH 0x08
+#define ADDR_LOG2W 0x0c
+#define ADDR_HEIGHT 0x10
+#define ADDR_LOG2H 0x14
+#define ADDR_CMD 0x18
+#define ADDR_STATUS 0x1c
+
+#define MAX_SIZE 64
+
 #endif // TYPEDEFS_HPP

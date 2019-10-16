@@ -13,7 +13,7 @@ class Bram : public sc_core::sc_module
 public:
   Bram (sc_core::sc_module_name name);
   tlm_utils::simple_target_socket<Bram> bram_port_a;
-  // tlm_utils::simple_target_socket<Bram> bram_port_b;
+  tlm_utils::simple_target_socket<Bram> bram_port_b;
 protected:
   void b_transport(pl_t &, sc_core::sc_time &);
   std::vector<num_t> mem;

@@ -3,7 +3,7 @@
 Bram::Bram(sc_core::sc_module_name name) : sc_module(name)
 {
   bram_port_a.register_b_transport(this, &Bram::b_transport);
-  // bram_port_b.register_b_transport(this, &Bram::b_transport);
+  bram_port_b.register_b_transport(this, &Bram::b_transport);
   mem.reserve(1000);
 
   SC_REPORT_INFO("BRAM", "Constructed.");
@@ -16,21 +16,18 @@ void Bram::b_transport(pl_t &pl, sc_core::sc_time &offset)
   unsigned int len = pl.get_data_length();
   unsigned char *buf = pl.get_data_ptr();
 
-  // std::cout << "cmd = " << cmd << std::endl;
 	switch(cmd)
     {
     case tlm::TLM_WRITE_COMMAND:
       for (unsigned int i = 0; i < len; ++i)
         {
           mem[addr++] = buf[i];
-          // std::cout << (int)mem[addr-1];
         }
       pl.set_response_status( tlm::TLM_OK_RESPONSE );
       break;
     case tlm::TLM_READ_COMMAND:
       for (unsigned int i = 0; i < len; ++i)
         {
-          // std::cout << (int)mem[addr];
           buf[i] = mem[addr++];
         }
       pl.set_response_status( tlm::TLM_OK_RESPONSE );
