@@ -11,7 +11,7 @@ entity axi_fft2_v1_0 is
         FFT_SIZE : integer := 8;
         FIXED_POINT_WIDTH : integer := 16;
         CHAR_WIDTH : integer := 8;
-        ADDR_WIDTH : integer := 5;
+        ADDR_WIDTH : integer := 15; --5;
 		-- User parameters ends
 		-- Do not modify the parameters beyond this line
 

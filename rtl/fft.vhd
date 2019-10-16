@@ -54,12 +54,6 @@ architecture Behavioral of fft is
     signal temp_r, temp_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
     signal m2_r, m2_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
     signal m_r, m_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
-    
---    signal addr_r, addr_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
---    signal dataRE_r, dataRE_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
---    signal dataIM_r, dataIM_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
---    signal wr_r, wr_n : STD_LOGIC;
---    signal rd_r, rd_n : STD_LOGIC;
 
     signal addr_top, addr_bot : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
     signal dataRE_top_i, dataRE_bot_i, dataIM_top_i, dataIM_bot_i : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
@@ -124,7 +118,7 @@ begin
             bottomIM_o => botIM_o_n,
             
             k => j_r (log2c(FFT_SIZE/2)-1 downto 0),
-            size => i_r (log2c(FFT_SIZE/2)-1 downto 0),
+            size => i_r (log2c(log2c(FFT_SIZE))-1 downto 0),
             
             start => butterfly_start_r,
             ready => butterfly_ready_n);
@@ -147,12 +141,6 @@ begin
                 temp_r <= (others => '0');
                 m_r <= (others => '0');
                 m2_r <= (others => '0');
-                
-    --            addr_r <= (others => '0');
-    --            dataRE_r <= (others => '0');
-    --            dataIM_r <= (others => '0');
-    --            wr_r <= '0';
-    --            rd_r <= '0';
     
             -- FFT MEMORY
                 dataRE <= (others => (others => '0'));
@@ -202,16 +190,8 @@ begin
                 temp_r <= temp_n;
                 m2_r <= m2_n;
                 m_r <= m_n;
-                
-    --            addr_r <= addr_n;
-    --            dataRE_r <= dataRE_n;
-    --            dataIM_r <= dataIM_n;
-    --            wr_r <= wr_n;
-    --            rd_r <= rd_n;
-                
+
             -- FFT MEMORY
-    --            dataRE <= dataRE_n;
-    --            dataIM <= dataIM_n;
                 dataRE_top_o <= dataRE(to_integer(unsigned(addr_top)));
                 dataIM_top_o <= dataIM(to_integer(unsigned(addr_top)));
                 dataRE_bot_o <= dataRE(to_integer(unsigned(addr_bot)));
@@ -225,6 +205,7 @@ begin
                        dataRE(to_integer(unsigned(addr_bot))) <= dataRE_bot_i;
                        dataIM(to_integer(unsigned(addr_bot))) <= dataIM_bot_i;
                 end if;
+                
             -- BUTTERFLY INTERFACE
                 butterfly_start_r <= butterfly_start_n;
                 butterfly_ready_r <= butterfly_ready_n;
@@ -287,12 +268,6 @@ begin
         dataRE_bot_i <= (others => '0');
         dataIM_top_i <= (others => '0');
         dataIM_bot_i <= (others => '0');
-        
---        addr_n <= addr_r;
---        dataRE_n <= dataRE_r;
---        dataIM_n <= dataIM_r;
---        wr_n <= '0';
---        rd_n <= '0';
                 
     -- BUTTERFLY OUTPUT INTERFACE (5+2 signals)
         butterfly_start_n <= '0';
