@@ -25,5 +25,6 @@ void to_uchar (unsigned char *, int d);
 
 int highest_bit(int n);
 int log(int n);
+int setBitNumber(int n);
 
 #endif // _UTILS_HPP_

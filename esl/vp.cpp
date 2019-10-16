@@ -17,3 +17,8 @@ Vp::Vp (sc_core::sc_module_name name)
 
   SC_REPORT_INFO("Virtual Platform", "Constructed.");
 }
+
+Vp::~Vp()
+{
+  SC_REPORT_INFO("Virtual Platform", "Destroyed.");
+}

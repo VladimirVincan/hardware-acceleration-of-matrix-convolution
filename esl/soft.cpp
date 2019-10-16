@@ -7,7 +7,8 @@ Soft::Soft(sc_core::sc_module_name name)
   , offset(sc_core::SC_ZERO_TIME)
 {
   matrix_a_re_file.open("matrix_a_re.txt");
-  if(!matrix_a_re_file.is_open())
+  matrix_b_re_file.open("matrix_b_re.txt");
+  if(!matrix_a_re_file.is_open() || !matrix_b_re_file.is_open())
     SC_REPORT_ERROR("Soft", "Cannot open file.");
 
   SC_THREAD(convolve);
@@ -17,6 +18,8 @@ Soft::Soft(sc_core::sc_module_name name)
 Soft::~Soft()
 {
   matrix_a_re_file.close();
+  matrix_b_re_file.close();
+  SC_REPORT_INFO("Soft", "Destroyed.");
 }
 
 void Soft::convolve()
@@ -26,180 +29,172 @@ void Soft::convolve()
 
   /*
     ---------------------------------------------
-    WRITE PART - read from file, write into BRAMs
+    WRITE PART - read from files, write into BRAMs
     ---------------------------------------------
   */
   matrix_a_re_file >> a_h >> a_w;
-  for (int i = 0; i<a_h; ++i)
-    for (int j = 0; j < a_w; ++j)
+  matrix_b_re_file >> b_h >> b_w;
+  width = setBitNumber(a_w+b_w-1);
+  height = setBitNumber(a_h+b_h-1);
+  // width = a_w;
+  // height = a_h;
+
+  for (int i = 0; i<height; ++i) // add A
+    for (int j = 0; j < width; ++j)
       {
-        matrix_a_re_file >> write_val;
-        write_bram(i*a_w+j,write_val,0);
-        // to_uchar(buf, write_val);
-        // buf[4] = buf[5] = buf[6] = buf[7] = 0;
+        if (i<a_h && j<a_w)
+          {
+            matrix_a_re_file >> write_val;
+            write_bram(i*width+j,write_val,0);
+          }
+        else
+            write_bram(i*width+j,0,0);
+      }
 
-        // pl.set_address((i*a_w + j)*4);
-        // pl.set_data_length(8);
-        // pl.set_data_ptr(buf);
-        // pl.set_command( tlm::TLM_WRITE_COMMAND );
-        // pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
-
-        // bram_socket->b_transport(pl,offset);
+  for (int i = 0; i<height; ++i) // add B
+    for (int j = 0; j < width; ++j)
+      {
+        if (i<b_h && j<b_w)
+          {
+            matrix_b_re_file >> write_val;
+            write_bram(i*width+j + width*height,write_val,0);
+          }
+        else
+          write_bram(i*width+j + width*height,0,0);
       }
 
   /*
     --------------------------------------------
-    WRITE PART - write dimensions into HARD IP
+    WRITE PART - write dimensions of A into HARD IP
     --------------------------------------------
   */
 
-  write_hard(ADDR_WIDTH, a_w-1);
-  // to_uchar (buf, a_w-1);
-  // pl.set_address(ADDR_WIDTH);
-  // pl.set_data_length(4);
-  // pl.set_data_ptr(buf);
-  // pl.set_command( tlm::TLM_WRITE_COMMAND );
-  // pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
-  // hard_socket->b_transport(pl,offset);
-
-  write_hard(ADDR_LOG2W, log(a_w-1));
-  // to_uchar (buf, log(a_w-1)); // log2w
-  // pl.set_address(ADDR_LOG2W);
-  // pl.set_data_length(4);
-  // pl.set_data_ptr(buf);
-  // pl.set_command( tlm::TLM_WRITE_COMMAND );
-  // pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
-  // hard_socket->b_transport(pl,offset);
-
-  write_hard(ADDR_HEIGHT, a_h-1);
-  // to_uchar (buf, a_h-1);
-  // pl.set_address(ADDR_HEIGHT);
-  // pl.set_data_length(4);
-  // pl.set_data_ptr(buf);
-  // pl.set_command( tlm::TLM_WRITE_COMMAND );
-  // pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
-  // hard_socket->b_transport(pl,offset);
-
-  write_hard(ADDR_LOG2H, log(a_h-1));
-  // to_uchar (buf, log(a_h-1)); // log210
-  // pl.set_address(ADDR_LOG2H);
-  // pl.set_data_length(4);
-  // pl.set_data_ptr(buf);
-  // pl.set_command( tlm::TLM_WRITE_COMMAND );
-  // pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
-  // hard_socket->b_transport(pl,offset);
-
+  write_hard(ADDR_WIDTH, width-1); // -1 because thats how the IP was implemented
+  write_hard(ADDR_LOG2W, log(width)-1);
+  write_hard(ADDR_HEIGHT, height-1);
+  write_hard(ADDR_LOG2H, log(height)-1);
 
   /*
     --------------------------------------------
-    WRITE PART - start the HARD IP
+    FFT2 PART - start the HARD IP, wait until it finishes (fft2 over A)
     --------------------------------------------
   */
+  // std::cout << std::endl << "A matrix begun" << std::endl << std::endl;
+  // debug_read(0);
 
   write_hard(ADDR_CMD, 1);
-  // to_uchar (buf, 1);
-  // pl.set_address(ADDR_CMD);
-  // pl.set_data_length(4);
-  // pl.set_data_ptr(buf);
-  // pl.set_command( tlm::TLM_WRITE_COMMAND );
-  // pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
-  // hard_socket->b_transport(pl,offset);
-
   int ready = 1;
   while (ready)
     {
       ready = read_hard(ADDR_STATUS);
-      // pl.set_address(ADDR_STATUS);
-      // pl.set_data_length(4);
-      // pl.set_data_ptr(buf);
-      // pl.set_command( tlm::TLM_READ_COMMAND );
-      // pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
-      // sc_core::sc_time offset = sc_core::SC_ZERO_TIME;
-      // hard_socket->b_transport(pl,offset);
-
-      // ready = to_fixed(buf);
-      // std::cout << "ready = " << ready << std::endl;;
     }
-
-
   write_hard(ADDR_CMD, 0);
-  // to_uchar (buf, 0);
-  // pl.set_address(ADDR_CMD);
-  // pl.set_data_length(4);
-  // pl.set_data_ptr(buf);
-  // pl.set_command( tlm::TLM_WRITE_COMMAND );
-  // pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
-  // hard_socket->b_transport(pl,offset);
-
-  /*
-    --------------------------------------------
-    READ PART - wait for the HARD IP to finish
-    --------------------------------------------
-  */
-
   while (!ready)
     {
       ready = read_hard(ADDR_STATUS);
-      // pl.set_address(ADDR_STATUS);
-      // pl.set_data_length(4);
-      // pl.set_data_ptr(buf);
-      // pl.set_command( tlm::TLM_READ_COMMAND );
-      // pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
-      // sc_core::sc_time offset = sc_core::SC_ZERO_TIME;
-      // hard_socket->b_transport(pl,offset);
-      // ready = to_int(buf);
     }
+
+  std::cout << std::endl << "A matrix finished" << std::endl << std::endl;
+  debug_read(0);
+  /*
+    --------------------------------------------
+    SWAP PART - change A and B matrix positions
+    --------------------------------------------
+  */
+
+  num_t a_re, a_im, b_re, b_im;
+  for (int i = 0; i<height; ++i)
+    for (int j = 0; j < width; ++j)
+      {
+        read_bram(i*width+j, a_re, a_im);
+        read_bram(i*width+j + width*height, b_re, b_im);
+        write_bram(i*width+j, b_re, b_im);
+        write_bram(i*width+j + width*height, a_re, a_im);
+      }
+
+  /*
+    --------------------------------------------
+    FFT2 PART - start the HARD IP, wait until it finishes (fft2 over B)
+    --------------------------------------------
+  */
+  // std::cout << std::endl << "B matrix begun" << std::endl << std::endl;
+  // debug_read(0);
+
+  write_hard(ADDR_CMD, 1);
+  while (ready)
+    {
+      ready = read_hard(ADDR_STATUS);
+    }
+  write_hard(ADDR_CMD, 0);
+  while (!ready)
+    {
+      ready = read_hard(ADDR_STATUS);
+    }
+
+  std::cout << std::endl << "B matrix finished" << std::endl << std::endl;
+  debug_read(0);
+
+  /*
+    --------------------------------------------
+    MULTIPLICATION PART - create C_inv (A*B element-wise)
+    --------------------------------------------
+  */
+
+  num_t c_re, c_im;
+  for (int i = 0; i<height; ++i)
+    for (int j = 0; j < width; ++j)
+      {
+        read_bram(i*width+j, b_re, b_im);
+        read_bram(i*width+j + width*height, a_re, a_im);
+        c_re = a_re*b_re - a_im*b_im;
+        c_im = -(a_re*b_im + a_im*b_re);
+        write_bram(i*width+j, c_re, c_im);
+      }
+
+  /*
+    --------------------------------------------
+    INVERSE FFT2 PART - start the HARD IP, wait until it finishes (fft2 over A*B element-wise)
+    --------------------------------------------
+  */
+  // std::cout << std::endl << "C matrix begun" << std::endl << std::endl;
+  // debug_read(0);
+
+  write_hard(ADDR_CMD, 1);
+  while (ready)
+    {
+      ready = read_hard(ADDR_STATUS);
+    }
+  write_hard(ADDR_CMD, 0);
+  while (!ready)
+    {
+      ready = read_hard(ADDR_STATUS);
+    }
+
+  /*
+    --------------------------------------------
+    DIVISION PART - C/(width*height) element-wise
+    --------------------------------------------
+  */
+
+  // std::cout << std::endl << "C matrix intermediary" << std::endl << std::endl;
+  // debug_read(0);
+
+  for (int i = 0; i<height; ++i)
+    for (int j = 0; j < width; ++j)
+      {
+        read_bram(i*width+j, c_re, c_im);
+        c_re /= width*height;
+        c_im /= width*height;
+        write_bram(i*width+j, c_re, c_im);
+      }
 
   /*
     ---------------------------------------------
     READ PART - read from BRAMs
     ---------------------------------------------
   */
-  num_t readRE, readIM;
-
-  std::cout << std::endl << "Final results:" << std::endl << std::endl;
-   for (int i = 0; i<a_h; ++i)
-     {
-       for (int j = 0; j < a_w; ++j)
-         {
-           // pl.set_address((i*a_w + j)*4);
-           // pl.set_data_length(8);
-           // pl.set_data_ptr(buf);
-           // pl.set_command( tlm::TLM_READ_COMMAND );
-           // pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
-           // sc_core::sc_time offset = sc_core::SC_ZERO_TIME;
-
-           // bram_socket->b_transport(pl,offset);
-
-           // read_val = to_fixed(buf);
-           read_bram(i*a_w+j, readRE, readIM);
-           std::cout << readRE << " ";
-         }
-       std::cout << std::endl;
-     }
-
-   std::cout << std::endl;
-
-   for (int i = 0; i<a_h; ++i)
-     {
-       for (int j = 0; j < a_w; ++j)
-         {
-           // pl.set_address((i*a_w + j)*4);
-           // pl.set_data_length(8);
-           // pl.set_data_ptr(buf);
-           // pl.set_command( tlm::TLM_READ_COMMAND );
-           // pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
-           // sc_core::sc_time offset = sc_core::SC_ZERO_TIME;
-
-           // bram_socket->b_transport(pl,offset);
-
-           // read_val = to_fixed(buf+4);
-           // std::cout << read_val << " ";
-           read_bram(i*a_w+j, readRE, readIM);
-           std::cout << readIM << " ";
-         }
-       std::cout << std::endl;
-     }
+  std::cout << std::endl << "C matrix finished" << std::endl << std::endl;
+  debug_read(0);
 }
 
 void Soft::read_bram(int addr, num_t &valRE, num_t &valIM)
@@ -256,4 +251,31 @@ void Soft::write_hard(int addr, int val)
   pl.set_command( tlm::TLM_WRITE_COMMAND );
   pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
   hard_socket->b_transport(pl,offset);
+}
+
+void Soft::debug_read(int offset)
+{
+  num_t readRE, readIM;
+
+  for (int i = 0; i<height; ++i)
+    {
+      for (int j = 0; j < width; ++j)
+        {
+          read_bram(i*width+j + offset, readRE, readIM);
+          std::cout << readRE << " ";
+        }
+      std::cout << std::endl;
+    }
+
+  std::cout << std::endl;
+
+  for (int i = 0; i<height; ++i)
+    {
+      for (int j = 0; j < width; ++j)
+        {
+          read_bram(i*width+j + offset, readRE, readIM);
+          std::cout << readIM << " ";
+        }
+      std::cout << std::endl;
+    }
 }

@@ -16,7 +16,10 @@ Hard::Hard(sc_core::sc_module_name name)
   SC_REPORT_INFO("Hard", "Constructed.");
 }
 
-Hard::~Hard() {}
+Hard::~Hard()
+{
+  SC_REPORT_INFO("Hard", "Destroyed.");
+}
 
 void Hard::b_transport(pl_t &pl, sc_core::sc_time &offset)
 {
@@ -71,7 +74,7 @@ void Hard::b_transport(pl_t &pl, sc_core::sc_time &offset)
 
 void Hard::fft2(sc_core::sc_time &system_offset)
 {
-  std::cout << "Entered fft2 module." << endl;
+  // std::cout << "Entered fft2 module." << endl;
 
   pl_t pl;
   unsigned char buf[8];
@@ -95,8 +98,8 @@ void Hard::fft2(sc_core::sc_time &system_offset)
     DEBUG PART - read initial values of BRAMs
     ---------------------------------------------
   */
-  std::cout << std::endl << "Initial results:" << std::endl << std::endl;
-  debug_read();
+  // std::cout << std::endl << "Initial results:" << std::endl << std::endl;
+  // debug_read();
       /*
         ---------------------------------------------
         // bit reverasal & horizontal FFT
@@ -107,7 +110,7 @@ void Hard::fft2(sc_core::sc_time &system_offset)
         for (int j = 0; j < width; ++j){
           int reversed = 0;
           int temp = j;
-          for (int k = 0; k < log2w-1; ++k){
+          for (int k = 0; k < log2w; ++k){
             reversed = reversed << 1;
             reversed = reversed | (temp&1);
             temp = temp >> 1;
@@ -129,8 +132,8 @@ void Hard::fft2(sc_core::sc_time &system_offset)
     ---------------------------------------------
   */
 
-      std::cout << std::endl << "Intermediary results:" << std::endl << std::endl;
-      debug_read();
+      // std::cout << std::endl << "Intermediary results:" << std::endl << std::endl;
+      // debug_read();
 
    /*
      ---------------------------------------------
@@ -142,7 +145,7 @@ void Hard::fft2(sc_core::sc_time &system_offset)
         for (int i=0;i<height; ++i){
           int reversed = 0;
           int temp = i;
-          for (int k = 0; k < log2h-1; ++k){
+          for (int k = 0; k < log2h; ++k){
             reversed = reversed << 1;
             reversed = reversed | (temp&1);
             temp = temp >> 1;
@@ -159,7 +162,7 @@ void Hard::fft2(sc_core::sc_time &system_offset)
       }
       offset += sc_core::sc_time(200, sc_core::SC_NS);
       ready = 1;
-      std::cout << "Finished fft2" << std::endl;
+      // std::cout << "Finished fft2" << std::endl;
     }
 }
 
@@ -174,7 +177,7 @@ void Hard::butterfly(
   num_t *bottomIM_o,
   int k)
 {
-  std::cout << "Entered butterfly module." << endl;
+  // std::cout << "Entered butterfly module." << endl;
 
   num_t botRE = bottomRE_i * wCOS[k] - bottomIM_i * wSIN[k];
   num_t botIM = bottomRE_i * wSIN[k] + bottomIM_i * wCOS[k];
@@ -184,7 +187,7 @@ void Hard::butterfly(
   *bottomRE_o = topRE_i - botRE;
   *bottomIM_o = topIM_i - botIM;
 
-  std::cout << topRE_i << " " << topIM_i << " " << bottomRE_i << " " << bottomIM_i << " " << *topRE_o << " " << *topIM_o << " " << *bottomRE_o << " " << *bottomIM_o << std::endl;
+  // std::cout << k << " " << wCOS[k] << " " << wSIN[k] << " " << topRE_i << " " << topIM_i << " " << bottomRE_i << " " << bottomIM_i << " " << *topRE_o << " " << *topIM_o << " " << *bottomRE_o << " " << *bottomIM_o << std::endl;
 }
 
 void Hard::fft(
@@ -194,14 +197,14 @@ void Hard::fft(
   num_t *dataIM
 )
 {
-  std::cout << "Entered fft module." << endl;
+  // std::cout << "Entered fft module." << endl;
 
-  std::cout << "dataRE = ";
-  for (int i = 0; i<4; ++i)
-    std::cout << dataRE[i] << " ";
-  std::cout << std::endl;
+  // std::cout << "dataRE = ";
+  // for (int i = 0; i<size; ++i)
+  //   std::cout << dataRE[i] << " ";
+  // std::cout << std::endl;
 
-  for (int i=0; i < log2size-1; ++i){
+  for (int i=0; i < log2size; ++i){
     int m = 1 << (i+1);
     int m2 = 1 << i; // "half of m"
     for (int j=0; j < m2; ++j){
@@ -219,7 +222,7 @@ void Hard::fft(
           dataIM+k,
           dataRE+k+m2,
           dataIM+k+m2,
-          j << (log2size-i-1) );
+          j*MAX_SIZE/(2<<i));
       }
     }
   }
@@ -254,6 +257,7 @@ void Hard::debug_read()
          }
        std::cout << std::endl;
      }
+   std::cout << std::endl;
 }
 
 num_t Hard::read_bram(int addr, char c)

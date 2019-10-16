@@ -142,3 +142,15 @@ int log(int n)
   if (1<<log_val != n) log_val+=1;
   return log_val;
 }
+
+// e.g. 1 001 001 010 -> 1 111 111 111 -> 10 000 000 000
+int setBitNumber(int n)
+{
+  n |= n >> 1;
+  n |= n >> 2;
+  n |= n >> 4;
+  n |= n >> 8;
+  n |= n >> 16;
+  n = n + 1;
+  return n;
+}

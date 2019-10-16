@@ -22,5 +22,6 @@ typedef tlm::tlm_base_protocol_types::tlm_phase_type ph_t;
 #define ADDR_STATUS 0x1c
 
 #define MAX_SIZE 64
+#define MEM_RESERVED 100000
 
 #endif // TYPEDEFS_HPP

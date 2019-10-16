@@ -21,11 +21,12 @@ protected:
   pl_t pl;
   sc_core::sc_time offset;
   std::ifstream matrix_a_re_file, matrix_b_re_file;
-  int a_w, a_h, b_w, b_h, width, height, log2w, log2c;
+  int a_w, a_h, b_w, b_h, width, height, log2w, log2h;
   void read_bram(int addr, num_t &valRE, num_t &valIM);
   void write_bram(int addr, num_t valRE, num_t valIM);
   int read_hard(int addr);
   void write_hard(int addr, int val);
+  void debug_read(int offset);
 };
 
 #endif // SOFT_HPP_

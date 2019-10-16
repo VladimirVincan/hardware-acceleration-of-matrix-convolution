@@ -11,6 +11,7 @@ class BramCtrl: public sc_core::sc_module
 {
 public:
   BramCtrl (sc_core::sc_module_name name);
+  ~BramCtrl ();
   tlm_utils::simple_target_socket<BramCtrl> soft_socket;
   tlm_utils::simple_initiator_socket<BramCtrl> bram_re_socket, bram_im_socket;
 

@@ -4,9 +4,14 @@ Bram::Bram(sc_core::sc_module_name name) : sc_module(name)
 {
   bram_port_a.register_b_transport(this, &Bram::b_transport);
   bram_port_b.register_b_transport(this, &Bram::b_transport);
-  mem.reserve(1000);
+  mem.reserve(MEM_RESERVED);
 
   SC_REPORT_INFO("BRAM", "Constructed.");
+}
+
+Bram::~Bram()
+{
+  SC_REPORT_INFO("BRAM", "Destroyed.");
 }
 
 void Bram::b_transport(pl_t &pl, sc_core::sc_time &offset)

@@ -3,6 +3,12 @@
 BramCtrl::BramCtrl(sc_core::sc_module_name name) : sc_module(name)
 {
   soft_socket.register_b_transport(this, &BramCtrl::b_transport);
+  SC_REPORT_INFO("BRAM Controller", "Constructed.");
+}
+
+BramCtrl::~BramCtrl()
+{
+  SC_REPORT_INFO("BRAM Controller", "Destroyed.");
 }
 
 void BramCtrl::b_transport(pl_t &pl, sc_core::sc_time &offset)
