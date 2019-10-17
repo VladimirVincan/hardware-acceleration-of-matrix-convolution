@@ -13,8 +13,7 @@ class Soft : public sc_core::sc_module
 public:
   Soft(sc_core::sc_module_name name);
   ~Soft();
-  tlm_utils::simple_initiator_socket<Soft> bram_socket;
-  tlm_utils::simple_initiator_socket<Soft> hard_socket;
+  tlm_utils::simple_initiator_socket<Soft> interconnect_socket;
 
 protected:
   void convolve();
@@ -22,10 +21,10 @@ protected:
   sc_core::sc_time offset;
   std::ifstream matrix_a_re_file, matrix_b_re_file;
   int a_w, a_h, b_w, b_h, width, height, log2w, log2h;
-  void read_bram(int addr, num_t &valRE, num_t &valIM);
-  void write_bram(int addr, num_t valRE, num_t valIM);
-  int read_hard(int addr);
-  void write_hard(int addr, int val);
+  void read_bram(sc_dt::uint64 addr, num_t &valRE, num_t &valIM);
+  void write_bram(sc_dt::uint64 addr, num_t valRE, num_t valIM);
+  int read_hard(sc_dt::uint64 addr);
+  void write_hard(sc_dt::uint64 addr, int val);
   void debug_read(int offset);
 };
 

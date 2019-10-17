@@ -9,6 +9,7 @@
 #include "soft.hpp"
 #include "hard.hpp"
 #include "bram_ctrl.hpp"
+#include "interconnect.hpp"
 
 class Vp :  public sc_core::sc_module
 {
@@ -21,6 +22,7 @@ protected:
   Bram bram_re, bram_im;
   BramCtrl bram_ctrl;
   Hard hard;
+  Interconnect interconnect;
 };
 
 #endif // VP_HPP_

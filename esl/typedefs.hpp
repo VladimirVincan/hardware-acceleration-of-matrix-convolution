@@ -21,6 +21,13 @@ typedef tlm::tlm_base_protocol_types::tlm_phase_type ph_t;
 #define ADDR_CMD 0x18
 #define ADDR_STATUS 0x1c
 
+#define VP_ADDR_BRAM_BASE 0x01000000
+#define VP_ADDR_BRAM_L 0x01000000
+#define VP_ADDR_BRAM_H 0x01100000
+#define VP_ADDR_HARD_BASE 0x02000000
+#define VP_ADDR_HARD_L 0x02000008
+#define VP_ADDR_HARD_H 0x0200001c
+
 #define MAX_SIZE 64
 #define MEM_RESERVED 100000
 

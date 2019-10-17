@@ -197,60 +197,60 @@ void Soft::convolve()
   debug_read(0);
 }
 
-void Soft::read_bram(int addr, num_t &valRE, num_t &valIM)
+void Soft::read_bram(sc_dt::uint64 addr, num_t &valRE, num_t &valIM)
 {
   pl_t pl;
   unsigned char buf[8];
-  pl.set_address(addr*4);
+  pl.set_address((addr*4) | VP_ADDR_BRAM_BASE);
   pl.set_data_length(8);
   pl.set_data_ptr(buf);
   pl.set_command( tlm::TLM_READ_COMMAND );
   pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
-  bram_socket->b_transport(pl,offset);
+  interconnect_socket->b_transport(pl,offset);
 
   valRE = to_fixed(buf);
   valIM = to_fixed(buf+4);
 }
 
-void Soft::write_bram(int addr, num_t valRE, num_t valIM)
+void Soft::write_bram(sc_dt::uint64 addr, num_t valRE, num_t valIM)
 {
   pl_t pl;
   unsigned char buf[8];
   to_uchar(buf,valRE);
   to_uchar(buf+4, valIM);
-  pl.set_address(addr*4);
+  pl.set_address((addr*4) | VP_ADDR_BRAM_BASE);
   pl.set_data_length(8);
   pl.set_data_ptr(buf);
   pl.set_command( tlm::TLM_WRITE_COMMAND );
   pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
-  bram_socket->b_transport(pl,offset);
+  interconnect_socket->b_transport(pl,offset);
 }
 
-int Soft::read_hard(int addr)
+int Soft::read_hard(sc_dt::uint64 addr)
 {
   pl_t pl;
   unsigned char buf[4];
-  pl.set_address(addr);
+  pl.set_address(addr | VP_ADDR_HARD_BASE);
   pl.set_data_length(4);
   pl.set_data_ptr(buf);
   pl.set_command( tlm::TLM_READ_COMMAND );
   pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
   sc_core::sc_time offset = sc_core::SC_ZERO_TIME;
-  hard_socket->b_transport(pl,offset);
+  interconnect_socket->b_transport(pl,offset);
   return to_int(buf);
 }
 
-void Soft::write_hard(int addr, int val)
+void Soft::write_hard(sc_dt::uint64 addr, int val)
 {
   pl_t pl;
   unsigned char buf[4];
   to_uchar (buf, val);
-  pl.set_address(addr);
+  pl.set_address(addr | VP_ADDR_HARD_BASE);
   pl.set_data_length(4);
   pl.set_data_ptr(buf);
   pl.set_command( tlm::TLM_WRITE_COMMAND );
   pl.set_response_status ( tlm::TLM_INCOMPLETE_RESPONSE );
-  hard_socket->b_transport(pl,offset);
+  interconnect_socket->b_transport(pl,offset);
 }
 
 void Soft::debug_read(int offset)
