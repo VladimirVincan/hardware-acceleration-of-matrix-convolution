@@ -142,7 +142,13 @@ begin
      end process;
      
      -- Combinatorial Circuits
-    process (state_r, start, fft_ready_r, fft_data_rd_o_r, fft_data_wr_o_r) begin
+    process (
+        state_r, start, fft_ready_r, fft_data_rd_o_r, fft_data_wr_o_r
+        ,i_r ,j_r 
+        ,log2w_r ,width_r ,log2h_r ,height_r
+        ,log2w ,width ,log2h ,height
+        ,fft_data_i_addr_o_r ,fft_data_o_addr_o_r
+    ) begin
     -- Default Assignments
         state_n <= state_r;
 

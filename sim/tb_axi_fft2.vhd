@@ -46,7 +46,7 @@ architecture beh of tb_axi_fft2 is
     
     -- RE IN: [[1.5,2.3,3.4,0],[1,5,0,0],[0,1,1,2],[2.1,1.3,4.5,1]] 
     -- RE OUT: [[26.1,-4.3,0.9,-4.3],[3.2,-5.6,4.6,3.8],[-3.7,-1.5,0.3,-1.5],[3.2,3.8,4.6,-5.6]]
-    -- IM OUT: [[0,-6.6,-80,6.6],[2.9,-6.7,8.3,-0.1],[0,4,0,-4],[-2.9,0.1,-8.3,6.7]]
+    -- IM OUT: [[0,-6.6, 0, 6.6],[2.9,-6.7,8.3,-0.1],[0,4,0,-4],[-2.9,0.1,-8.3,6.7]]
  ------------------------------------------------------------------
     
 --    constant MEM_RE_CONTENT_c: mem_t := (
@@ -99,60 +99,61 @@ architecture beh of tb_axi_fft2 is
 --        31 * 2**FIXED_POINT_WIDTH_c, 
 --        32 * 2**FIXED_POINT_WIDTH_c);
     
---    constant MEM_RE_CONTENT_c: mem_t := (
---        1 * 2**FIXED_POINT_WIDTH_c, 
---        2 * 2**FIXED_POINT_WIDTH_c, 
---        3 * 2**FIXED_POINT_WIDTH_c, 
---        4 * 2**FIXED_POINT_WIDTH_c, 
---        5 * 2**FIXED_POINT_WIDTH_c, 
---        6 * 2**FIXED_POINT_WIDTH_c, 
---        7 * 2**FIXED_POINT_WIDTH_c, 
---        8 * 2**FIXED_POINT_WIDTH_c, 
---        9 * 2**FIXED_POINT_WIDTH_c, 
---        10 * 2**FIXED_POINT_WIDTH_c, 
---        11 * 2**FIXED_POINT_WIDTH_c, 
---        12 * 2**FIXED_POINT_WIDTH_c, 
---        13 * 2**FIXED_POINT_WIDTH_c, 
---        14 * 2**FIXED_POINT_WIDTH_c, 
---        15 * 2**FIXED_POINT_WIDTH_c, 
---        16 * 2**FIXED_POINT_WIDTH_c);    
---    constant MEM_IM_CONTENT_c: mem_t := ( 
---        21 * 2**FIXED_POINT_WIDTH_c, 
---        22 * 2**FIXED_POINT_WIDTH_c, 
---        23 * 2**FIXED_POINT_WIDTH_c, 
---        24 * 2**FIXED_POINT_WIDTH_c, 
---        25 * 2**FIXED_POINT_WIDTH_c, 
---        26 * 2**FIXED_POINT_WIDTH_c, 
---        27 * 2**FIXED_POINT_WIDTH_c, 
---        28 * 2**FIXED_POINT_WIDTH_c, 
---        29 * 2**FIXED_POINT_WIDTH_c, 
---        30 * 2**FIXED_POINT_WIDTH_c, 
---        31 * 2**FIXED_POINT_WIDTH_c, 
---        32 * 2**FIXED_POINT_WIDTH_c, 
---        33 * 2**FIXED_POINT_WIDTH_c, 
---        34 * 2**FIXED_POINT_WIDTH_c, 
---        35 * 2**FIXED_POINT_WIDTH_c, 
---        36 * 2**FIXED_POINT_WIDTH_c);
-
     constant MEM_RE_CONTENT_c: mem_t := (
-        integer(1.5 * real(2**FIXED_POINT_WIDTH_c)), 
-        integer(2.3 * real(2**FIXED_POINT_WIDTH_c)), 
-        integer(3.4 * real(2**FIXED_POINT_WIDTH_c)), 
-        0 * 2**FIXED_POINT_WIDTH_c, 
-        1 * 2**FIXED_POINT_WIDTH_c, 
-        5 * 2**FIXED_POINT_WIDTH_c, 
-        0 * 2**FIXED_POINT_WIDTH_c, 
-        0 * 2**FIXED_POINT_WIDTH_c, 
-        0 * 2**FIXED_POINT_WIDTH_c, 
-        1 * 2**FIXED_POINT_WIDTH_c, 
         1 * 2**FIXED_POINT_WIDTH_c, 
         2 * 2**FIXED_POINT_WIDTH_c, 
-        integer(2.1 * real(2**FIXED_POINT_WIDTH_c)), 
-        integer(1.3 * real(2**FIXED_POINT_WIDTH_c)), 
-        integer(4.5 * real(2**FIXED_POINT_WIDTH_c)), 
-        1 * 2**FIXED_POINT_WIDTH_c);
-    constant MEM_IM_CONTENT_c: mem_t := (
-        others => 0);        
+        3 * 2**FIXED_POINT_WIDTH_c, 
+        4 * 2**FIXED_POINT_WIDTH_c, 
+        5 * 2**FIXED_POINT_WIDTH_c, 
+        6 * 2**FIXED_POINT_WIDTH_c, 
+        7 * 2**FIXED_POINT_WIDTH_c, 
+        8 * 2**FIXED_POINT_WIDTH_c, 
+        9 * 2**FIXED_POINT_WIDTH_c, 
+        10 * 2**FIXED_POINT_WIDTH_c, 
+        11 * 2**FIXED_POINT_WIDTH_c, 
+        12 * 2**FIXED_POINT_WIDTH_c, 
+        13 * 2**FIXED_POINT_WIDTH_c, 
+        14 * 2**FIXED_POINT_WIDTH_c, 
+        15 * 2**FIXED_POINT_WIDTH_c, 
+        16 * 2**FIXED_POINT_WIDTH_c);    
+    constant MEM_IM_CONTENT_c: mem_t := ( 
+        21 * 2**FIXED_POINT_WIDTH_c, 
+        22 * 2**FIXED_POINT_WIDTH_c, 
+        23 * 2**FIXED_POINT_WIDTH_c, 
+        24 * 2**FIXED_POINT_WIDTH_c, 
+        25 * 2**FIXED_POINT_WIDTH_c, 
+        26 * 2**FIXED_POINT_WIDTH_c, 
+        27 * 2**FIXED_POINT_WIDTH_c, 
+        28 * 2**FIXED_POINT_WIDTH_c, 
+        29 * 2**FIXED_POINT_WIDTH_c, 
+        30 * 2**FIXED_POINT_WIDTH_c, 
+        31 * 2**FIXED_POINT_WIDTH_c, 
+        32 * 2**FIXED_POINT_WIDTH_c, 
+        33 * 2**FIXED_POINT_WIDTH_c, 
+        34 * 2**FIXED_POINT_WIDTH_c, 
+        35 * 2**FIXED_POINT_WIDTH_c, 
+        36 * 2**FIXED_POINT_WIDTH_c);
+
+--    constant MEM_RE_CONTENT_c: mem_t := (
+--        integer(1.5 * real(2**FIXED_POINT_WIDTH_c)), 
+--        integer(2.3 * real(2**FIXED_POINT_WIDTH_c)), 
+--        integer(3.4 * real(2**FIXED_POINT_WIDTH_c)), 
+--        0 * 2**FIXED_POINT_WIDTH_c, 
+--        1 * 2**FIXED_POINT_WIDTH_c, 
+--        5 * 2**FIXED_POINT_WIDTH_c, 
+--        0 * 2**FIXED_POINT_WIDTH_c, 
+--        0 * 2**FIXED_POINT_WIDTH_c, 
+--        0 * 2**FIXED_POINT_WIDTH_c, 
+--        1 * 2**FIXED_POINT_WIDTH_c, 
+--        1 * 2**FIXED_POINT_WIDTH_c, 
+--        2 * 2**FIXED_POINT_WIDTH_c, 
+--        integer(2.1 * real(2**FIXED_POINT_WIDTH_c)), 
+--        integer(1.3 * real(2**FIXED_POINT_WIDTH_c)), 
+--        integer(4.5 * real(2**FIXED_POINT_WIDTH_c)), 
+--        1 * 2**FIXED_POINT_WIDTH_c);
+--    constant MEM_IM_CONTENT_c: mem_t := (
+--        others => 0);        
+ 
     signal clk_s: std_logic;
     signal reset_s: std_logic;
     

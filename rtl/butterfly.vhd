@@ -76,8 +76,8 @@ architecture Behavioral of butterfly is
     signal topRE_i_n, topIM_i_n, bottomRE_i_n, bottomIM_i_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0) := (others => '0');
     signal topRE_i_r, topIM_i_r, bottomRE_i_r, bottomIM_i_r : STD_LOGIC_VECTOR (WIDTH-1 downto 0) := (others => '0');
     
-    signal k_r, k_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE/2)-1 downto 0) := (others => '0');
-    signal size_r, size_n : STD_LOGIC_VECTOR (log2c(log2c(FFT_SIZE))-1 downto 0) := (others => '0');
+--    signal k_r, k_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE/2)-1 downto 0) := (others => '0');
+--    signal size_r, size_n : STD_LOGIC_VECTOR (log2c(log2c(FFT_SIZE))-1 downto 0) := (others => '0');
     
     type state_t is (idle, state1, state2, state3);
     signal state_r, state_n : state_t;
@@ -105,8 +105,8 @@ begin
                 bottomRE_o_r <= (others => '0');
                 bottomIM_o_r <= (others => '0');
                 
-                k_r <= (others => '0');
-                size_r <= (others => '0');
+--                k_r <= (others => '0');
+--                size_r <= (others => '0');
             else    
                 state_r <= state_n;
                 mult1_r <= mult1_n (WIDTH + FIXED_POINT_WIDTH - 1 downto WIDTH - FIXED_POINT_WIDTH);
@@ -126,14 +126,23 @@ begin
                 bottomRE_o_r <= bottomRE_o_n;
                 bottomIM_o_r <= bottomIM_o_n;
                 
-                k_r <= k_n;
-                size_r <= size_n;
+--                k_r <= k_n;
+--                size_r <= size_n;
             end if;
         end if;
      end process;
         
    -- Combinatorial Circuits
-   process (state_r, start) begin
+   process (
+    state_r, start, 
+    topRE_i, topIM_i, bottomRE_i, bottomIM_i, k, size,
+    topRE_o_r, topIM_o_r, bottomRE_o_r, bottomIM_o_r,
+    topRE_i_r, topIM_i_r, bottomRE_i_r, bottomIM_i_r,
+--    k_r, size_r,
+    mult1_r, mult2_r, mult3_r, mult4_r, 
+    sumRE_r, sumIM_r,
+    wCOS, wSIN
+    ) begin
        -- Default Assignments
        state_n <= idle;
        mult1_n <= (others => '0');
@@ -155,8 +164,8 @@ begin
        bottomRE_o_n <= bottomRE_o_r;
        bottomIM_o_n <= bottomIM_o_r;
        
-       k_n <= k_r;
-       size_n <= size_r;
+--       k_n <= k_r;
+--       size_n <= size_r;
 
        case state_r is 
            when idle => 
@@ -166,8 +175,8 @@ begin
                topIM_i_n <= topIM_i;
                bottomRE_i_n <= bottomRE_i;
                bottomIM_i_n <= bottomIM_i;
-               k_n <= k;
-               size_n <= size;
+--               k_n <= k;
+--               size_n <= size;
                
                if (start = '1') then
                    state_n <= state1;

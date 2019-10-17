@@ -35,7 +35,7 @@ end fft;
 architecture Behavioral of fft is
 -- INNER SIGNALS & STATES
     type state_t is (idle,
-                     bit_reversal, l1, l2, reverse, wait_data_rd_i_1, rd
+                     bit_reversal, l1, l2, reverse, wait_data_rd_i_1, rd 
                      , main, l3, l4, set_rd_addr, l5, wait_butterfly_ready_0 ,wait_butterfly_ready_1 
                      -- ,do_butterfly -- set_wr_addr
                      ,do_butterfly_1 ,do_butterfly_2 ,do_butterfly_3 ,do_butterfly_4  
@@ -48,12 +48,10 @@ architecture Behavioral of fft is
     signal k_r, k_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE) downto 0);
     signal jj_r, jj_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
     signal kk_r, kk_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
-    signal k_max_n, k_max_r : STD_LOGIC_VECTOR(log2c(FFT_SIZE) downto 0);
     
     signal reversed_r, reversed_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
     signal temp_r, temp_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
     signal m2_r, m2_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
-    signal m_r, m_n : STD_LOGIC_VECTOR(log2c(FFT_SIZE)-1 downto 0);
 
     signal addr_top, addr_bot : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
     signal dataRE_top_i, dataRE_bot_i, dataIM_top_i, dataIM_bot_i : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
@@ -82,8 +80,8 @@ architecture Behavioral of fft is
     
 -- FFT INTERFACE
     signal data_i_addr_o_r, data_i_addr_o_n : STD_LOGIC_VECTOR (log2c(FFT_SIZE)-1 downto 0);
-    signal dataRE_i_r, dataRE_i_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
-    signal dataIM_i_r, dataIM_i_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
+--    signal dataRE_i_r, dataRE_i_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
+--    signal dataIM_i_r, dataIM_i_n : STD_LOGIC_VECTOR (WIDTH-1 downto 0);
     signal data_rd_o_r, data_rd_o_n : STD_LOGIC;
     signal data_rd_i_r, data_rd_i_n : STD_LOGIC;
     
@@ -135,11 +133,11 @@ begin
                 k_r <= (others => '0');
                 jj_r <= (others => '0');
                 kk_r <= (others => '0');
-                k_max_r <= (others => '0');
+--                k_max_r <= (others => '0');
                 
                 reversed_r <= (others => '0');
                 temp_r <= (others => '0');
-                m_r <= (others => '0');
+--                m_r <= (others => '0');
                 m2_r <= (others => '0');
     
             -- FFT MEMORY
@@ -162,8 +160,8 @@ begin
                 
             -- FFT INTERFACE
                 data_i_addr_o_r <= (others => '0');
-                dataRE_i_r <= (others => '0');
-                dataIM_i_r <= (others => '0');
+--                dataRE_i_r <= (others => '0');
+--                dataIM_i_r <= (others => '0');
                 data_rd_o_r <= '0';
                 data_rd_i_r <= '0';
                 
@@ -184,12 +182,10 @@ begin
                 k_r <= k_n;
                 jj_r <= jj_n;
                 kk_r <= kk_n;
-                k_max_r <= k_max_n;
                 
                 reversed_r <= reversed_n;
                 temp_r <= temp_n;
                 m2_r <= m2_n;
-                m_r <= m_n;
 
             -- FFT MEMORY
                 dataRE_top_o <= dataRE(to_integer(unsigned(addr_top)));
@@ -222,8 +218,8 @@ begin
                 
             -- FFT INTERFACE
                 data_i_addr_o_r <= data_i_addr_o_n;
-                dataRE_i_r <= dataRE_i_n;
-                dataIM_i_r <= dataIM_i_n;
+--                dataRE_i_r <= dataRE_i_n;
+--                dataIM_i_r <= dataIM_i_n;
                 data_rd_o_r <= data_rd_o_n;
                 data_rd_i_r <= data_rd_i_n;
                 
@@ -240,10 +236,20 @@ begin
      end process;
         
     -- Combinatorial Circuits
-    process (state_r, start, butterfly_ready_r, data_rd_i, data_rd_i_r, data_wr_i, data_wr_i_r) begin
+    process (
+        state_r, start, butterfly_ready_r, data_rd_i, data_wr_i, --data_rd_i_r, data_wr_i_r,
+        i_r, j_r, k_r, jj_r, kk_r, m2_r, reversed_r, temp_r, --j_n , --jj_n,
+        topRE_i_r, topIM_i_r, botRE_i_r, botIM_i_r,
+        data_i_addr_o_r, data_rd_o_r, data_rd_i_r,-- dataRE_i_r, dataIM_i_r, 
+        data_o_addr_o_r, dataRE_o_r, dataIM_o_r, data_wr_o_r, data_wr_i_r,
+        size_r, log2s_r, size, log2s,
+        dataRE_top_o, dataIM_top_o, dataRE_bot_o, dataIM_bot_o,
+        topRE_o_r, topIM_o_r, botRE_o_r, botIM_o_r,
+        dataRE_i, dataIM_i
+    ) begin
     -- Default Assignments
         state_n <= state_r;     
-        
+
     -- FFT OUTPUT INTERFACE (9 signals)     
         ready <= '0';
 
@@ -253,9 +259,7 @@ begin
         k_n <= k_r;
         jj_n <= jj_r;
         kk_n <= kk_r;
-        k_max_n <= k_max_r;
         m2_n <= m2_r;
-        m_n <= m_r;
         reversed_n <= reversed_r;
         temp_n <= temp_r;
         
@@ -279,8 +283,8 @@ begin
 
     -- FFT INTERFACE
         data_i_addr_o_n <= data_i_addr_o_r;
-        dataRE_i_n <= dataRE_i_r;
-        dataIM_i_n <= dataIM_i_r;
+--        dataRE_i_n <= dataRE_i_r;
+--        dataIM_i_n <= dataIM_i_r;
         data_rd_o_n <= data_rd_o_r;
         data_rd_i_n <= data_rd_i_r;
         
@@ -331,7 +335,7 @@ begin
                 data_rd_i_n <= data_rd_i;
                 if data_rd_i_r = '0' then 
                     kk_n <= STD_LOGIC_VECTOR(unsigned(kk_r) + 1);
-                    if unsigned(kk_n) = unsigned(log2s_r) then
+                    if unsigned(kk_r) = unsigned(log2s_r) then
 --                        data_i_addr_o_n <= reversed_r;
 --                        data_rd_o_n <= '1';
                         state_n <= wait_data_rd_i_1;
@@ -361,11 +365,25 @@ begin
                 dataRE_top_i <= dataRE_i;
                 dataIM_top_i <= dataIM_i;
                 jj_n <= STD_LOGIC_VECTOR(unsigned(jj_r) + 1);
-                if unsigned(jj_n) = unsigned(size_r) then
+                if unsigned(jj_r) = unsigned(size_r) then
                     state_n <= main;
                 else
                     state_n <= l1;
-                end if;
+                end if;  
+                
+                
+--                    jj_overflow_n <= '1';
+--                else
+--                    jj_overflow_n <= '0';
+--                end if;
+--                state_n <= jj_overflow;
+                
+--            when jj_overflow =>
+--                if jj_overflow_r = '1' then
+--                    state_n <= main;
+--                else
+--                    state_n <= l1;
+--                end if;  
                 
             when main => -- 7
                 i_n <= (others => '0');
@@ -507,7 +525,7 @@ begin
                 data_wr_o_n <= '1'; 
                 if data_wr_i = '1' then
                     j_n <= STD_LOGIC_VECTOR(unsigned(j_r) + 1);
-                    if j_n(log2c(FFT_SIZE)-1 downto 0) = size_r then
+                    if j_r(log2c(FFT_SIZE)-1 downto 0) = size_r then
                         state_n <= idle;
                     else
                         state_n <= wait_data_wr_i_0;
