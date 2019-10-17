@@ -15,6 +15,7 @@ ip_repo/
 !waveform/
 !diagrams
 !esl/
+!tcl/
 .*
 rtl/conv2*
 
