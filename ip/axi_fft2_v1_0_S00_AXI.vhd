@@ -1,6 +1,6 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.std_logic_arith.all;
+--use ieee.std_logic_arith.all;
 use ieee.numeric_std.all;
 
 use work.utils_pkg.all;
@@ -367,17 +367,17 @@ begin
 	    loc_addr := axi_araddr(ADDR_LSB + OPT_MEM_ADDR_BITS downto ADDR_LSB);
 	    case loc_addr is
 	      when b"0000" =>
-            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(log2c(FFT_SIZE))) & log2w_axi_i;
+            reg_data_out <= std_logic_vector(to_unsigned(0, C_S_AXI_DATA_WIDTH-log2c(log2c(FFT_SIZE)))) & log2w_axi_i;
 	      when b"0001" =>
-            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE)) & width_axi_i;
+            reg_data_out <= std_logic_vector(to_unsigned(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE))) & width_axi_i;
 	      when b"0010" =>
-            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(log2c(FFT_SIZE))) & log2h_axi_i;
+            reg_data_out <= std_logic_vector(to_unsigned(0, C_S_AXI_DATA_WIDTH-log2c(log2c(FFT_SIZE)))) & log2h_axi_i;
 	      when b"0011" =>
-            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE)) & height_axi_i;
+            reg_data_out <= std_logic_vector(to_unsigned(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE))) & height_axi_i;
 	      when b"0100" =>
-            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-1) & cmd_axi_i;
+            reg_data_out <= std_logic_vector(to_unsigned(0, C_S_AXI_DATA_WIDTH-1)) & cmd_axi_i;
 	      when b"0101" =>
-            reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-1) & status_axi_i;
+            reg_data_out <= std_logic_vector(to_unsigned(0, C_S_AXI_DATA_WIDTH-1)) & status_axi_i;
 --	      when b"0110" =>
 --	        reg_data_out <= conv_std_logic_vector(0, C_S_AXI_DATA_WIDTH-log2c(FFT_SIZE*FFT_SIZE)) & addr_axi_i;
 --	      when b"0111" =>

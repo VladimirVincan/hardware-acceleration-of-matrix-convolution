@@ -136,7 +136,7 @@ architecture arch_imp of axi_fft2_v1_0 is
         
      -- fft2 read & write addresses
         signal fft2_addr_write, fft2_addr_read : std_logic_vector(log2c(FFT_SIZE*FFT_SIZE) - 1 downto 0);
-
+        signal fft2_addr_o : std_logic_vector (3 downto 0);
 
 begin
 
@@ -232,7 +232,7 @@ bram_if_inst: entity work.bram_if(Behavioral)
         clk => s00_axi_aclk,
         -- bram connector
         bram_en_o	    => en_o,
-        bramif_addr_o	=> addr_o(log2c(FFT_SIZE*FFT_SIZE*DATA_WIDTH/CHAR_WIDTH)-1 downto 2),
+        bramif_addr_o	=> fft2_addr_o, --addr_o(log2c(FFT_SIZE*FFT_SIZE*DATA_WIDTH/CHAR_WIDTH)-1 downto 2),
         bramif_dataRE_i => dataRE_i,
         bramif_dataRE_o => dataRE_o,
         bramif_dataIM_i => dataIM_i,
@@ -285,5 +285,10 @@ fft2_inst: entity work.fft2(Behavioral)
     fft2_addr_i <= fft2_addr_write when fft2_we_i = '1' else
                    fft2_addr_read;   
 
-    addr_o(1 downto 0) <= "00";
+-- logic asd [15:0];
+-- add_out = {"0000", asd, "00"}
+  -- addr_o(1 downto 0) <= "00";
+  -- addr_o <= std_logic_vector(to_unsigned(0,log2c(FFT_SIZE*FFT_SIZE))) & asd & "00";
+    -- addr_o <= (others => '0');
+addr_o <= "00000000000000000000000000" & fft2_addr_o & "00";
 end arch_imp;

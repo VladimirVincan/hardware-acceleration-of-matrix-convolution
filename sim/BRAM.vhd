@@ -10,7 +10,8 @@ entity BRAM is
       (
          FFT_SIZE : natural := 8;
          DATA_WIDTH : natural := 32;
-         CHAR_WIDTH : natural := 8
+         CHAR_WIDTH : natural := 8;
+         ADDR_WIDTH : natural := 32
       );
    port
       (
@@ -18,14 +19,14 @@ entity BRAM is
          -- Interface A
          en_a_i	    : in std_logic;
          reset_a_i  : in std_logic;
-         addr_a_i	: in std_logic_vector(log2c(FFT_SIZE*FFT_SIZE*DATA_WIDTH/CHAR_WIDTH) - 1 downto 0);
+         addr_a_i	: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
          data_a_i	: in std_logic_vector(DATA_WIDTH-1 downto 0);
          data_a_o	: out std_logic_vector(DATA_WIDTH-1 downto 0);
          we_a_i	    : in std_logic_vector(3 downto 0);
          -- Interface B
          en_b_i	    : in std_logic;
          reset_b_i  : in std_logic;
-         addr_b_i	: in std_logic_vector(log2c(FFT_SIZE*FFT_SIZE*DATA_WIDTH/CHAR_WIDTH) - 1 downto 0);
+         addr_b_i	: in std_logic_vector(ADDR_WIDTH - 1 downto 0);
          data_b_i	: in std_logic_vector(DATA_WIDTH-1 downto 0);
          data_b_o	: out std_logic_vector(DATA_WIDTH-1 downto 0);
          we_b_i	    : in std_logic_vector(3 downto 0)

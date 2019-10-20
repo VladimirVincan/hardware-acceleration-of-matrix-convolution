@@ -216,13 +216,15 @@ void matrix_convolution(
       // c[i][j] = cRE[i][j] >> (log2w + log2h); -- cannot bitshift double
 }
 
-namespace {
-extern "C" {
-#ifndef PYTHON3_MODULE
+//namespace {
+//extern "C" {
+//#define PYTHON3_MODULE
+//#ifndef PYTHON3_MODULE
 int main(){
   // 4,3; 8,4; 16,5; 32,6; 64,7; ....
   int n = 8, height = 8, width = 8;
   n = height = width = 128;
+  n = max(height, width);
   int log2h, log2w;
   log2h = log2w = 8;
   initTwiddle(n);
@@ -239,10 +241,54 @@ int main(){
   for (int i=0;i<height;++i)
     for (int j=0;j<width;++j)
       b[i][j] = 0;
-  b[3][0] = 1;
-  b[3][1] = 1;
-  b[3][2] = 1;
-  b[3][3] = 1;
+
+
+//###################################### 
+
+ifstream f("input.txt");
+f >> m >> n;
+
+
+
+if ((ceil(log2(m)) != floor(log2(m))) || (ceil(log2(n)) != floor(log2(n))))
+  {
+  cout << "Matrix a dimensions not a power of 2!n";
+  return 1;
+  }
+
+for (int i = 0; i < m; i++)
+for (int j = 0; j < m; j++)
+  f >> a[i][j];
+
+f.close();
+
+ifstream f("input2.txt");
+f >> m >> n;
+
+
+
+if ((ceil(log2(m)) != floor(log2(m))) || (ceil(log2(n)) != floor(log2(n))))
+  {
+  cout << "Matrix b dimensions not a power of 2!n";
+  return 1;
+  }
+
+for (int i = 0; i < m; i++)
+for (int j = 0; j < m; j++)
+  f >> b[i][j];
+
+f.close();
+
+
+
+
+//#######################################
+
+
+  //b[3][0] = 1;
+  //b[3][1] = 1;
+  //b[3][2] = 1;
+  //b[3][3] = 1;
 
   double **c;
   alloc_matrix(height, width, &c);
@@ -251,6 +297,28 @@ int main(){
       c[i][j] = 0;
 
   matrix_convolution(n,n,log2w,log2h,a,b,c);
+
+//#######################################
+
+ofstream output;
+
+	output.open("outputC.txt");
+	output << height << " " << width << endl;
+
+	for (int i=0;i<height;i++)
+	{
+		for (int j=0;j<width;j++)
+		{
+			output<<c[i][j]<<" "; // behaves like cout - cout is also a stream
+		}
+	output << "\n";
+	} 
+	output << std::endl;
+
+
+	output.close();
+
+//#####################################
 
   // printf("a=\n");
   // for (int i = 0; i < height; ++i){
@@ -273,6 +341,6 @@ int main(){
 
   return 0;
 }
-#endif // PYTHON3_MODULE
-}
-}
+//#endif // PYTHON3_MODULE
+//}
+//}

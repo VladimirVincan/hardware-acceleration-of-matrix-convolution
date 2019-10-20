@@ -12,7 +12,7 @@ architecture beh of tb_axi_fft2 is
     constant DATA_WIDTH_c : integer := 32;
     constant FIXED_POINT_WIDTH_c : integer := 16;
     constant FFT_SIZE_c : integer := 4;
-    constant ADDR_WIDTH_c : integer := 6;
+    constant ADDR_WIDTH_c : integer := 32;
     constant CHAR_WIDTH_c : integer := 8;
     constant HEIGHT_c : integer := 3;
     constant WIDTH_c : integer := 3;
@@ -55,14 +55,14 @@ architecture beh of tb_axi_fft2 is
 --    constant MEM_IM_CONTENT_c: mem_t := (
 --        others => 0); 
     
---    constant MEM_RE_CONTENT_c: mem_t := (
---        1 * 2**FIXED_POINT_WIDTH_c, 
---        2 * 2**FIXED_POINT_WIDTH_c, 
---        3 * 2**FIXED_POINT_WIDTH_c,
---        4 * 2**FIXED_POINT_WIDTH_c,
---        others => 0);    
---    constant MEM_IM_CONTENT_c: mem_t := (
---        others => 0); 
+    constant MEM_RE_CONTENT_c: mem_t := (
+        1 * 2**FIXED_POINT_WIDTH_c, 
+        2 * 2**FIXED_POINT_WIDTH_c, 
+        3 * 2**FIXED_POINT_WIDTH_c,
+        4 * 2**FIXED_POINT_WIDTH_c,
+        others => 0);    
+    constant MEM_IM_CONTENT_c: mem_t := (
+        others => 0); 
         
 --    constant MEM_RE_CONTENT_c: mem_t := (
 --        1 * 2**FIXED_POINT_WIDTH_c, 
@@ -99,40 +99,40 @@ architecture beh of tb_axi_fft2 is
 --        31 * 2**FIXED_POINT_WIDTH_c, 
 --        32 * 2**FIXED_POINT_WIDTH_c);
     
-    constant MEM_RE_CONTENT_c: mem_t := (
-        1 * 2**FIXED_POINT_WIDTH_c, 
-        2 * 2**FIXED_POINT_WIDTH_c, 
-        3 * 2**FIXED_POINT_WIDTH_c, 
-        4 * 2**FIXED_POINT_WIDTH_c, 
-        5 * 2**FIXED_POINT_WIDTH_c, 
-        6 * 2**FIXED_POINT_WIDTH_c, 
-        7 * 2**FIXED_POINT_WIDTH_c, 
-        8 * 2**FIXED_POINT_WIDTH_c, 
-        9 * 2**FIXED_POINT_WIDTH_c, 
-        10 * 2**FIXED_POINT_WIDTH_c, 
-        11 * 2**FIXED_POINT_WIDTH_c, 
-        12 * 2**FIXED_POINT_WIDTH_c, 
-        13 * 2**FIXED_POINT_WIDTH_c, 
-        14 * 2**FIXED_POINT_WIDTH_c, 
-        15 * 2**FIXED_POINT_WIDTH_c, 
-        16 * 2**FIXED_POINT_WIDTH_c);    
-    constant MEM_IM_CONTENT_c: mem_t := ( 
-        21 * 2**FIXED_POINT_WIDTH_c, 
-        22 * 2**FIXED_POINT_WIDTH_c, 
-        23 * 2**FIXED_POINT_WIDTH_c, 
-        24 * 2**FIXED_POINT_WIDTH_c, 
-        25 * 2**FIXED_POINT_WIDTH_c, 
-        26 * 2**FIXED_POINT_WIDTH_c, 
-        27 * 2**FIXED_POINT_WIDTH_c, 
-        28 * 2**FIXED_POINT_WIDTH_c, 
-        29 * 2**FIXED_POINT_WIDTH_c, 
-        30 * 2**FIXED_POINT_WIDTH_c, 
-        31 * 2**FIXED_POINT_WIDTH_c, 
-        32 * 2**FIXED_POINT_WIDTH_c, 
-        33 * 2**FIXED_POINT_WIDTH_c, 
-        34 * 2**FIXED_POINT_WIDTH_c, 
-        35 * 2**FIXED_POINT_WIDTH_c, 
-        36 * 2**FIXED_POINT_WIDTH_c);
+--    constant MEM_RE_CONTENT_c: mem_t := (
+--        1 * 2**FIXED_POINT_WIDTH_c, 
+--        2 * 2**FIXED_POINT_WIDTH_c, 
+--        3 * 2**FIXED_POINT_WIDTH_c, 
+--        4 * 2**FIXED_POINT_WIDTH_c, 
+--        5 * 2**FIXED_POINT_WIDTH_c, 
+--        6 * 2**FIXED_POINT_WIDTH_c, 
+--        7 * 2**FIXED_POINT_WIDTH_c, 
+--        8 * 2**FIXED_POINT_WIDTH_c, 
+--        9 * 2**FIXED_POINT_WIDTH_c, 
+--        10 * 2**FIXED_POINT_WIDTH_c, 
+--        11 * 2**FIXED_POINT_WIDTH_c, 
+--        12 * 2**FIXED_POINT_WIDTH_c, 
+--        13 * 2**FIXED_POINT_WIDTH_c, 
+--        14 * 2**FIXED_POINT_WIDTH_c, 
+--        15 * 2**FIXED_POINT_WIDTH_c, 
+--        16 * 2**FIXED_POINT_WIDTH_c);    
+--    constant MEM_IM_CONTENT_c: mem_t := ( 
+--        21 * 2**FIXED_POINT_WIDTH_c, 
+--        22 * 2**FIXED_POINT_WIDTH_c, 
+--        23 * 2**FIXED_POINT_WIDTH_c, 
+--        24 * 2**FIXED_POINT_WIDTH_c, 
+--        25 * 2**FIXED_POINT_WIDTH_c, 
+--        26 * 2**FIXED_POINT_WIDTH_c, 
+--        27 * 2**FIXED_POINT_WIDTH_c, 
+--        28 * 2**FIXED_POINT_WIDTH_c, 
+--        29 * 2**FIXED_POINT_WIDTH_c, 
+--        30 * 2**FIXED_POINT_WIDTH_c, 
+--        31 * 2**FIXED_POINT_WIDTH_c, 
+--        32 * 2**FIXED_POINT_WIDTH_c, 
+--        33 * 2**FIXED_POINT_WIDTH_c, 
+--        34 * 2**FIXED_POINT_WIDTH_c, 
+--        35 * 2**FIXED_POINT_WIDTH_c, 
+--        36 * 2**FIXED_POINT_WIDTH_c);
 
 --    constant MEM_RE_CONTENT_c: mem_t := (
 --        integer(1.5 * real(2**FIXED_POINT_WIDTH_c)), 
@@ -174,7 +174,7 @@ architecture beh of tb_axi_fft2 is
 
     ------------------- BRAM Interfaces signals -------------------
     signal ip_en_o     : STD_LOGIC;
-    signal ip_addr_o   : STD_LOGIC_VECTOR (log2c(FFT_SIZE_c*FFT_SIZE_c*DATA_WIDTH_c/CHAR_WIDTH_c)-1 downto 0);
+    signal ip_addr_o   : STD_LOGIC_VECTOR (ADDR_WIDTH_c-1 downto 0);
     signal ip_dataRE_i : STD_LOGIC_VECTOR (DATA_WIDTH_c-1 downto 0);
     signal ip_dataIM_i : STD_LOGIC_VECTOR (DATA_WIDTH_c-1 downto 0);
     signal ip_dataRE_o : STD_LOGIC_VECTOR (DATA_WIDTH_c-1 downto 0);
@@ -211,7 +211,7 @@ architecture beh of tb_axi_fft2 is
 
     ---------------------- Ports for BRAM Initialization ----------------------  
     signal tb_en_o      : std_logic;
-    signal tb_addr_o	: std_logic_vector(log2c(FFT_SIZE_c*FFT_SIZE_c*DATA_WIDTH_c/CHAR_WIDTH_c) - 1 downto 0);
+    signal tb_addr_o	: std_logic_vector(ADDR_WIDTH_c-1 downto 0);
     signal tb_dataRE_i	: std_logic_vector(DATA_WIDTH_c-1 downto 0);
     signal tb_dataRE_o	: std_logic_vector(DATA_WIDTH_c-1 downto 0);
     signal tb_dataIM_i	: std_logic_vector(DATA_WIDTH_c-1 downto 0);
@@ -231,6 +231,8 @@ stimulus_generator: process
     variable axi_read_data_v : std_logic_vector(31 downto 0);
     variable transfer_size_v : integer;
 begin
+    report "Starting !";
+
     -- reset AXI-lite interface. Reset will be 10 clock cycles wide
     s00_axi_aresetn_s <= '0';
     -- wait for 5 falling edges of AXI-lite clock signal
@@ -364,7 +366,7 @@ begin
         -- Set the value for ADDR
         wait until falling_edge(clk_s);
         tb_en_o <= '1';
-        tb_addr_o <= conv_std_logic_vector(data_counter*4, log2c(FFT_SIZE_c*FFT_SIZE_c*4));
+        tb_addr_o <= conv_std_logic_vector(data_counter*4, ADDR_WIDTH_c);
         tb_dataRE_o <= conv_std_logic_vector(MEM_RE_CONTENT_c(data_counter), C_S00_AXI_DATA_WIDTH_c);
         tb_dataIM_o <= conv_std_logic_vector(MEM_IM_CONTENT_c(data_counter), C_S00_AXI_DATA_WIDTH_c);      
         tb_we_o <= "1111";
@@ -466,7 +468,7 @@ begin
     for data_counter in 0 to (HEIGHT_c+1)*(WIDTH_c+1)-1 loop
         wait until falling_edge(clk_s);
         tb_en_o <= '1';
-        tb_addr_o <= conv_std_logic_vector(data_counter*4, log2c(FFT_SIZE_c*FFT_SIZE_c*DATA_WIDTH_c/CHAR_WIDTH_c));
+        tb_addr_o <= conv_std_logic_vector(data_counter*4, ADDR_WIDTH_c);
         
         for i in 1 to 3 loop
             wait until falling_edge(clk_s);
@@ -548,7 +550,8 @@ bramIM_inst: entity work.BRAM(Behavioral)
    generic map
       (
          FFT_SIZE   => FFT_SIZE_c,
-         DATA_WIDTH => DATA_WIDTH_c
+         DATA_WIDTH => DATA_WIDTH_c,
+         ADDR_WIDTH => ADDR_WIDTH_c
       )
     port map
       (
