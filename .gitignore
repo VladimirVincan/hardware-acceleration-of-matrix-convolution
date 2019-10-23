@@ -16,6 +16,7 @@ ip_repo/
 !diagrams
 !esl/
 !tcl/
+!ver/
 .*
 rtl/conv2*
 
