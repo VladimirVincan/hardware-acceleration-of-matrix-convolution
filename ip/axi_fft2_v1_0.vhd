@@ -11,7 +11,7 @@ entity axi_fft2_v1_0 is
         FFT_SIZE : integer := 8;
         FIXED_POINT_WIDTH : integer := 16;
         CHAR_WIDTH : integer := 8;
-        ADDR_WIDTH : integer := 15; --5;
+        ADDR_WIDTH : integer := 32; --5;
 		-- User parameters ends
 		-- Do not modify the parameters beyond this line
 
@@ -32,14 +32,23 @@ entity axi_fft2_v1_0 is
 	);
 	port (
 		-- Users to add ports here
-		-- Interface to the BRAM modules
-		en_o     : out STD_LOGIC;
-        addr_o   : out STD_LOGIC_VECTOR (ADDR_WIDTH-1 downto 0); -- Does not work: (log2c(FFT_SIZE*FFT_SIZE*DATA_WIDTH/CHAR_WIDTH)-1 downto 0);
-        dataRE_i : in STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
-        dataIM_i : in STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
-        dataRE_o : out STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
-        dataIM_o : out STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
-        we_o     : out STD_LOGIC_VECTOR(3 downto 0);
+		-- Interface to the BRAM RE module
+		clka      : out std_logic;
+		rsta      : out std_logic;
+		ena       : out STD_LOGIC; -- en_re
+        addra     : out STD_LOGIC_VECTOR (ADDR_WIDTH-1 downto 0); --addr_re
+        dina      : out STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
+        douta     : in STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
+        wea       : out STD_LOGIC_VECTOR(3 downto 0);
+        
+        -- Interface to the BRAM IM module
+        clkb      : out std_logic;
+		rstb      : out std_logic;
+        enb       : out STD_LOGIC;
+        addrb     : out STD_LOGIC_VECTOR (ADDR_WIDTH-1 downto 0); -- Does not work: (log2c(FFT_SIZE*FFT_SIZE*DATA_WIDTH/CHAR_WIDTH)-1 downto 0);
+        dinb      : out STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
+        doutb     : in STD_LOGIC_VECTOR (DATA_WIDTH-1 downto 0);
+        web       : out STD_LOGIC_VECTOR(3 downto 0);
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -73,7 +82,7 @@ architecture arch_imp of axi_fft2_v1_0 is
         signal reset_s : std_logic;
         
         ------------------ AXI Lite Interface ---------------------
-        signal reg_data_o : std_logic_vector(maxc(log2c(FFT_SIZE*FFT_SIZE),DATA_WIDTH)-1 downto 0);
+        signal reg_data_o : std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
         signal log2w_wr_o : std_logic;
         signal width_wr_o : std_logic;
         signal log2h_wr_o : std_logic;
@@ -136,7 +145,11 @@ architecture arch_imp of axi_fft2_v1_0 is
         
      -- fft2 read & write addresses
         signal fft2_addr_write, fft2_addr_read : std_logic_vector(log2c(FFT_SIZE*FFT_SIZE) - 1 downto 0);
-        signal fft2_addr_o : std_logic_vector (3 downto 0);
+        signal fft2_addr_o : std_logic_vector(log2c(FFT_SIZE*FFT_SIZE) - 1 downto 0);
+        signal zero_sig : std_logic_vector(ADDR_WIDTH - log2c(FFT_SIZE*FFT_SIZE)-3 downto 0) := (others => '0');
+        signal en_s : std_logic;
+        signal we_s : std_logic_vector(3 downto 0);
+        signal addr_s : std_logic_vector(log2c(FFT_SIZE*FFT_SIZE)-1 downto 0);
 
 begin
 
@@ -231,13 +244,13 @@ bram_if_inst: entity work.bram_if(Behavioral)
       (
         clk => s00_axi_aclk,
         -- bram connector
-        bram_en_o	    => en_o,
-        bramif_addr_o	=> fft2_addr_o, --addr_o(log2c(FFT_SIZE*FFT_SIZE*DATA_WIDTH/CHAR_WIDTH)-1 downto 2),
-        bramif_dataRE_i => dataRE_i,
-        bramif_dataRE_o => dataRE_o,
-        bramif_dataIM_i => dataIM_i,
-        bramif_dataIM_o => dataIM_o,
-        bramif_we_o	    => we_o,
+        bram_en_o	    => en_s,
+        bramif_addr_o	=> addr_s, --addr_o(log2c(FFT_SIZE*FFT_SIZE*DATA_WIDTH/CHAR_WIDTH)-1 downto 2),
+        bramif_dataRE_i => douta,
+        bramif_dataRE_o => dina,
+        bramif_dataIM_i => doutb,
+        bramif_dataIM_o => dinb,
+        bramif_we_o	    => we_s,
         
         -- fft2 connector
         fft2_addr_i   => fft2_addr_i,
@@ -285,10 +298,19 @@ fft2_inst: entity work.fft2(Behavioral)
     fft2_addr_i <= fft2_addr_write when fft2_we_i = '1' else
                    fft2_addr_read;   
 
--- logic asd [15:0];
--- add_out = {"0000", asd, "00"}
-  -- addr_o(1 downto 0) <= "00";
-  -- addr_o <= std_logic_vector(to_unsigned(0,log2c(FFT_SIZE*FFT_SIZE))) & asd & "00";
-    -- addr_o <= (others => '0');
-addr_o <= "00000000000000000000000000" & fft2_addr_o & "00";
+    addra <= zero_sig & addr_s & "00";
+    addrb <= zero_sig & addr_s & "00";
+    
+    ena <= en_s;
+    enb <= en_s;
+    
+    wea <= we_s;
+    web <= we_s;
+    
+    rsta <= reset_s;
+    rstb <= reset_s;
+    
+    clka <= s00_axi_aclk;
+    clkb <= s00_axi_aclk;
+    
 end arch_imp;

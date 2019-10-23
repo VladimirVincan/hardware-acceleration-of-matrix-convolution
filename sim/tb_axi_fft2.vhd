@@ -483,21 +483,31 @@ end process;
 -------------------------------------------------------------------------
 -- DUT --
 -------------------------------------------------------------------------
-axi_matrix_multiplier: entity work.axi_fft2_v1_0(arch_imp)
+uut: entity work.axi_fft2_v1_0(arch_imp)
     generic map(
         FIXED_POINT_WIDTH => FIXED_POINT_WIDTH_c,
         DATA_WIDTH        => DATA_WIDTH_c,
         FFT_SIZE          => FFT_SIZE_c,
         ADDR_WIDTH        => ADDR_WIDTH_c)
     port map (
-        -- Ports of BRAM Interface
-        en_o     => ip_en_o,
-        addr_o   => ip_addr_o,
-        dataRE_i => ip_dataRE_i,
-        dataIM_i => ip_dataIM_i,
-        dataRE_o => ip_dataRE_o,
-        dataIM_o => ip_dataIM_o,
-        we_o     => ip_we_o,
+		-- Interface to the BRAM RE module
+        ena     => ip_en_o,
+        addra   => ip_addr_o,
+        dina => ip_dataRE_o,
+        douta => ip_dataRE_i,
+        wea => ip_we_o,
+        rsta => open,
+        clka => open,
+        
+        -- Interface to the BRAM IM module
+        enb     => open,
+        addrb   => open,
+        dinb => ip_dataIM_o,
+        doutb => ip_dataIM_i,
+        web    => open,
+        rstb => open,
+        clkb => open,
+
         -- Ports of Axi Slave Bus Interface S00_AXI
         s00_axi_aclk    => clk_s,
         s00_axi_aresetn => s00_axi_aresetn_s,

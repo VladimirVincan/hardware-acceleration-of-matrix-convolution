@@ -21,7 +21,7 @@ entity axi_fft2_v1_0_S00_AXI is
 	port (
 		-- Users to add ports here
         --reg_data_o : out std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
-        reg_data_o : out std_logic_vector(maxc(DATA_WIDTH,log2c(FFT_SIZE*FFT_SIZE))-1 downto 0);
+        reg_data_o : out std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
         log2w_wr_o : out std_logic;
         width_wr_o : out std_logic;
         log2h_wr_o : out std_logic;
@@ -412,7 +412,7 @@ begin
     process (S_AXI_ACLK)
     begin
         if (S_AXI_ACLK'event and S_AXI_ACLK = '1') then
-            reg_data_o <= S_AXI_WDATA(maxc(DATA_WIDTH,log2c(FFT_SIZE*FFT_SIZE))-1 downto 0);
+            reg_data_o <= S_AXI_WDATA(log2c(FFT_SIZE)-1 downto 0);
         end if;
     end process;
 	-- User logic ends

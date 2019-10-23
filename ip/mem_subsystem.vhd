@@ -13,7 +13,7 @@ entity mem_subsystem is
         reset : in std_logic;
         
         -- Interface to the AXI controllers
-        reg_data_i : in std_logic_vector(maxc(log2c(FFT_SIZE*FFT_SIZE),DATA_WIDTH)-1 downto 0);
+        reg_data_i : in std_logic_vector(log2c(FFT_SIZE)-1 downto 0);
         log2w_wr_i : in std_logic;
         width_wr_i : in std_logic;
         log2h_wr_i : in std_logic;
