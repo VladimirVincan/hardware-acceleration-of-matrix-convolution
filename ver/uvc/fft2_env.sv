@@ -18,7 +18,7 @@
 class fft2_env extends uvm_env;
     
     fft2_din_agent din_agent; 
-    fft2_dout_agent dout_agemt;
+    fft2_dout_agent dout_agent;
     fft2_init_agent init_agent;   
 
     fft2_config cfg; // uvc configuration
@@ -43,32 +43,32 @@ class fft2_env extends uvm_env;
             fft2_config::type_id::set_type_override(default_fft2_config::get_type(), 1);
             cfg = fft2_config::type_id::create("cfg");
         end
-                
+              
         // set the write configuration
         if(cfg.has_dout) begin
-            uvm_config_db#(fft2_config)::set(this, "dout*", "fft2_config", cfg);
+            uvm_config_db#(fft2_config)::set(this, "dout_agent*", "fft2_config", cfg);
         end
         // set the read configuration
         if(cfg.has_din) begin
-            uvm_config_db#(fft2_config)::set(this, "din*", "fft2_config", cfg);
+            uvm_config_db#(fft2_config)::set(this, "din_agent*", "fft2_config", cfg);
         end
         // set the init configuration
         if(cfg.has_init) begin
-            uvm_config_db#(fft2_config)::set(this, "init*", "fft2_config", cfg);
+            uvm_config_db#(fft2_config)::set(this, "init_agent*", "fft2_config", cfg);
         end
         
         // create agents
         if(cfg.has_dout) begin
-            dout = fft2_wr_agent::type_id::create("dout",this);
+            dout_agent = fft2_dout_agent::type_id::create("dout_agent",this);
         end
         if(cfg.has_din) begin
-            din = fft2_wr_agent::type_id::create("din",this);
+            din_agent = fft2_din_agent::type_id::create("din_agent",this);
         end
         if(cfg.has_init) begin
-            init = fft2_wr_agent::type_id::create("init",this);
+            init_agent = fft2_init_agent::type_id::create("init_agent",this);
         end
-
-    endfunction : build_phase  
+		
+		endfunction : build_phase  
 
 endclass : fft2_env
 

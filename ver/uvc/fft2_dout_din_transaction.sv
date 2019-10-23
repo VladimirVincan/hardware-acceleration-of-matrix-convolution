@@ -18,10 +18,14 @@
 class fft2_dout_din_transaction extends uvm_sequence_item;
     
     // fields
-    logic [DATA_WIDTH - 1 : 0] dataRE_i;
-    logic [DATA_WIDTH - 1 : 0] dataIM_i;
-    logic data_rd_i;
-    logic data_wr_i; 
+	rand logic [$clog2(FFT_SIZE*FFT_SIZE) - 1 : 0] data_i_addr_o;
+	rand logic [$clog2(FFT_SIZE*FFT_SIZE) - 1 : 0] data_o_addr_o;
+    rand logic [DATA_WIDTH - 1 : 0] dataRE_i;
+	rand logic [DATA_WIDTH - 1 : 0] dataRE_o;
+    rand logic [DATA_WIDTH - 1 : 0] dataIM_i;
+	rand logic [DATA_WIDTH - 1 : 0] dataIM_o;
+    rand logic data_rd_i;
+    rand logic data_wr_i; 
     
     // constraints
     // constraint c_delay {soft delay <= 10 ; } -- can add soft constraint

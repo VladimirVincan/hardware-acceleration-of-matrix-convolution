@@ -18,18 +18,18 @@
 class fft2_init_transaction extends uvm_sequence_item;
     
     // fields
-    logic [$clog2($clog2(FFT_SIZE)) - 1 : 0] log2w;
-    logic [$clog2(FFT_SIZE) - 1 : 0] width;
+    rand logic [$clog2($clog2(FFT_SIZE)) - 1 : 0] log2w;
+    rand logic [$clog2(FFT_SIZE) - 1 : 0] width;
     
-    logic [$clog2($clog2(FFT_SIZE)) - 1 : 0] log2h;
-    logic [$clog2(FFT_SIZE) - 1 : 0] height;
+    rand logic [$clog2($clog2(FFT_SIZE)) - 1 : 0] log2h;
+    rand logic [$clog2(FFT_SIZE) - 1 : 0] height;
     
-    logic start;  
+    rand logic start;  
     
     // constraints
     // constraint c_delay { delay <= 10 ; }
-    constraint c_height { height == 2**log2h; }
-    constraint c_width { width == 2**log2w; }
+    //constraint c_height { height == 2**(log2h+1)-1; }
+    //constraint c_width { width == 2**(log2h+1)-1; }
     
     // UVM factory registration
     `uvm_object_utils_begin(fft2_init_transaction)

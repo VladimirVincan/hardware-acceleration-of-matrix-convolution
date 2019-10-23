@@ -22,25 +22,33 @@ package fft2_pkg;
     parameter FIXED_POINT_WIDTH  = 16;    // up to 32 bits
     
     // ==================== OBJECTS ==============================
-    typedef class fft2_transaction;
+    typedef class fft2_dout_din_transaction;
+	typedef class fft2_init_transaction;
     typedef class fft2_dout_config;
     typedef class fft2_din_config;
     typedef class fft2_init_config;
     typedef class fft2_config;
     // ==========================================================
 
-    // ==================== SLAVE ===============================
-    typedef class fft2_slave_driver;
-    typedef class fft2_slave_sequencer;
-    typedef class fft2_slave_monitor;
-    typedef class fft2_slave_agent;
+    // ==================== DIN ===============================
+    typedef class fft2_din_driver;
+    typedef class fft2_din_sequencer;
+    typedef class fft2_din_monitor;
+    typedef class fft2_din_agent;
+    // ==========================================================
+	
+    // ==================== DOUT ==============================
+    typedef class fft2_dout_driver;
+    typedef class fft2_dout_sequencer;
+    typedef class fft2_dout_monitor;
+    typedef class fft2_dout_agent;
     // ==========================================================
 
-    // ==================== MASTER ==============================
-    typedef class fft2_master_driver;
-    typedef class fft2_master_sequencer;
-    typedef class fft2_master_monitor;
-    typedef class fft2_master_agent;
+	// ==================== INIT ==============================
+    typedef class fft2_init_driver;
+    typedef class fft2_init_sequencer;
+    typedef class fft2_init_monitor;
+    typedef class fft2_init_agent;
     // ==========================================================
 
     // ==================== TOP ==================================
@@ -50,34 +58,45 @@ package fft2_pkg;
     import uvm_pkg::*;
     `include "uvm_macros.svh"
 
-    `include "fft2_types.sv"
     `include "fft2_config.sv"
 
-    // ==================== MASTER ==============================
-    `include "master/sequences/fft2_master_seq_lib.sv"
-    `include "master/fft2_master_config.sv"
-    `include "master/fft2_master_driver.sv"
-    `include "master/fft2_master_monitor.sv"
-    `include "master/fft2_master_sequencer.sv"
-    `include "master/fft2_master_agent.sv"
+    // ==================== DIN ==============================
+    `include "din/sequences/fft2_din_seq_lib.sv"
+    `include "din/fft2_din_config.sv"
+    `include "din/fft2_din_driver.sv"
+    `include "din/fft2_din_monitor.sv"
+    `include "din/fft2_din_sequencer.sv"
+    `include "din/fft2_din_agent.sv"
     // ==========================================================
 
-    // ==================== SLAVE ===============================
-    `include "slave/sequences/fft2_slave_seq_lib.sv"
-    `include "slave/fft2_slave_config.sv"
-    `include "slave/fft2_slave_driver.sv"
-    `include "slave/fft2_slave_monitor.sv"
-    `include "slave/fft2_slave_sequencer.sv"
-    `include "slave/fft2_slave_agent.sv"
+    // ==================== DOUT ===============================
+    `include "dout/sequences/fft2_dout_seq_lib.sv"
+    `include "dout/fft2_dout_config.sv"
+    `include "dout/fft2_dout_driver.sv"
+    `include "dout/fft2_dout_monitor.sv"
+    `include "dout/fft2_dout_sequencer.sv"
+    `include "dout/fft2_dout_agent.sv"
     // ==========================================================
 
+	// ==================== INIT ===============================
+    `include "init/sequences/fft2_init_seq_lib.sv"
+    `include "init/fft2_init_config.sv"
+    `include "init/fft2_init_driver.sv"
+    `include "init/fft2_init_monitor.sv"
+    `include "init/fft2_init_sequencer.sv"
+    `include "init/fft2_init_agent.sv"
+    // ==========================================================
+	
     // ==================== TOP =================================
     `include "fft2_env.sv"
-    `include "fft2_transaction.sv"
+    `include "fft2_dout_din_transaction.sv"
+	`include "fft2_init_transaction.sv"
     // ==========================================================
 
 endpackage : fft2_pkg
 
-`include "fft2_if.sv"
+`include "fft2_din_if.sv"
+`include "fft2_dout_if.sv"
+`include "fft2_init_if.sv"
 
 `endif
