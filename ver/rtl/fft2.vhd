@@ -235,7 +235,7 @@ begin
                 end if;
             
             when horizontal_update =>
-                if j_r = width_r then
+                if j_r = height_r then
                     i_n <= '1';
                     j_n <= (others => '0');
                     state_n <= l1;
@@ -267,7 +267,7 @@ begin
                 end if;
             
             when vertical_update =>
-                if j_r = height_r then
+                if j_r = width_r then
                     i_n <= '0';
                     j_n <= (others => '0');
                     state_n <= idle;
