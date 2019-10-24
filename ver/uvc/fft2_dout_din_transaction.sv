@@ -29,8 +29,8 @@ class fft2_dout_din_transaction extends uvm_sequence_item;
     
     // constraints
     // constraint c_delay {soft delay <= 10 ; } -- can add soft constraint
-    constraint c_dataRE { dataRE_i [DATA_WIDTH-1 : DATA_WIDTH-13] == 12'h0; }
-    constraint c_dataIM { dataIM_i [DATA_WIDTH-1 : DATA_WIDTH-13] == 12'h0; }
+    //constraint c_dataRE { dataRE_i [DATA_WIDTH-1 : DATA_WIDTH-13] == 12'h0; }
+    //constraint c_dataIM { dataIM_i [DATA_WIDTH-1 : DATA_WIDTH-13] == 12'h0; }
     
     // UVM factory registration
     `uvm_object_utils_begin(fft2_dout_din_transaction)
