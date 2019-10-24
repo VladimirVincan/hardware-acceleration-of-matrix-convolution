@@ -188,21 +188,105 @@ static int intToStr(int val, char *pBuf, int bufLen, int base) {
 
 static ssize_t driver_ip_write(struct file *f, const char __user *buf, size_t count, loff_t *off)
 {
-printk("Entering write\n");
-iowrite32(1, vp->base_addr + 0);
-iowrite32(3, vp->base_addr + 4);
-iowrite32(1, vp->base_addr + 8);
-iowrite32(3, vp->base_addr + 12);
-iowrite32(1, vp->base_addr + 16);
-printk("Pre delay\n");
-udelay(1000);
-printk("Post delay\n");
-iowrite32(0, vp->base_addr + 16);
+/*  
+   int ret;
+   char *lp='\0';
+   char *rp='\0';
+   int position;
+   int value;
+   char buffer[count];
 
-printk("exiting\n");
-return count;
+	ret = copy_from_user(buffer, buf, count);
+   buffer[count - 1] = '\0';
+   printk("%s\n",buffer);
+   lp = buffer;
+   rp = strchr(buffer,',');
 
-  }
+   position = strToInt(lp, strlen(lp), 10);
+   value = strToInt(rp+1, strlen(rp+1), 10);
+
+   iowrite32(value, vp->base_addr + position);
+   udelay(1000);
+ 
+   iowrite32(1, vp->base_addr + 0); 
+   iowrite32(3, vp->base_addr + 4); 
+   iowrite32(1, vp->base_addr + 8); 
+   iowrite32(3, vp->base_addr + 12); 
+   iowrite32(1, vp->base_addr + 16); 
+   udelay(1000); 
+   iowrite32(0, vp->base_addr + 16);
+*/ 
+
+  char buffer[count];
+  char *lp='\0';
+  char *rp='\0';
+  int i = 0;
+  unsigned int log2w=0,width=0,log2h=0,height=0;
+  i = copy_from_user(buffer, buf, count);
+  buffer[count - 1] = '\0';
+
+  printk(KERN_ALERT "STARTING IP\n");
+  printk(KERN_ALERT "buffer = %s\n", buffer);
+// extract position on log2w 
+	lp = buffer;
+	rp = strchr(lp,',');
+	if(!rp)
+	{
+		printk("Invalid input, expected format: log2w,width,log2h,height\n");
+		return count;
+	}
+	*rp = '\0';
+	rp++;
+        log2w = strToInt(lp, strlen(lp), 10);
+
+//extract position on width 
+	lp = rp;
+	rp = strchr(lp,',');
+	if(!rp)
+	{
+		printk("Invalid input, expected format: log2w,width,log2h,height\n");
+		return count;
+	}
+	*rp = '\0';
+	rp++;
+        width = strToInt(lp, strlen(lp), 10);
+
+//extract position on log2h 
+	lp = rp;
+	rp = strchr(lp,',');
+	if(!rp)
+	{
+		printk("Invalid input, expected format: log2w,width,log2h,height\n");
+		return count;
+	}
+	*rp = '\0';
+	rp++;
+        log2h = strToInt(lp, strlen(lp), 10);
+
+//extract position on height 
+	lp = rp;
+	if(!rp)
+	{
+		printk("Invalid input, expected format: log2w,width,log2h,height\n");
+		return count;
+	}
+	*rp = '\0';
+	rp++;
+        height = strToInt(lp, strlen(lp), 10);
+
+ iowrite32(log2w, vp->base_addr + 0); 
+ iowrite32(width, vp->base_addr + 4); 
+ iowrite32(log2h, vp->base_addr + 8); 
+ iowrite32(height, vp->base_addr + 12); 
+
+  iowrite32(1, vp->base_addr + 16); 
+  udelay(1000); 
+  iowrite32(0, vp->base_addr + 16); 
+
+  printk(KERN_ALERT "finished: %d %d %d %d\n", log2w, width, log2h, height);
+  printk("Writing to IP addr\n");
+  return count;
+}
 
 //***************************************************
 // HELPER FUNCTIONS (STRING TO INTEGER)
