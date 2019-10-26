@@ -6,7 +6,8 @@ class fft2_din_monitor extends uvm_monitor;
     virtual fft2_din_if#(.FFT_SIZE(FFT_SIZE), .DATA_WIDTH(DATA_WIDTH)) din_vif;
 
     fft2_config cfg;
-
+	int last_addr;
+	
     uvm_analysis_port #(fft2_dout_din_transaction) item_collected_port;
 
     int unsigned num_transactions = 0;
@@ -66,6 +67,7 @@ task fft2_din_monitor::run_phase(uvm_phase phase);
 endtask : run_phase
 
 task fft2_din_monitor::collect_transactions();
+	last_addr = -1;
     forever begin
         tr_collected = fft2_dout_din_transaction::type_id::create("tr_collected");
 		while(!((din_vif.data_rd_o == 1'b1) && (din_vif.data_rd_i == 1'b1))) begin
@@ -74,7 +76,10 @@ task fft2_din_monitor::collect_transactions();
 		tr_collected.data_i_addr_o = din_vif.data_i_addr_o;
 		tr_collected.dataRE_i = din_vif.dataRE_i;
 		tr_collected.dataIM_i = din_vif.dataIM_i;
-        item_collected_port.write(tr_collected);
+		if(last_addr != tr_collected.data_i_addr_o)
+			item_collected_port.write(tr_collected);
+			
+		last_addr = tr_collected.data_i_addr_o;
         if(cfg.has_coverage == 1) begin
             //cg_fft2_din.sample();
         end

@@ -26,18 +26,23 @@ class fft2_dout_din_transaction extends uvm_sequence_item;
 	rand logic [DATA_WIDTH - 1 : 0] dataIM_o;
     rand logic data_rd_i;
     rand logic data_wr_i; 
+	rand bit last;
     
     // constraints
     // constraint c_delay {soft delay <= 10 ; } -- can add soft constraint
-    constraint c_dataRE { dataRE_i [DATA_WIDTH-1 : DATA_WIDTH-13] == 12'h0; }
-    constraint c_dataIM { dataIM_i [DATA_WIDTH-1 : DATA_WIDTH-13] == 12'h0; }
+    //constraint c_dataRE { dataRE_i [DATA_WIDTH-1 : DATA_WIDTH-13] == 12'h0; }
+    //constraint c_dataIM { dataIM_i [DATA_WIDTH-1 : DATA_WIDTH-13] == 12'h0; }
     
     // UVM factory registration
     `uvm_object_utils_begin(fft2_dout_din_transaction)
         `uvm_field_int(dataRE_i, UVM_DEFAULT)
         `uvm_field_int(dataIM_i, UVM_DEFAULT)
+		`uvm_field_int(dataRE_o, UVM_DEFAULT)
+        `uvm_field_int(dataIM_o, UVM_DEFAULT)
         `uvm_field_int(data_rd_i, UVM_DEFAULT)
         `uvm_field_int(data_wr_i, UVM_DEFAULT)
+		`uvm_field_int(data_i_addr_o, UVM_DEFAULT)
+        `uvm_field_int(data_o_addr_o, UVM_DEFAULT)
     `uvm_object_utils_end
     
     // new - constructor

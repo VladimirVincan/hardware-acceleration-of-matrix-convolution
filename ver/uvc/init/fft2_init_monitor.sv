@@ -73,6 +73,8 @@ task fft2_init_monitor::collect_transactions();
 		end
 		tr_collected.width = init_vif.width;
 		tr_collected.height = init_vif.height;
+		tr_collected.log2h = init_vif.log2h;
+		tr_collected.log2w = init_vif.log2w;
         item_collected_port.write(tr_collected);
         if(cfg.has_coverage == 1) begin
             //cg_fft2_init.sample();

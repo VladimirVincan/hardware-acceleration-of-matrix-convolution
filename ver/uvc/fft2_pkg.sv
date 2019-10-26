@@ -52,6 +52,8 @@ package fft2_pkg;
     // ==========================================================
 
     // ==================== TOP ==================================
+	typedef class fft2_scoreboard;
+	typedef class fft2_ref_model;
     typedef class fft2_env;
     // ==========================================================
 
@@ -89,6 +91,8 @@ package fft2_pkg;
 	
     // ==================== TOP =================================
     `include "fft2_env.sv"
+	`include "fft2_scoreboard.sv"
+	`include "fft2_ref_model.sv"
     `include "fft2_dout_din_transaction.sv"
 	`include "fft2_init_transaction.sv"
     // ==========================================================

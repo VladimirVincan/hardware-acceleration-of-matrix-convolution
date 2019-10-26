@@ -6,6 +6,7 @@ class fft2_dout_monitor extends uvm_monitor;
     virtual fft2_dout_if#(.FFT_SIZE(FFT_SIZE), .DATA_WIDTH(DATA_WIDTH)) dout_vif;
 
     fft2_config cfg;
+	int last_addr;
 
     uvm_analysis_port #(fft2_dout_din_transaction) item_collected_port;
 
@@ -65,8 +66,16 @@ task fft2_dout_monitor::run_phase(uvm_phase phase);
     end
 endtask : run_phase
 
+string file;
+int f;
+
 task fft2_dout_monitor::collect_transactions();
+	file = "results.txt";
+	f = $fopen(file, "w");
+	$fclose(f);  
+	last_addr = -1;
 	forever begin
+
         tr_collected = fft2_dout_din_transaction::type_id::create("tr_collected");
 		while(!((dout_vif.data_wr_o == 1'b1) && (dout_vif.data_wr_i == 1'b1))) begin
 			@(posedge dout_vif.clk);
@@ -74,7 +83,21 @@ task fft2_dout_monitor::collect_transactions();
 		tr_collected.data_o_addr_o = dout_vif.data_o_addr_o;
 		tr_collected.dataRE_o = dout_vif.dataRE_o;
 		tr_collected.dataIM_o = dout_vif.dataIM_o;
-        item_collected_port.write(tr_collected);
+
+        f = $fopen(file, "a");  
+		if(f) begin
+			//$display("File dout was opened successfully");
+		end	else begin
+			$display("File dout was not opened successfully");
+		end
+		if(last_addr != tr_collected.data_o_addr_o) begin
+			$fwrite(f, "%d, %d, %d \n", tr_collected.data_o_addr_o, tr_collected.dataRE_o, tr_collected.dataIM_o);
+			item_collected_port.write(tr_collected);
+		end
+		last_addr = tr_collected.data_o_addr_o;
+		$fclose(f);
+		
+		
         if(cfg.has_coverage == 1) begin
             //cg_fft2_din.sample();
         end

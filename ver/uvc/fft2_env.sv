@@ -22,10 +22,14 @@ class fft2_env extends uvm_env;
     fft2_init_agent init_agent;   
 
     fft2_config cfg; // uvc configuration
+	fft2_scoreboard scb;
+	fft2_ref_model ref_i;
 
     // UVM factory registration
     `uvm_component_utils_begin(fft2_env)
         `uvm_field_object(cfg, UVM_DEFAULT)
+		`uvm_field_object(scb, UVM_DEFAULT)
+        `uvm_field_object(ref_i, UVM_DEFAULT)
     `uvm_component_utils_end    
 
     // new - constructor
@@ -68,7 +72,18 @@ class fft2_env extends uvm_env;
             init_agent = fft2_init_agent::type_id::create("init_agent",this);
         end
 		
-		endfunction : build_phase  
+		scb = fft2_scoreboard::type_id::create("scb", this);
+		ref_i = fft2_ref_model::type_id::create("ref_i", this);
+		
+	endfunction : build_phase  
+	
+	function void connect_phase(uvm_phase phase);
+		super.connect_phase(phase);
+		dout_agent.mon.item_collected_port.connect(scb.dout_detected);
+		init_agent.mon.item_collected_port.connect(ref_i.port_init);
+		din_agent.mon.item_collected_port.connect(ref_i.port_din);
+		ref_i.item_collected_port.connect(scb.dout_expected);
+	endfunction: connect_phase
 
 endclass : fft2_env
 
