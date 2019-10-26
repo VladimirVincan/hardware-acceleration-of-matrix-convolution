@@ -54,11 +54,12 @@ void fft(vector<cd>& a, vector<cd>& A, int log2n)
   
                 // similar calculating y[k+n/2] 
                 A[k + m2] = u - t;  
-                cout << u << " " << t << " " << w << endl;
+                cout << u << " " << t << " " << endl;// w << endl;
             } 
             w *= wm; 
             
         } 
+        cout << endl << "A" << endl;
         for (int it = 0; it < n; ++it)
             {
             	cout << A[it]  << " ";
@@ -69,9 +70,9 @@ void fft(vector<cd>& a, vector<cd>& A, int log2n)
   
 int main() 
 { 
-    vector<cd> a{ 1, 2, 3, 0, 0, 0, 0, 0}; 
-    vector<cd> A(8); 
-    fft(a, A, 3); 
+  vector<cd> a{ 1, 0, 1, 0}; 
+    vector<cd> A(4); 
+    fft(a, A, 2); 
     //for (int i = 0; i < 8; ++i) 
     //    cout << A[i] << "\n"; 
 } 

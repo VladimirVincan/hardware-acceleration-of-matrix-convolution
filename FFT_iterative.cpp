@@ -33,6 +33,7 @@ void butterfly(
   *topIM_o = topIM_i + botIM;
   *bottomRE_o = topRE_i - botRE;
   *bottomIM_o = topIM_i - botIM;
+  cout << "topRE: " << *topRE_o << " topIM: " << *topIM_o << " bottomRE: " << *bottomRE_o << " bottomIM: " << *bottomIM_o << endl;
 }
 
 void FFT_complex_iterative(
@@ -181,39 +182,39 @@ void matrix_convolution(
     width, log2w,
     aRE, aIM);
 
-  FFT2D_complex_iterative(
-    height, log2h,
-    width, log2w,
-    bRE, bIM);
+  // FFT2D_complex_iterative(
+  //   height, log2h,
+  //   width, log2w,
+  //   bRE, bIM);
 
-  for (int i=0; i<height; ++i)
-    for (int j=0; j<width; ++j){
-      cRE[i][j] = aRE[i][j] * bRE[i][j] - aIM[i][j] * bIM[i][j];
-      cIM[i][j] = - (aRE[i][j] * bIM[i][j] + aIM[i][j] * bRE[i][j]);
-    }
+  // for (int i=0; i<height; ++i)
+  //   for (int j=0; j<width; ++j){
+  //     cRE[i][j] = aRE[i][j] * bRE[i][j] - aIM[i][j] * bIM[i][j];
+  //     cIM[i][j] = - (aRE[i][j] * bIM[i][j] + aIM[i][j] * bRE[i][j]);
+  //   }
 
-  // printf("aRE=\n");
-  // for (int i = 0; i < height; ++i){
-  //   for (int j = 0; j < width; ++j)
-  //     printf("%.2f ", aRE[i][j]);
-  //   printf("\n");
-  // }
-  // printf("\naIM=\n");
-  // for (int i = 0; i < height; ++i){
-  //   for (int j = 0; j < width; ++j)
-  //     printf("%.2f ", aIM[i][j]);
-  //   printf("\n");
-  // }
+  // // printf("aRE=\n");
+  // // for (int i = 0; i < height; ++i){
+  // //   for (int j = 0; j < width; ++j)
+  // //     printf("%.2f ", aRE[i][j]);
+  // //   printf("\n");
+  // // }
+  // // printf("\naIM=\n");
+  // // for (int i = 0; i < height; ++i){
+  // //   for (int j = 0; j < width; ++j)
+  // //     printf("%.2f ", aIM[i][j]);
+  // //   printf("\n");
+  // // }
 
-  FFT2D_complex_iterative(
-    height, log2h,
-    width, log2w,
-    cRE, cIM);
+  // FFT2D_complex_iterative(
+  //   height, log2h,
+  //   width, log2w,
+  //   cRE, cIM);
 
-  for (int i=0;i<height;++i)
-    for (int j=0;j<width;++j)
-      c[i][j] = cRE[i][j]/(width*height);
-      // c[i][j] = cRE[i][j] >> (log2w + log2h); -- cannot bitshift double
+  // for (int i=0;i<height;++i)
+  //   for (int j=0;j<width;++j)
+  //     c[i][j] = cRE[i][j]/(width*height);
+  //     // c[i][j] = cRE[i][j] >> (log2w + log2h); -- cannot bitshift double
 }
 
 //namespace {
@@ -227,7 +228,7 @@ int main(){
   n = max(height, width);
   int log2h, log2w;
   log2h = log2w = 8;
-  initTwiddle(n);
+  initTwiddle(4);
 
   double **a;
   alloc_matrix(height, width, &a);
@@ -235,6 +236,7 @@ int main(){
     for (int j=0;j<width;++j)
       a[i][j] = 0;
   a[0][0] = 1;
+  a[0][2] = 1;
 
   double **b;
   alloc_matrix(height, width, &b);
@@ -242,102 +244,102 @@ int main(){
     for (int j=0;j<width;++j)
       b[i][j] = 0;
 
-
+  FFT2D_complex_iterative(4,2,4,2,a,b);
 //###################################### 
 
-ifstream f("input.txt");
-f >> m >> n;
+// ifstream f("input.txt");
+// f >> m >> n;
 
 
 
-if ((ceil(log2(m)) != floor(log2(m))) || (ceil(log2(n)) != floor(log2(n))))
-  {
-  cout << "Matrix a dimensions not a power of 2!n";
-  return 1;
-  }
+// if ((ceil(log2(m)) != floor(log2(m))) || (ceil(log2(n)) != floor(log2(n))))
+//   {
+//   cout << "Matrix a dimensions not a power of 2!n";
+//   return 1;
+//   }
 
-for (int i = 0; i < m; i++)
-for (int j = 0; j < m; j++)
-  f >> a[i][j];
+// for (int i = 0; i < m; i++)
+// for (int j = 0; j < m; j++)
+//   f >> a[i][j];
 
-f.close();
+// f.close();
 
-ifstream f("input2.txt");
-f >> m >> n;
-
-
-
-if ((ceil(log2(m)) != floor(log2(m))) || (ceil(log2(n)) != floor(log2(n))))
-  {
-  cout << "Matrix b dimensions not a power of 2!n";
-  return 1;
-  }
-
-for (int i = 0; i < m; i++)
-for (int j = 0; j < m; j++)
-  f >> b[i][j];
-
-f.close();
+// ifstream f("input2.txt");
+// f >> m >> n;
 
 
 
+// if ((ceil(log2(m)) != floor(log2(m))) || (ceil(log2(n)) != floor(log2(n))))
+//   {
+//   cout << "Matrix b dimensions not a power of 2!n";
+//   return 1;
+//   }
 
-//#######################################
+// for (int i = 0; i < m; i++)
+// for (int j = 0; j < m; j++)
+//   f >> b[i][j];
 
-
-  //b[3][0] = 1;
-  //b[3][1] = 1;
-  //b[3][2] = 1;
-  //b[3][3] = 1;
-
-  double **c;
-  alloc_matrix(height, width, &c);
-  for (int i=0;i<height;++i)
-    for (int j=0;j<width;++j)
-      c[i][j] = 0;
-
-  matrix_convolution(n,n,log2w,log2h,a,b,c);
-
-//#######################################
-
-ofstream output;
-
-	output.open("outputC.txt");
-	output << height << " " << width << endl;
-
-	for (int i=0;i<height;i++)
-	{
-		for (int j=0;j<width;j++)
-		{
-			output<<c[i][j]<<" "; // behaves like cout - cout is also a stream
-		}
-	output << "\n";
-	} 
-	output << std::endl;
+// f.close();
 
 
-	output.close();
 
-//#####################################
 
-  // printf("a=\n");
-  // for (int i = 0; i < height; ++i){
-  //   for (int j = 0; j < width; ++j)
-  //     printf("%.2f ", a[i][j]);
-  //   printf("\n");
-  // }
-  // printf("\nb=\n");
-  // for (int i = 0; i < height; ++i){
-  //   for (int j = 0; j < width; ++j)
-  //     printf("%.2f ", b[i][j]);
-  //   printf("\n");
-  // }
-  // printf("\nc=\n");
-  // for (int i = 0; i < height; ++i){
-  //   for (int j = 0; j < width; ++j)
-  //     printf("%.2f ", c[i][j]);
-  //   printf("\n");
-  // }
+// //#######################################
+
+
+//   //b[3][0] = 1;
+//   //b[3][1] = 1;
+//   //b[3][2] = 1;
+//   //b[3][3] = 1;
+
+//   double **c;
+//   alloc_matrix(height, width, &c);
+//   for (int i=0;i<height;++i)
+//     for (int j=0;j<width;++j)
+//       c[i][j] = 0;
+
+//   matrix_convolution(n,n,log2w,log2h,a,b,c);
+
+// //#######################################
+
+// ofstream output;
+
+// 	output.open("outputC.txt");
+// 	output << height << " " << width << endl;
+
+// 	for (int i=0;i<height;i++)
+// 	{
+// 		for (int j=0;j<width;j++)
+// 		{
+// 			output<<c[i][j]<<" "; // behaves like cout - cout is also a stream
+// 		}
+// 	output << "\n";
+// 	} 
+// 	output << std::endl;
+
+
+// 	output.close();
+
+// //#####################################
+
+//   // printf("a=\n");
+//   // for (int i = 0; i < height; ++i){
+//   //   for (int j = 0; j < width; ++j)
+//   //     printf("%.2f ", a[i][j]);
+//   //   printf("\n");
+//   // }
+//   // printf("\nb=\n");
+//   // for (int i = 0; i < height; ++i){
+//   //   for (int j = 0; j < width; ++j)
+//   //     printf("%.2f ", b[i][j]);
+//   //   printf("\n");
+//   // }
+//   // printf("\nc=\n");
+//   // for (int i = 0; i < height; ++i){
+//   //   for (int j = 0; j < width; ++j)
+//   //     printf("%.2f ", c[i][j]);
+//   //   printf("\n");
+//   // }
 
   return 0;
 }

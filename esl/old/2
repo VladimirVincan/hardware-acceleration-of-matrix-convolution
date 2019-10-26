@@ -1,0 +1,153 @@
+#include "generator.hpp"
+#include <tlm_utils/tlm_quantumkeeper.h>
+
+using namespace sc_core;
+using namespace sc_dt;
+using namespace tlm;
+
+SC_HAS_PROCESS(generator);
+
+generator::generator(sc_module_name name) :
+	sc_module(name),
+	isoc("isoc"),
+	dmi_valid(false)
+{
+	SC_THREAD(gen);
+	isoc(*this);
+}
+
+
+void generator::gen()
+{
+  /*
+    ----------------------------------------
+                WRITE PART
+    ----------------------------------------
+  */
+  tlm_generic_payload pl;
+  double val_d;
+  int val_i;
+  sc_fix_fast numb(DATA_WIDTH, FIXED_POINT_WIDTH) ;
+
+	// Init first 20 locations to FF with DMI access
+	tlm_dmi dmi;
+  unsigned int dmi_addr;
+	dmi_valid = isoc->get_direct_mem_ptr(pl, dmi);
+	if (dmi_valid)
+	{
+		dmi_mem = dmi.get_dmi_ptr();
+		for (int i = 0; i != MATRIX_SIZE; ++i)
+      for (int j = 0; j != MATRIX_SIZE; ++j)
+        for (int k = 0; k != CHARS_AMOUNT; ++k)
+          dmi_mem[i*MATRIX_SIZE*CHARS_AMOUNT + j*CHARS_AMOUNT + k] = 0x00;
+
+    numb = 1.5;
+    // numb <<= FIXED_POINT_WIDTH;
+    cout << "numb: " << numb << endl;
+    dmi_addr = 0;
+    val_d = numb;
+    val_i = (int)val_d;
+    val_i;
+    for (unsigned i = 0; i != CHARS_AMOUNT; ++i)
+      {
+        dmi_mem[dmi_addr*CHARS_AMOUNT + i] = (char) (numb >> (CHAR_LEN * (CHARS_AMOUNT - 1 - i)));
+        cout << "i: " << i << " dmi_mem: " << (int)dmi_mem[i] << endl;
+      }
+	}
+
+  /*
+    ----------------------------------------
+                 READ PART
+    ----------------------------------------
+  */
+
+  unsigned int addr = 0;
+	sc_time offset = SC_ZERO_TIME;
+  unsigned char buf[CHARS_AMOUNT];
+	tlm_command cmd = TLM_READ_COMMAND;
+	std::string msg = cmd == TLM_WRITE_COMMAND ? "Write " : "Read  ";
+	msg += "- address: ";
+	msg += std::to_string(addr);
+	msg += " data: ";
+
+  numb = 0;
+  // cout << "numb = " << numb << endl;
+
+	pl.set_command         ( cmd                     );
+	pl.set_address         ( addr                    );
+	pl.set_data_ptr        ( buf                     );
+	pl.set_data_length     ( CHARS_AMOUNT            );
+	pl.set_response_status ( TLM_INCOMPLETE_RESPONSE );
+
+  isoc->b_transport(pl, offset);
+
+  // numb = to_fixed(buf);
+  val_d = 0;
+  val_i = 0;
+  for (unsigned i = 0; i != CHARS_AMOUNT; ++i)
+		{
+      numb += (int)buf[i] << (CHAR_LEN * (CHARS_AMOUNT - 1 - i));
+      cout << "i: " << i << " buf: " << (int)buf[i] << endl;
+		}
+  val_d = (double)val_i;
+  numb = val_d;
+  numb >>= FIXED_POINT_WIDTH;
+
+  msg += std::to_string(numb);
+  msg += " ";
+	SC_REPORT_INFO("generator", msg.c_str());
+
+// for (unsigned int i = 0; i != 40; ++i)
+	// {
+	// 	unsigned int data_length = 1 + rand() % 4;
+	// 	unsigned int addr = rand() % 200;
+	// 	tlm_command cmd = i < 20 ? TLM_WRITE_COMMAND : TLM_READ_COMMAND;
+	// 	std::string msg = cmd == TLM_WRITE_COMMAND ? "Write " : "Read  ";
+	// 	if (cmd == TLM_WRITE_COMMAND)
+	// 		for (unsigned i = 0; i != data_length; ++i)
+	// 		{
+	// 			buf[i] = rand() % 100;
+	// 			msg += std::to_string(buf[i]);
+	// 			msg += " ";
+	// 		}
+	// 	msg += "- address ";
+	// 	msg += std::to_string(addr);
+	// 	msg += " ";
+
+	// 	pl.set_command         ( cmd                     );
+	// 	pl.set_address         ( addr                    );
+	// 	pl.set_data_ptr        ( buf                     );
+	// 	pl.set_data_length     ( data_length             );
+	// 	pl.set_response_status ( TLM_INCOMPLETE_RESPONSE );
+
+	// 	#ifdef QUANTUM
+	// 	qk.inc(sc_time(4, SC_NS));
+	// 	offset = qk.get_local_time();
+	// 	#else
+	// 	offset += sc_time(4, SC_NS);
+	// 	#endif
+
+	// 	isoc->b_transport(pl, offset);
+	// 	if (cmd == TLM_READ_COMMAND)
+	// 		for (unsigned i = 0; i != data_length; ++i)
+	// 		{
+	// 			msg += std::to_string(buf[i]);
+	// 			msg += " ";
+	// 		}
+	// 	SC_REPORT_INFO("generator", msg.c_str());
+
+	// 	#ifdef QUANTUM
+	// 	qk.set_and_sync(offset);
+	// 	#endif
+	// }
+}
+
+tlm_sync_enum generator::nb_transport_bw(pl_t& pl, phase_t& phase, sc_time& offset)
+{
+	return TLM_ACCEPTED;
+}
+
+void generator::invalidate_direct_mem_ptr(uint64 start, uint64 end)
+{
+	dmi_valid = false;
+}

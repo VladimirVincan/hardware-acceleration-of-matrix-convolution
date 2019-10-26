@@ -1,5 +1,5 @@
 FFT_iterative: FFT_iterative.cpp
-	g++ -o FFT_iterative FFT_iterative.cpp -I.
+	g++ -o main FFT_iterative.cpp
 clean:
 	rm FFT_iterative
 

@@ -11,13 +11,13 @@ architecture beh of tb_axi_fft2 is
     
     constant DATA_WIDTH_c : integer := 32;
     constant FIXED_POINT_WIDTH_c : integer := 16;
-    constant FFT_SIZE_c : integer := 4;
+    constant FFT_SIZE_c : integer := 8;
     constant ADDR_WIDTH_c : integer := 32;
     constant CHAR_WIDTH_c : integer := 8;
-    constant HEIGHT_c : integer := 3;
+    constant HEIGHT_c : integer := 7;
     constant WIDTH_c : integer := 3;
     constant LOG2W_c : integer := 1;
-    constant LOG2H_c : integer := 1;
+    constant LOG2H_c : integer := 2;
     
     type mem_t is array (0 to FFT_SIZE_c*FFT_SIZE_c-1) of integer;
     
@@ -49,20 +49,20 @@ architecture beh of tb_axi_fft2 is
     -- IM OUT: [[0,-6.6, 0, 6.6],[2.9,-6.7,8.3,-0.1],[0,4,0,-4],[-2.9,0.1,-8.3,6.7]]
  ------------------------------------------------------------------
     
---    constant MEM_RE_CONTENT_c: mem_t := (
---        1 * 2**FIXED_POINT_WIDTH_c, 
---        others => 0);
---    constant MEM_IM_CONTENT_c: mem_t := (
---        others => 0); 
-    
     constant MEM_RE_CONTENT_c: mem_t := (
         1 * 2**FIXED_POINT_WIDTH_c, 
-        2 * 2**FIXED_POINT_WIDTH_c, 
-        3 * 2**FIXED_POINT_WIDTH_c,
-        4 * 2**FIXED_POINT_WIDTH_c,
-        others => 0);    
+        others => 0);
     constant MEM_IM_CONTENT_c: mem_t := (
         others => 0); 
+    
+--    constant MEM_RE_CONTENT_c: mem_t := (
+--        1 * 2**FIXED_POINT_WIDTH_c, 
+--        2 * 2**FIXED_POINT_WIDTH_c, 
+--        3 * 2**FIXED_POINT_WIDTH_c,
+--        4 * 2**FIXED_POINT_WIDTH_c,
+--        others => 0);    
+--    constant MEM_IM_CONTENT_c: mem_t := (
+--        others => 0); 
         
 --    constant MEM_RE_CONTENT_c: mem_t := (
 --        1 * 2**FIXED_POINT_WIDTH_c, 
