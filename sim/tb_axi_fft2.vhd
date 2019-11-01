@@ -14,47 +14,85 @@ architecture beh of tb_axi_fft2 is
     constant FFT_SIZE_c : integer := 8;
     constant ADDR_WIDTH_c : integer := 32;
     constant CHAR_WIDTH_c : integer := 8;
-    constant HEIGHT_c : integer := 7;
+    constant HEIGHT_c : integer := 3;
     constant WIDTH_c : integer := 3;
     constant LOG2W_c : integer := 1;
-    constant LOG2H_c : integer := 2;
+    constant LOG2H_c : integer := 1;
     
     type mem_t is array (0 to FFT_SIZE_c*FFT_SIZE_c-1) of integer;
     
- ---------------------- TEST CASES ----------------------------------   
+ ---------------------- TEST CASES ----------------------------------  
+    --------------1----------------- 
     -- RE IN:  [[1,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
     -- RE OUT: [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
     -- IM OUT: [[1,1,1,1],[1,1,1,1],[1,1,1,1],[1,1,1,1]]
     
+    --------------2-----------------
     -- RE IN:  [[1,2,3,4],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
     -- RE OUT: [[10,-2,-2,-2],[10,-2,-2,-2],[10,-2,-2,-2],[10,-2,-2,-2]]
     -- IM OUT: [[0,2,0,-2],[0,2,0,-2],[0,2,0,-2],[0,2,0,-2]]
     
+    --------------3-----------------
     -- RE IN:  [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]]
     -- RE OUT: [[136,-8,-8,-8],[-32,0,0,0],[-32,0,0,0],[-32,0,0,0]]
     -- IM OUT: [[0,8,0,-8],[32,0,0,0],[0,0,0,0],[-32,0,0,0]]
     
+    --------------4-----------------
     -- RE IN:  [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]]
     -- IM IN:  [[17,18,19,20],[21,22,23,24],[25,26,27,28],[29,30,31,32]]
     -- RE OUT: [[136,-16,-8,0],[-64,0,0,0],[-32,0,0,0],[0,0,0,0]]
     -- IM OUT: [[392,0,-8,-16],[0,0,0,0],[-32,0,0,0],[-64,0,0,0]]
     
+    --------------5-----------------
     -- RE IN:  [[1,2,3,4],[5,6,7,8],[9,10,11,12],[13,14,15,16]]
     -- IM IN:  [[21,22,23,24],[25,26,27,28],[29,30,31,32],[33,34,35,36]]
     -- RE OUT: [[136,-16,-8,0],[-64,0,0,0],[-32,0,0,0],[0,0,0,0]]
     -- IM OUT: [[456,0,-8,-16],[0,0,0,0],[-32,0,0,0],[-64,0,0,0]]
     
+    --------------6----------------- log2w, width, log2h, height = 1, 3, 2, 7
     -- RE IN: [[1.5,2.3,3.4,0],[1,5,0,0],[0,1,1,2],[2.1,1.3,4.5,1]] 
     -- RE OUT: [[26.1,-4.3,0.9,-4.3],[3.2,-5.6,4.6,3.8],[-3.7,-1.5,0.3,-1.5],[3.2,3.8,4.6,-5.6]]
     -- IM OUT: [[0,-6.6, 0, 6.6],[2.9,-6.7,8.3,-0.1],[0,4,0,-4],[-2.9,0.1,-8.3,6.7]]
+    
+    --------------7-----------------
+    -- RE IN:  [[1,0,1,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+    -- RE OUT: [[2,0,2,0],[2,0,2,0],[2,0,2,0],[2,0,2,0]]
+    -- IM OUT: [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+    
+     --------------8-----------------
+    -- RE IN:  [[1,1,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+    -- RE OUT: [[2,1,0,1],[2,1,0,1],[2,1,0,1],[2,1,0,1]]
+    -- IM OUT: [[0,-1,0,1],[0,-1,0,1],[0,-1,0,1],[0,-1,0,1]]
+    
+     --------------9-----------------
+    -- RE IN:  [[1,1,1,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+    -- RE OUT: [[3,0,1,0],[3,0,1,0],[3,0,1,0],[3,0,1,0]]
+    -- IM OUT: [[0,-1,0,1],[0,-1,0,1],[0,-1,0,1],[0,-1,0,1]]
+    
+     --------------10-----------------
+    -- RE IN:  [[1,1,1,4],[0,0,0,0],[0,0,0,0],[0,0,0,0]]
+    -- RE OUT: [[7,0,-3,0],[7,0,-3,0],[7,0,-3,0],[7,0,-3,0]]
+    -- IM OUT: [[0,3,0,-3],[0,3,0,-3],[0,3,0,-3],[0,3,0,-3]]
+    
+     --------------11-----------------
+    -- RE IN:  [[1,1,1,4],[0,2,0,0],[0,0,0,0],[0,0,0,0]]
+    -- RE OUT: [[9,0,-5,0],[7,-2,-3,2],[5,0,-1,0],[7,2,-3,-2]]
+    -- IM OUT: [[0,1,0,-1],[-2,3,2,-3],[0,5,0,-5],[2,3,-2,-3]]
+    
+     --------------12-----------------
+    -- RE IN:  [[1,1,1,4],[0,2,0,0],[0,0,0,4],[0,0,0,0]]
+    -- RE OUT: [[13,0,-9,0],[3,-2,1,2],[9,0,-5,0],[3,2,1,-2]]
+    -- IM OUT: [[0,5,0,-5],[-2,-1,2,1],[0,9,0,-9],[2,-1,-2,1]]
  ------------------------------------------------------------------
     
-    constant MEM_RE_CONTENT_c: mem_t := (
-        1 * 2**FIXED_POINT_WIDTH_c, 
-        others => 0);
-    constant MEM_IM_CONTENT_c: mem_t := (
-        others => 0); 
-    
+--    --------------1-----------------
+--    constant MEM_RE_CONTENT_c: mem_t := (
+--        1 * 2**FIXED_POINT_WIDTH_c, 
+--        others => 0);
+--    constant MEM_IM_CONTENT_c: mem_t := (
+--        others => 0); 
+
+--    --------------2-----------------
 --    constant MEM_RE_CONTENT_c: mem_t := (
 --        1 * 2**FIXED_POINT_WIDTH_c, 
 --        2 * 2**FIXED_POINT_WIDTH_c, 
@@ -63,7 +101,8 @@ architecture beh of tb_axi_fft2 is
 --        others => 0);    
 --    constant MEM_IM_CONTENT_c: mem_t := (
 --        others => 0); 
-        
+
+--    --------------3-----------------
 --    constant MEM_RE_CONTENT_c: mem_t := (
 --        1 * 2**FIXED_POINT_WIDTH_c, 
 --        2 * 2**FIXED_POINT_WIDTH_c, 
@@ -80,7 +119,30 @@ architecture beh of tb_axi_fft2 is
 --        13 * 2**FIXED_POINT_WIDTH_c, 
 --        14 * 2**FIXED_POINT_WIDTH_c, 
 --        15 * 2**FIXED_POINT_WIDTH_c, 
---        16 * 2**FIXED_POINT_WIDTH_c);    
+--        16 * 2**FIXED_POINT_WIDTH_c,
+--        others => 0); 
+--    constant MEM_IM_CONTENT_c: mem_t := (
+--        others => 0); 
+        
+--    --------------4-----------------
+--    constant MEM_RE_CONTENT_c: mem_t := (
+--        1 * 2**FIXED_POINT_WIDTH_c, 
+--        2 * 2**FIXED_POINT_WIDTH_c, 
+--        3 * 2**FIXED_POINT_WIDTH_c, 
+--        4 * 2**FIXED_POINT_WIDTH_c, 
+--        5 * 2**FIXED_POINT_WIDTH_c, 
+--        6 * 2**FIXED_POINT_WIDTH_c, 
+--        7 * 2**FIXED_POINT_WIDTH_c, 
+--        8 * 2**FIXED_POINT_WIDTH_c, 
+--        9 * 2**FIXED_POINT_WIDTH_c, 
+--        10 * 2**FIXED_POINT_WIDTH_c, 
+--        11 * 2**FIXED_POINT_WIDTH_c, 
+--        12 * 2**FIXED_POINT_WIDTH_c, 
+--        13 * 2**FIXED_POINT_WIDTH_c, 
+--        14 * 2**FIXED_POINT_WIDTH_c, 
+--        15 * 2**FIXED_POINT_WIDTH_c, 
+--        16 * 2**FIXED_POINT_WIDTH_c,
+--        others => 0);    
 --    constant MEM_IM_CONTENT_c: mem_t := ( 
 --        17 * 2**FIXED_POINT_WIDTH_c, 
 --        18 * 2**FIXED_POINT_WIDTH_c, 
@@ -97,8 +159,10 @@ architecture beh of tb_axi_fft2 is
 --        29 * 2**FIXED_POINT_WIDTH_c, 
 --        30 * 2**FIXED_POINT_WIDTH_c, 
 --        31 * 2**FIXED_POINT_WIDTH_c, 
---        32 * 2**FIXED_POINT_WIDTH_c);
+--        32 * 2**FIXED_POINT_WIDTH_c,
+--        others => 0);
     
+--    --------------5-----------------
 --    constant MEM_RE_CONTENT_c: mem_t := (
 --        1 * 2**FIXED_POINT_WIDTH_c, 
 --        2 * 2**FIXED_POINT_WIDTH_c, 
@@ -115,7 +179,8 @@ architecture beh of tb_axi_fft2 is
 --        13 * 2**FIXED_POINT_WIDTH_c, 
 --        14 * 2**FIXED_POINT_WIDTH_c, 
 --        15 * 2**FIXED_POINT_WIDTH_c, 
---        16 * 2**FIXED_POINT_WIDTH_c);    
+--        16 * 2**FIXED_POINT_WIDTH_c,
+--        others => 0);    
 --    constant MEM_IM_CONTENT_c: mem_t := ( 
 --        21 * 2**FIXED_POINT_WIDTH_c, 
 --        22 * 2**FIXED_POINT_WIDTH_c, 
@@ -132,8 +197,10 @@ architecture beh of tb_axi_fft2 is
 --        33 * 2**FIXED_POINT_WIDTH_c, 
 --        34 * 2**FIXED_POINT_WIDTH_c, 
 --        35 * 2**FIXED_POINT_WIDTH_c, 
---        36 * 2**FIXED_POINT_WIDTH_c);
+--        36 * 2**FIXED_POINT_WIDTH_c,
+--        others => 0);
 
+--    --------------6-----------------
 --    constant MEM_RE_CONTENT_c: mem_t := (
 --        integer(1.5 * real(2**FIXED_POINT_WIDTH_c)), 
 --        integer(2.3 * real(2**FIXED_POINT_WIDTH_c)), 
@@ -150,10 +217,79 @@ architecture beh of tb_axi_fft2 is
 --        integer(2.1 * real(2**FIXED_POINT_WIDTH_c)), 
 --        integer(1.3 * real(2**FIXED_POINT_WIDTH_c)), 
 --        integer(4.5 * real(2**FIXED_POINT_WIDTH_c)), 
---        1 * 2**FIXED_POINT_WIDTH_c);
+--        1 * 2**FIXED_POINT_WIDTH_c,
+--        others => 0);
 --    constant MEM_IM_CONTENT_c: mem_t := (
 --        others => 0);        
  
+--    --------------7-----------------
+--    constant MEM_RE_CONTENT_c: mem_t := (
+--        1 * 2**FIXED_POINT_WIDTH_c, 
+--        0 * 2**FIXED_POINT_WIDTH_c, 
+--        1 * 2**FIXED_POINT_WIDTH_c, 
+--        others => 0);
+--    constant MEM_IM_CONTENT_c: mem_t := (
+--        others => 0); 
+    
+--    --------------8-----------------
+--    constant MEM_RE_CONTENT_c: mem_t := (
+--        1 * 2**FIXED_POINT_WIDTH_c, 
+--        1 * 2**FIXED_POINT_WIDTH_c, 
+--        others => 0);
+--    constant MEM_IM_CONTENT_c: mem_t := (
+--        others => 0); 
+    
+--     --------------9-----------------
+--     constant MEM_RE_CONTENT_c: mem_t := (
+--         1 * 2**FIXED_POINT_WIDTH_c, 
+--         1 * 2**FIXED_POINT_WIDTH_c, 
+--         1 * 2**FIXED_POINT_WIDTH_c, 
+--         others => 0);
+--     constant MEM_IM_CONTENT_c: mem_t := (
+--         others => 0); 
+    
+--     --------------10-----------------
+--     constant MEM_RE_CONTENT_c: mem_t := (
+--         1 * 2**FIXED_POINT_WIDTH_c, 
+--         1 * 2**FIXED_POINT_WIDTH_c, 
+--         1 * 2**FIXED_POINT_WIDTH_c, 
+--         4 * 2**FIXED_POINT_WIDTH_c, 
+--         others => 0);
+--     constant MEM_IM_CONTENT_c: mem_t := (
+--         others => 0); 
+    
+--     --------------11-----------------
+--     constant MEM_RE_CONTENT_c: mem_t := (
+--         1 * 2**FIXED_POINT_WIDTH_c, 
+--         1 * 2**FIXED_POINT_WIDTH_c, 
+--         1 * 2**FIXED_POINT_WIDTH_c, 
+--         4 * 2**FIXED_POINT_WIDTH_c, 
+--         0 * 2**FIXED_POINT_WIDTH_c, 
+--         2 * 2**FIXED_POINT_WIDTH_c, 
+--         others => 0);
+--     constant MEM_IM_CONTENT_c: mem_t := (
+--         others => 0); 
+
+     --------------12-----------------
+     constant MEM_RE_CONTENT_c: mem_t := (
+         1 * 2**FIXED_POINT_WIDTH_c, 
+         1 * 2**FIXED_POINT_WIDTH_c, 
+         1 * 2**FIXED_POINT_WIDTH_c, 
+         4 * 2**FIXED_POINT_WIDTH_c, 
+         0 * 2**FIXED_POINT_WIDTH_c, 
+         2 * 2**FIXED_POINT_WIDTH_c, 
+         0 * 2**FIXED_POINT_WIDTH_c,
+         0 * 2**FIXED_POINT_WIDTH_c,
+         0 * 2**FIXED_POINT_WIDTH_c,
+         0 * 2**FIXED_POINT_WIDTH_c,
+         0 * 2**FIXED_POINT_WIDTH_c,
+         4 * 2**FIXED_POINT_WIDTH_c, 
+         others => 0);
+     constant MEM_IM_CONTENT_c: mem_t := (
+         others => 0); 
+
+------------------------------------------------------------------
+
     signal clk_s: std_logic;
     signal reset_s: std_logic;
     
