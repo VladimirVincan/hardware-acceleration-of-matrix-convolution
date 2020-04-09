@@ -119,9 +119,10 @@ class fft2_ref_model extends uvm_component;
 			log2h = init_tr.log2h;
 			log2w = init_tr.log2w;
 			
-			$display("INIT U REF: %d %d %d %d", init_tr.width, init_tr.height, init_tr.log2h, init_tr.log2w);
+			$display("REF_MODEL: %d %d %d %d", init_tr.width, init_tr.height, init_tr.log2h, init_tr.log2w);
 			
 			repeat(width*height) begin
+				$display("REF_MODEL: break1");
 				din_fifo.get(din_tr);
 				$display("DIN: %d %d", din_tr.dataRE_i, din_tr.dataIM_i);
 				matrix_re[i][j] = din_tr.dataRE_i;
@@ -133,6 +134,8 @@ class fft2_ref_model extends uvm_component;
 				end
 			end
 			
+			$display("REF_MODEL: break2");
+
 			for(i = 0; i < height; i++) begin
 				for(j = 0; j < width; j++) begin
 					$display("MATRICA 0. red: %d kol: %d re: %d im: %d", j, i, matrix_re[i][j], matrix_im[i][j]);

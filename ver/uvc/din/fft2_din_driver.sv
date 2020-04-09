@@ -59,6 +59,7 @@ task fft2_din_driver::get_and_drive();
     forever begin
         seq_item_port.get_next_item(req);
         drive_tr(req);
+        $display("DIN_DRIVER: ovde");
         seq_item_port.item_done();
     end
 endtask : get_and_drive

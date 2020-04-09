@@ -59,26 +59,30 @@ endtask : reset
 
 task fft2_init_driver::get_and_drive();
     forever begin
-		
         seq_item_port.get_next_item(req);
         drive_tr(req);
-		$display("OVDE");
+		$display("INIT_DRIVER: ovde");
         seq_item_port.item_done();
+        $display("INIT_DRIVER: izasao");
     end
 endtask : get_and_drive
 
 task fft2_init_driver::drive_tr (fft2_init_transaction tr);
+    $display("INIT_DRIVER: break1");
 	init_vif.log2h    <= tr.log2h;
 	init_vif.log2w    <= tr.log2w;
 	init_vif.width    <= tr.width;
 	init_vif.height    <= tr.height;
 	
+    $display("INIT_DRIVER: break2");
     init_vif.start <= 1'b0;
 	@(posedge init_vif.clk iff init_vif.ready);
 	init_vif.start <= 1'b1;
+    $display("INIT_DRIVER: break3");
 	@(posedge init_vif.clk iff init_vif.ready == 1'b0);
 	init_vif.start <= 1'b0;
     `uvm_info(get_type_name(), $sformatf("FFT2 Finished Driving tr \n%s", tr.sprint()), UVM_HIGH)
+    $display("INIT_DRIVER: break4");
 endtask : drive_tr
 
 `endif
