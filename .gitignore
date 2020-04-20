@@ -3,8 +3,9 @@
 build/
 matrix_convolution_rtl/
 ip_repo/
-!ip_archive/
-!ip/
+ip_archive/
+ip/
+ip_integrator/
 !rtl/
 !sim/
 !waveform/
@@ -15,6 +16,10 @@ ip_repo/
 !.gitignore
 .*
 rtl/conv2*
+
+#object files
+main
+steps
 
 #files being edited
 *~

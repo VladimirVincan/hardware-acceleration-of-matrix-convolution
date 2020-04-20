@@ -1,5 +1,6 @@
 FFT_iterative: FFT_iterative.cpp
-	g++ -o main FFT_iterative.cpp
+	g++ -o iterative FFT_iterative.cpp
+FFT_steps: fft_steps.cpp
+	g++ -o steps fft_steps.cpp
 clean:
-	rm FFT_iterative
-
+	rm iterative steps main
