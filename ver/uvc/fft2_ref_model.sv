@@ -21,9 +21,15 @@ class fft2_ref_model extends uvm_component;
 	
 	int matrix_re[0:FFT_SIZE][0:FFT_SIZE];
 	int matrix_im[0:FFT_SIZE][0:FFT_SIZE];
+	real dataRE, dataIM;
 	
 	int arr_re[0:FFT_SIZE];
 	int arr_im[0:FFT_SIZE];
+
+	string ref_model_file = "ref-model.txt";
+	int rmf;
+	string ref_model_file_orig = "ref-model-orig.txt";
+	int rmfo;
 	
 	function new(string name = "fft2_ref_model", uvm_component parent = null);
 		super.new(name, parent);
@@ -42,7 +48,7 @@ class fft2_ref_model extends uvm_component;
 		din_fifo = new("din_fifo", this);
     endfunction : build_phase  
 	
-	int i, j, k;
+	int i, j, k, l, mm;
 	int ii, jj, kk;
 	int m, m2;
 	
@@ -53,20 +59,42 @@ class fft2_ref_model extends uvm_component;
 	
 	int height, width, log2h, log2w;
 	int coss, sinn;
+
+	function void print_arr();
+		for(l = 0; l < height; l++) begin
+			$display("ARRAY TEST. red: %0d re: %0d", l, arr_re[l]);
+		end
+	endfunction: print_arr
+
+	function void print_matrix();
+		for(l = 0; l < height; l++) begin
+			for(mm = 0; mm < width; mm++) begin
+				$display("MATRICA TEST. red: %0d kol: %0d re: %0d im: %0d", mm, l, matrix_re[l][mm], matrix_im[l][mm]);
+			end
+		end
+	endfunction: print_matrix
 	
+	// vhdl math_2_pi 6.28318530717958647693
 	function void butterfly(int size);
 		//$display("COS: %f", $cos(-2.0*3.14159265358979*twiddle/size));
-		coss = int'($cos(-2.0*3.14159265358979*twiddle/size));
-		sinn = int'($sin(-2.0*3.14159265358979*twiddle/size));
-		//$display("COS: %f %d", $cos(-2.0*3.14159265358979*twiddle/size), coss);
-		//$display("SIN: %f %d", $sin(-2.0*3.14159265358979*twiddle/size), sinn);
+		// use $rtoi() ? 
+		coss = int'($cos(-6.28318530717958647693*twiddle/size) *(2**FIXED_POINT_WIDTH));
+		sinn = int'($sin(-6.28318530717958647693*twiddle/size) *(2**FIXED_POINT_WIDTH));
+		// $display("twiddle: %0d size: %0d", twiddle,size);
+		// $display("COS: %f %0d", $cos(-2.0*3.14159265358979*twiddle/size), coss);
+		// $display("SIN: %f %0d", $sin(-2.0*3.14159265358979*twiddle/size), sinn);
+
+		//$display("BEFOR top RE: %0d botRE: %0d", topRE, bottomRE);
+		//$display("BEFOR top IM: %0d botIM: %0d", topIM, bottomIM);
 		
-		botRE = coss* (2**FIXED_POINT_WIDTH)* longint'(bottomRE) - sinn*(2**FIXED_POINT_WIDTH)* longint'(bottomIM);
-		botIM = sinn* (2**FIXED_POINT_WIDTH)* longint'(bottomRE) + coss*(2**FIXED_POINT_WIDTH)* longint'(bottomIM);
-		//$display("PRVI DEO: %d %d", coss* (2**FIXED_POINT_WIDTH), coss* (2**FIXED_POINT_WIDTH)*bottomRE);
-		//$display("bottom RE: %d botton IM: %d", bottomRE, bottomIM);
+		botRE = coss* longint'(bottomRE) - sinn* longint'(bottomIM);
+		botIM = sinn* longint'(bottomRE) + coss* longint'(bottomIM);
+		// $display("COSIN: %0d %0d", coss* (2**FIXED_POINT_WIDTH), coss* (2**FIXED_POINT_WIDTH)*bottomRE);
+
 		botRE = botRE >> FIXED_POINT_WIDTH;
 		botIM = botIM >> FIXED_POINT_WIDTH;
+		// $display("BOTOM botRE: %0d botIM: %0d", botRE, botIM);
+
 		topRE_tmp = topRE + botRE;
 		topIM_tmp = topIM + botIM;
 		bottomRE = topRE - botRE;
@@ -75,7 +103,8 @@ class fft2_ref_model extends uvm_component;
 		topRE = topRE_tmp;// >> FIXED_POINT_WIDTH;
 		topIM = topIM_tmp;// >> FIXED_POINT_WIDTH;
 		
-		$display("top RE: %d botRE: %d", topRE, bottomRE);
+		// $display("AFTER top RE: %0d botRE: %0d", topRE, bottomRE);
+		// $display("AFTER top IM: %0d botIM: %0d", topIM, bottomIM);
 		
 		//bottomRE = bottomRE64 >> FIXED_POINT_WIDTH;
 		//bottomIM = bottomIM64 >> FIXED_POINT_WIDTH;
@@ -93,8 +122,9 @@ class fft2_ref_model extends uvm_component;
 					bottomRE = arr_re[kk+m2];
 					bottomIM = arr_im[kk+m2];
 					twiddle = jj << (log2s-ii-1);
-					//$display("top: %d", kk);
-					//$display("bot: %d", kk+m2);
+					//$display("fft twiddle: %0d", twiddle);
+					//$display("top: %0d", kk);
+					//$display("bot: %0d", kk+m2);
 					butterfly(size);
 					
 					arr_re[kk] = topRE;
@@ -119,12 +149,15 @@ class fft2_ref_model extends uvm_component;
 			log2h = init_tr.log2h;
 			log2w = init_tr.log2w;
 			
-			$display("REF_MODEL: %d %d %d %d", init_tr.width, init_tr.height, init_tr.log2h, init_tr.log2w);
+			// $display("REF_MODEL: %0d %0d %0d %0d", init_tr.width, init_tr.height, init_tr.log2h, init_tr.log2w);
+			rmf = $fopen(ref_model_file, "w");
+			$fclose(rmf); 
+			rmf = $fopen(ref_model_file_orig, "w");
+			$fclose(rmfo); 
 			
+
 			repeat(width*height) begin
-				$display("REF_MODEL: break1");
 				din_fifo.get(din_tr);
-				$display("DIN: %d %d", din_tr.dataRE_i, din_tr.dataIM_i);
 				matrix_re[i][j] = din_tr.dataRE_i;
 				matrix_im[i][j] = din_tr.dataIM_i;
 				j = j + 1;
@@ -133,39 +166,71 @@ class fft2_ref_model extends uvm_component;
 					i = i+1;
 				end
 			end
-			
-			$display("REF_MODEL: break2");
+		
+			rmfo = $fopen(ref_model_file_orig, "a");
+			$fwrite(rmfo,"----------------0----------------\n");
+			$fclose(rmfo);
+			rmf = $fopen(ref_model_file, "a");
+			$fwrite(rmf,"----------------0----------------\n");
+			$fclose(rmf);
+			//$display("\n----------------0----------------");
 
 			for(i = 0; i < height; i++) begin
 				for(j = 0; j < width; j++) begin
-					$display("MATRICA 0. red: %d kol: %d re: %d im: %d", j, i, matrix_re[i][j], matrix_im[i][j]);
+					$cast(dataRE, matrix_re[i][j]);
+        			$cast(dataIM, matrix_im[i][j]);
+					// $display("MATRICA 0. [%0d,%0d] re: %0f im: %0f", i,j, dataRE/65536.0, dataIM/65536.0);
+					rmfo = $fopen(ref_model_file_orig, "a"); 
+					$fwrite(rmfo, "MATRICA 0. [%0d,%0d] re: %0b im: %0b \n", i,j, matrix_re[i][j], matrix_im[i][j]);
+					$fclose(rmfo);
+					rmf = $fopen(ref_model_file, "a"); 
+					$fwrite(rmf, "MATRICA 0. [%0d,%0d] re: %0f im: %0f \n", i,j, dataRE/65536.0, dataIM/65536.0);
+					$fclose(rmf);
 				end
 			end
 			
 			for(i = 0; i < height; i++) begin
+				//print_arr();
 				for(j = 0; j < width; j++) begin
-					int reversed =0;
-					int temp = j;
-					for(k = 0; k < log2w-1; ++k) begin
-						reversed=reversed << 1;
-						reversed = reversed | (temp & 1);
-						
-						temp = temp >> 1;
-					end
+					int reversed = j;
+					// int reversed =0;
+					// int temp = j;
+					// for(k = 0; k < log2w; ++k) begin
+					// 	reversed=reversed << 1;
+					// 	reversed = reversed | (temp & 1);
+					// 	temp = temp >> 1;
+					// end
 					arr_re[j] = matrix_re[i][reversed];
 					arr_im[j] = matrix_im[i][reversed];
-					//$display("Reversed: %d", reversed);
+					//$display("Reversed: %0d", reversed);
 				end
+				//print_arr();
 				fft(log2w, width);
 				for (j=0;j<width;j++) begin
 					matrix_re[i][j] = arr_re[j];
 					matrix_im[i][j] = arr_im[j];
 				end
 			end
-			
+
+			rmfo = $fopen(ref_model_file_orig, "a");
+			$fwrite(rmfo,"----------------1----------------\n");
+			$fclose(rmfo);
+			rmf = $fopen(ref_model_file, "a");
+			$fwrite(rmf,"----------------1----------------\n");
+			$fclose(rmf);
+			//$display("\n----------------1----------------");
+
 			for(i = 0; i < height; i++) begin
 				for(j = 0; j < width; j++) begin
-					$display("MATRICA 1. red: %d kol: %d re: %d im: %d", j, i, matrix_re[i][j], matrix_im[i][j]);
+					$cast(dataRE, matrix_re[i][j]);
+        			$cast(dataIM, matrix_im[i][j]);
+					//$display("MATRICA 1. [%0d,%0d] re: %0f im: %0f", i,j, dataRE/65536.0, dataIM/65536.0);
+					rmfo = $fopen(ref_model_file_orig, "a"); 
+					$fwrite(rmfo, "MATRICA 1. [%0d,%0d] re: %0b im: %0b \n", i,j, matrix_re[i][j], matrix_im[i][j]);
+					$fclose(rmfo);
+					rmf = $fopen(ref_model_file, "a"); 
+					$fwrite(rmf, "MATRICA 1. [%0d,%0d] re: %0f im: %0f \n", i,j, dataRE/65536.0, dataIM/65536.0);
+					$fclose(rmf);
 				end
 			end
 			for(i = 0; i < height; i++) begin
@@ -179,16 +244,17 @@ class fft2_ref_model extends uvm_component;
 			
 			for(j = 0; j < width; j++) begin
 				for(i = 0; i < height; i++) begin
-					int reversed =0;
-					int temp = i;
-					for(k = 0; k < log2h-1; ++k) begin
-						reversed=reversed << 1;
-						reversed = reversed | (temp & 1);
-						temp = temp >> 1;
-					end
+					int reversed = i;
+					// int reversed =0;
+					// int temp = i;
+					// for(k = 0; k < log2h; ++k) begin
+					// 	reversed=reversed << 1;
+					// 	reversed = reversed | (temp & 1);
+					// 	temp = temp >> 1;
+					// end
 					arr_re[i] = matrix_re[reversed][j];
 					arr_im[i] = matrix_im[reversed][j];
-					//$display("Reversed2: %d", reversed);
+					//$display("Reversed2: %0d", reversed);
 				end
 				fft(log2h, height);
 				for (i=0;i<height;i++) begin
@@ -196,10 +262,28 @@ class fft2_ref_model extends uvm_component;
 					matrix_im[i][j] = arr_im[i];
 				end
 			end
+
+			rmfo = $fopen(ref_model_file_orig, "a");
+			$fwrite(rmfo,"----------------2----------------\n");
+			$fclose(rmfo);
+			rmf = $fopen(ref_model_file, "a");
+			$fwrite(rmf,"----------------2----------------\n");
+			$fclose(rmf);
+			//$display("\n----------------2----------------");
 			
-			for(i = 0; i < height; i++) begin
-				for(j = 0; j < width; j++) begin
-					$display("MATRICA 2. red: %d kol: %d re: %d im: %d", j, i, matrix_re[i][j], matrix_im[i][j]);
+
+			
+			for(j = 0; j < width; j++) begin
+				for(i = 0; i < height; i++) begin
+					$cast(dataRE, matrix_re[i][j]);
+        			$cast(dataIM, matrix_im[i][j]);
+					//$display("MATRICA 2. [%0d,%0d] re: %0f im: %0f", i,j, dataRE/65536.0, dataIM/65536.0);
+					rmfo = $fopen(ref_model_file_orig, "a"); 
+					$fwrite(rmfo, "MATRICA 2. [%0d,%0d] re: %0b im: %0b \n", i,j, matrix_re[i][j], matrix_im[i][j]);
+					$fclose(rmfo);
+					rmf = $fopen(ref_model_file, "a"); 
+					$fwrite(rmf, "MATRICA 2. [%0d,%0d] re: %0f im: %0f \n", i,j, dataRE/65536.0, dataIM/65536.0);
+					$fclose(rmf);
 				end
 			end
 			

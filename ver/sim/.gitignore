@@ -1,4 +1,9 @@
 work/
 results.txt 
 tr_db.log   
-wsim.wlf
+vsim.wlf
+wlf*
+*orig.txt
+*model.txt
+*monitor.txt
+*stacktrace.txt

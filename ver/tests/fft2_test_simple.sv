@@ -25,18 +25,18 @@ class fft2_test_simple extends fft2_test_base;
     task run_phase(uvm_phase phase);
 		//assert(std::randomize(log2h) with {log2h > 1;});
 		//assert(std::randomize(log2w) with {log2w > 1;});
-		log2w = 2;
+		log2w = 3;
 		log2h = log2w;
 		din_seq.height = 2**log2h;
-		din_seq.width = 2**log2w;
+		din_seq.width  = 2**log2w;
 		
 		dout_seq.height = 2**log2h;
-		dout_seq.width = 2**log2w;
+		dout_seq.width  = 2**log2w;
 		
-		init_seq.log2h = log2h-1;
-		init_seq.log2w = log2w-1;
+		init_seq.log2h  = log2h-1;
+		init_seq.log2w  = log2w-1;
 		init_seq.height = 2**log2h-1;
-		init_seq.width = 2**log2w-1;
+		init_seq.width  = 2**log2w-1;
 		
 		phase.raise_objection(this);	
 		fork

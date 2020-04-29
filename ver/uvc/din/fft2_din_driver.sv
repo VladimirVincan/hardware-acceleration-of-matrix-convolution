@@ -57,9 +57,11 @@ endtask : reset
 
 task fft2_din_driver::get_and_drive();
     forever begin
+        //$display("DIN_DRIVER: break1");
         seq_item_port.get_next_item(req);
+        //$display("DIN_DRIVER: break2");
         drive_tr(req);
-        $display("DIN_DRIVER: ovde");
+        //$display("DIN_DRIVER: ovde");
         seq_item_port.item_done();
     end
 endtask : get_and_drive
@@ -69,9 +71,12 @@ task fft2_din_driver::drive_tr (fft2_dout_din_transaction tr);
     din_vif.dataRE_i    <= tr.dataRE_i;
     din_vif.dataIM_i    <= tr.dataIM_i;
 	din_vif.data_rd_i <= 1'b0;
-	@(posedge din_vif.clk iff din_vif.data_rd_o);
+    //$display("DIN_DRIVER: break3: %d", din_vif.data_rd_o);
+	@(posedge din_vif.clk iff din_vif.data_rd_o == 1'b1);
+    //$display("DIN_DRIVER: break4: %d", din_vif.data_rd_o);
 	din_vif.data_rd_i <= 1'b1;
 	@(posedge din_vif.clk iff din_vif.data_rd_o == 1'b0);
+    //$display("DIN_DRIVER: break5: %d", din_vif.data_rd_o);
 	din_vif.data_rd_i <= 1'b0;
     `uvm_info(get_type_name(), $sformatf("FFT2 Finished Driving tr \n%s", tr.sprint()), UVM_HIGH)
 endtask : drive_tr

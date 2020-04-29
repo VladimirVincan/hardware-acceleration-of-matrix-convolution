@@ -15,5 +15,6 @@ vlog -sv \
     ../uvc/fft2_pkg.sv \
     ../fft2_test_top.sv
 
-vsim fft2_test_top -novopt -coverage +UVM_TESTNAME=fft2_test_simple -sv_seed random
+vsim fft2_test_top -novopt -coverage +UVM_VERBOSITY=UVM_LOW +UVM_MAX_QUIT_COUNT=5 +UVM_TESTNAME=fft2_test_simple -sv_seed random 
+run -all
     

@@ -18,6 +18,7 @@ class fft2_scoreboard extends uvm_scoreboard;
 
 	int num_of_successful_tr = 0;
 	int num_of_failed_tr = 0;
+	parameter PRECISION_WIDTH = 0;
 	
 	function new(string name = "fft2_scoreboard", uvm_component parent = null);
 		super.new(name, parent);
@@ -44,8 +45,8 @@ class fft2_scoreboard extends uvm_scoreboard;
 	endtask: run
 	
 	virtual function void compare();
-		$display("SCOREBOARD: %d %d %d %d", dout_expected_tr.dataRE_o, dout_detected_tr.dataRE_o, dout_expected_tr.dataIM_o, dout_detected_tr.dataIM_o);
-		if((dout_expected_tr.dataRE_o == dout_detected_tr.dataRE_o) && (dout_expected_tr.dataIM_o == dout_detected_tr.dataIM_o)) begin
+		// $display("SCOREBOARD: %d %d %d %d", dout_expected_tr.dataRE_o, dout_detected_tr.dataRE_o, dout_expected_tr.dataIM_o, dout_detected_tr.dataIM_o);
+		if((dout_expected_tr.dataRE_o[DATA_WIDTH-1 : PRECISION_WIDTH] == dout_detected_tr.dataRE_o[DATA_WIDTH-1 : PRECISION_WIDTH]) && (dout_expected_tr.dataIM_o[DATA_WIDTH-1 : PRECISION_WIDTH] == dout_detected_tr.dataIM_o[DATA_WIDTH-1 : PRECISION_WIDTH])) begin
 			`uvm_info(get_type_name() ,"Transaction success", UVM_HIGH);
 			`uvm_info(get_type_name(), $sformatf("Tr expected :\n%s", dout_expected_tr.sprint()), UVM_HIGH)
 			`uvm_info(get_type_name(), $sformatf("Tr detected :\n%s", dout_detected_tr.sprint()), UVM_HIGH)
