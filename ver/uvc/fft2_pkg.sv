@@ -18,7 +18,7 @@
 package fft2_pkg;
     
     parameter DATA_WIDTH   = 32;    // up to 32 bits
-    parameter FFT_SIZE  = 32;    // up to 32 bits
+    parameter FFT_SIZE  = 64;    // up to 32 bits
     parameter FIXED_POINT_WIDTH  = 16;    // up to 32 bits
     
     // ==================== OBJECTS ==============================

@@ -16,23 +16,26 @@ class fft2_init_monitor extends uvm_monitor;
     `uvm_component_utils_begin(fft2_init_monitor)
         `uvm_field_object(cfg, UVM_DEFAULT | UVM_REFERENCE)
     `uvm_component_utils_end
-	/*
+	
     covergroup cg_fft2_init;
 		option.per_instance = 1;
-        cp_data : coverpoint tr_collected.data{
-			bins zero = {0};
-			bins other = default;
-		}
-        cp_delay : coverpoint tr_collected.delay {
-            bins lt_10 = {[0:10]};
-            bins other = default;
+
+        cp_log2w : coverpoint tr_collected.log2w {
+            bins range[5] = {[1:5]};
+            // bins ignored = default;
         }
+        cp_log2h : coverpoint tr_collected.log2h{
+            bins range[5] = {[1:5]};
+            // bins ignored = default;
+        }
+        cx_log : cross cp_log2h, cp_log2w;
+
     endgroup : cg_fft2_init;
-	*/
+	
 	function new(string name = "fft2_init_monitor", uvm_component parent = null);
 		super.new(name, parent);
         item_collected_port = new("item_collected_port", this);
-        //cg_fft2_init = new();
+        cg_fft2_init = new();
 	endfunction : new
 
     function void build_phase(uvm_phase phase);
@@ -77,7 +80,7 @@ task fft2_init_monitor::collect_transactions();
 		tr_collected.log2w = init_vif.log2w;
         item_collected_port.write(tr_collected);
         if(cfg.has_coverage == 1) begin
-            //cg_fft2_init.sample();
+            cg_fft2_init.sample();
         end
         `uvm_info(get_type_name(), $sformatf("Tr collected :\n%s", tr_collected.sprint()), UVM_HIGH)
         num_transactions++;

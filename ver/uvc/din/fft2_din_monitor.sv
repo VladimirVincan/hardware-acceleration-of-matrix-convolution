@@ -17,23 +17,20 @@ class fft2_din_monitor extends uvm_monitor;
     `uvm_component_utils_begin(fft2_din_monitor)
         `uvm_field_object(cfg, UVM_DEFAULT | UVM_REFERENCE)
     `uvm_component_utils_end
-	/*
+	
     covergroup cg_fft2_din;
 		option.per_instance = 1;
-        cp_data : coverpoint tr_collected.data{
-			bins zero = {0};
-			bins other = default;
-		}
-        cp_delay : coverpoint tr_collected.delay {
-            bins lt_10 = {[0:10]};
-            bins other = default;
-        }
+
+        // cp_inaddr   : coverpoint tr_collected.data_i_addr_o;
+        cp_dataRE_i : coverpoint tr_collected.dataRE_i;
+        cp_dataIM_i : coverpoint tr_collected.dataIM_i;
+
     endgroup : cg_fft2_din;
-	*/
+	
 	function new(string name = "fft2_din_monitor", uvm_component parent = null);
 		super.new(name, parent);
         item_collected_port = new("item_collected_port", this);
-        //cg_fft2_din = new();
+        cg_fft2_din = new();
 	endfunction : new
 
     function void build_phase(uvm_phase phase);
@@ -81,7 +78,7 @@ task fft2_din_monitor::collect_transactions();
 			
 		last_addr = tr_collected.data_i_addr_o;
         if(cfg.has_coverage == 1) begin
-            //cg_fft2_din.sample();
+            cg_fft2_din.sample();
         end
         `uvm_info(get_type_name(), $sformatf("Tr collected :\n%s", tr_collected.sprint()), UVM_HIGH)
         num_transactions++;

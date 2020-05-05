@@ -1,9 +1,15 @@
 work/
 results.txt 
-tr_db.log   
+tr_db.log  
+vcover.log
+matrix.in
+test-vals.txt
+ucdb-test/ 
+covhtmlreport/
 vsim.wlf
 wlf*
 *orig.txt
 *model.txt
 *monitor.txt
 *stacktrace.txt
+fft2-*.ucdb

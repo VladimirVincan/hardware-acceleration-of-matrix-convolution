@@ -19,23 +19,20 @@ class fft2_dout_monitor extends uvm_monitor;
     `uvm_component_utils_begin(fft2_dout_monitor)
         `uvm_field_object(cfg, UVM_DEFAULT | UVM_REFERENCE)
     `uvm_component_utils_end
-/*
+
     covergroup cg_fft2_dout;
 		option.per_instance = 1;
-        cp_data : coverpoint tr_collected.data{
-			bins zero = {0};
-			bins other = default;
-		}
-        cp_delay : coverpoint tr_collected.delay {
-            bins lt_10 = {[0:10]};
-            bins other = default;
-        }
+
+        // cp_outaddr  : coverpoint tr_collected.data_o_addr_o;
+        cp_dataRE_o : coverpoint tr_collected.dataRE_o;
+        cp_dataIM_o : coverpoint tr_collected.dataIM_o;
+
     endgroup : cg_fft2_dout;
-*/
+
 	function new(string name = "fft2_dout_monitor", uvm_component parent = null);
 		super.new(name, parent);
         item_collected_port = new("item_collected_port", this);
-        //cg_fft2_dout = new();
+        cg_fft2_dout = new();
 	endfunction : new
 
     function void build_phase(uvm_phase phase);
@@ -68,16 +65,16 @@ task fft2_dout_monitor::run_phase(uvm_phase phase);
     end
 endtask : run_phase
 
-string file1, file2;
-int f, g;
+string dm_file, dmo_file;
+int dm, dmo;
 
 task fft2_dout_monitor::collect_transactions();
-	file1 = "dout-monitor.txt";
-    file2 = "dout-monitor-orig.txt";
-	f = $fopen(file1, "w");
-    g = $fopen(file2, "w");
-	$fclose(f);  
-    $fclose(g);
+	dm_file = "dout-monitor.txt";
+    dmo_file = "dout-monitor-orig.txt";
+	dm = $fopen(dm_file, "w");
+    dmo = $fopen(dmo_file, "w");
+	$fclose(dm);  
+    $fclose(dmo);
 	last_addr = -1;
 	forever begin
 
@@ -89,9 +86,9 @@ task fft2_dout_monitor::collect_transactions();
 		tr_collected.dataRE_o = dout_vif.dataRE_o;
 		tr_collected.dataIM_o = dout_vif.dataIM_o;
 
-        f = $fopen(file1, "a");  
-        g = $fopen(file2, "a");  
-		if(g) begin
+        dm = $fopen(dm_file, "a");  
+        dmo = $fopen(dmo_file, "a");  
+		if(dmo) begin
 			//$display("File dout was opened successfully");
 		end	else begin
 			$display("File dout was not opened successfully");
@@ -103,17 +100,17 @@ task fft2_dout_monitor::collect_transactions();
         $cast(dataIM, intIM);
 
 		if(last_addr != tr_collected.data_o_addr_o) begin
-			$fwrite(g, "%d, %b, %b \n", tr_collected.data_o_addr_o, tr_collected.dataRE_o, tr_collected.dataIM_o);
-            $fwrite(f, "%d, %f, %f \n", tr_collected.data_o_addr_o, dataRE/real'(65536), dataIM/real'(65536));
+            $fwrite(dm, "%d, %0f, %0f \n", tr_collected.data_o_addr_o, dataRE/real'(65536), dataIM/real'(65536));
+			$fwrite(dmo, "%d, %0h, %0h \n", tr_collected.data_o_addr_o, tr_collected.dataRE_o, tr_collected.dataIM_o);
 			item_collected_port.write(tr_collected);
 		end
 		last_addr = tr_collected.data_o_addr_o;
-		$fclose(f);
-        $fclose(g);
+		$fclose(dm);
+        $fclose(dmo);
 		
 		
         if(cfg.has_coverage == 1) begin
-            //cg_fft2_din.sample();
+            cg_fft2_dout.sample();
         end
         `uvm_info(get_type_name(), $sformatf("Tr collected :\n%s", tr_collected.sprint()), UVM_HIGH)
         num_transactions++;
