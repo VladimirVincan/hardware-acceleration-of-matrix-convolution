@@ -1,5 +1,5 @@
 # set number of seeds
-set num_seeds 50
+set num_seeds 100
 
 if [file exists work] {
     vdel -all

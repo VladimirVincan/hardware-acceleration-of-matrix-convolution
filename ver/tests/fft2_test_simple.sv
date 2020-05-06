@@ -28,7 +28,7 @@ class fft2_test_simple extends fft2_test_base;
     task run_phase(uvm_phase phase);
 		assert(std::randomize(log2h) with {log2h > 1; log2h < 7;});
 		assert(std::randomize(log2w) with {log2w > 1; log2w < 7;});
-		// log2w = 5;
+		// log2w = 1;
 		// log2h = log2w;
 		din_seq.height = 2**log2h;
 		din_seq.width  = 2**log2w;

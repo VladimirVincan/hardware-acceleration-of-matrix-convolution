@@ -79,10 +79,13 @@ class fft2_env extends uvm_env;
 	
 	function void connect_phase(uvm_phase phase);
 		super.connect_phase(phase);
-		dout_agent.mon.item_collected_port.connect(scb.dout_detected);
 		init_agent.mon.item_collected_port.connect(ref_i.port_init);
-		din_agent.mon.item_collected_port.connect(ref_i.port_din);
-		ref_i.item_collected_port.connect(scb.dout_expected);
+        init_agent.mon.item_collected_port.connect(scb.port_init);
+        din_agent.mon.item_collected_port.connect(ref_i.port_din);
+        din_agent.mon.item_collected_port.connect(scb.din_detected);
+		dout_agent.mon.item_collected_port.connect(scb.dout_detected);
+        ref_i.din_expected_port.connect(scb.din_expected);
+		ref_i.dout_expected_port.connect(scb.dout_expected);
 	endfunction: connect_phase
 
 endclass : fft2_env

@@ -1,13 +1,14 @@
 `ifndef FFT2_REF_MODEL_SV
 `define FFT2_REF_MODEL_SV
 
-`uvm_analysis_imp_decl(_init)
+// `uvm_analysis_imp_decl(_init)
 `uvm_analysis_imp_decl(_din)
 
 class fft2_ref_model extends uvm_component;
     `uvm_component_utils(fft2_ref_model)
 
-	uvm_analysis_port #(fft2_dout_din_transaction) item_collected_port;
+	uvm_analysis_port #(fft2_dout_din_transaction) dout_expected_port;
+	uvm_analysis_port #(fft2_dout_din_transaction) din_expected_port;
 	
 	uvm_analysis_imp_init #(fft2_init_transaction, fft2_ref_model) port_init;
 	uvm_analysis_imp_din #(fft2_dout_din_transaction, fft2_ref_model) port_din;
@@ -18,6 +19,7 @@ class fft2_ref_model extends uvm_component;
 	fft2_init_transaction init_tr;
 	fft2_dout_din_transaction din_tr;
 	fft2_dout_din_transaction dout_tr;
+	fft2_dout_din_transaction din_expected_tr;
 	
 	int matrix_re[0:FFT_SIZE][0:FFT_SIZE];
 	int matrix_im[0:FFT_SIZE][0:FFT_SIZE];
@@ -35,7 +37,8 @@ class fft2_ref_model extends uvm_component;
 	
 	function new(string name = "fft2_ref_model", uvm_component parent = null);
 		super.new(name, parent);
-		item_collected_port = new("item_collected_port", this);
+		din_expected_port = new("din_expected_port", this);
+		dout_expected_port = new("dout_expected_port", this);
 		init_tr = new("cfg_tr");
 		din_tr = new("din_tr");
 		dout_tr = new("dout_tr");
@@ -235,17 +238,20 @@ class fft2_ref_model extends uvm_component;
 			for(i = 0; i < height; i++) begin
 				//print_arr();
 				for(j = 0; j < width; j++) begin
-					int reversed = j;
-					// int reversed =0;
-					// int temp = j;
-					// for(k = 0; k < log2w; ++k) begin
-					// 	reversed=reversed << 1;
-					// 	reversed = reversed | (temp & 1);
-					// 	temp = temp >> 1;
-					// end
-					arr_re[j] = matrix_re[i][reversed];
-					arr_im[j] = matrix_im[i][reversed];
+					int reversed =0;
+					int temp = j;
+					for(k = 0; k < log2w; ++k) begin
+						reversed=reversed << 1;
+						reversed = reversed | (temp & 1);
+						temp = temp >> 1;
+					end
+					arr_re[j] = matrix_re[i][j];
+					arr_im[j] = matrix_im[i][j];
+
 					//$display("Reversed: %0d", reversed);
+					din_expected_tr = fft2_dout_din_transaction::type_id::create("dout_tr");
+					din_expected_tr.data_i_addr_o = i*width + reversed;
+					din_expected_port.write(din_expected_tr);
 				end
 				//print_arr();
 				fft(log2w, width);
@@ -280,9 +286,10 @@ class fft2_ref_model extends uvm_component;
 			for(i = 0; i < height; i++) begin
 				for(j = 0; j < width; j++) begin
 					dout_tr = fft2_dout_din_transaction::type_id::create("dout_tr");
+					dout_tr.data_o_addr_o = i*width + j;
 					dout_tr.dataRE_o = matrix_re[i][j];
 					dout_tr.dataIM_o = matrix_im[i][j];
-					item_collected_port.write(dout_tr);
+					dout_expected_port.write(dout_tr);
 				end
 			end
 
@@ -299,6 +306,10 @@ class fft2_ref_model extends uvm_component;
 					arr_re[i] = matrix_re[reversed][j];
 					arr_im[i] = matrix_im[reversed][j];
 					//$display("Reversed2: %0d", reversed);
+
+					din_expected_tr = fft2_dout_din_transaction::type_id::create("dout_tr");
+					din_expected_tr.data_i_addr_o = reversed*width + j;
+					din_expected_port.write(din_expected_tr);
 				end
 				fft(log2h, height);
 				for (i=0;i<height;i++) begin
@@ -335,9 +346,10 @@ class fft2_ref_model extends uvm_component;
 			for(i = 0; i < width; i++) begin
 				for(j = 0; j < height; j++) begin
 					dout_tr = fft2_dout_din_transaction::type_id::create("dout_tr");
+					dout_tr.data_o_addr_o = j*width + i;
 					dout_tr.dataRE_o = matrix_re[j][i];
 					dout_tr.dataIM_o = matrix_im[j][i];
-					item_collected_port.write(dout_tr);
+					dout_expected_port.write(dout_tr);
 				end
 			end
 		end
