@@ -9,17 +9,24 @@ ip_integrator/
 !rtl/
 !sim/
 !waveform/
-!diagrams
+diagrams/
 !esl/
-!tcl/
+tcl/
 !ver/
 !.gitignore
 .*
 rtl/conv2*
+valgrind-out.txt
+matrix.in
+vector.in
+*.org
 
 #object files
 main
 steps
+gdb_steps
+iterative
+steps_gdb
 
 #files being edited
 *~

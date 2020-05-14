@@ -23,7 +23,7 @@ package fft2_pkg;
 
     // ==================== OBJECTS ==============================
     typedef class fft2_dout_din_transaction;
-    typedef class fft2_init_transaction;
+   	typedef class fft2_init_transaction;
     typedef class fft2_dout_config;
     typedef class fft2_din_config;
     typedef class fft2_init_config;
@@ -44,7 +44,7 @@ package fft2_pkg;
     typedef class fft2_dout_agent;
     // ==========================================================
 
-    // ==================== INIT ==============================
+	// ==================== INIT ==============================
     typedef class fft2_init_driver;
     typedef class fft2_init_sequencer;
     typedef class fft2_init_monitor;
@@ -52,17 +52,20 @@ package fft2_pkg;
     // ==========================================================
 
     // ==================== TOP ==================================
-    typedef class fft2_scoreboard;
-    typedef class fft2_ref_model;
+	  typedef class fft2_scoreboard;
+	  typedef class fft2_ref_model;
     typedef class fft2_env;
     // ==========================================================
 
     import uvm_pkg::*;
     `include "uvm_macros.svh"
+
     `include "fft2_config.sv"
 
     // ==================== DIN ==============================
     `include "din/sequences/fft2_din_seq_lib.sv"
+    // `include "din/sequences/fft2_din_base_seq.sv"
+    // `include "din/sequences/fft2_din_simple_seq.sv"
     `include "din/fft2_din_config.sv"
     `include "din/fft2_din_driver.sv"
     `include "din/fft2_din_monitor.sv"
@@ -72,6 +75,8 @@ package fft2_pkg;
 
     // ==================== DOUT ===============================
     `include "dout/sequences/fft2_dout_seq_lib.sv"
+    // `include "dout/sequences/fft2_dout_base_seq.sv"
+    // `include "dout/sequences/fft2_dout_simple_seq.sv"
     `include "dout/fft2_dout_config.sv"
     `include "dout/fft2_dout_driver.sv"
     `include "dout/fft2_dout_monitor.sv"
@@ -79,9 +84,10 @@ package fft2_pkg;
     `include "dout/fft2_dout_agent.sv"
     // ==========================================================
 
-    // ==================== INIT ===============================
+	  // ==================== INIT ===============================
     `include "init/sequences/fft2_init_seq_lib.sv"
-    `include "init/sequences/fft2_init_simple_seq.sv"
+    // `include "init/sequences/fft2_init_base_seq.sv"
+    // `include "init/sequences/fft2_init_simple_seq.sv"
     `include "init/fft2_init_config.sv"
     `include "init/fft2_init_driver.sv"
     `include "init/fft2_init_monitor.sv"
@@ -91,10 +97,10 @@ package fft2_pkg;
 
     // ==================== TOP =================================
     `include "fft2_env.sv"
-    `include "fft2_scoreboard.sv"
-    `include "fft2_ref_model.sv"
+  	`include "fft2_scoreboard.sv"
+	  `include "fft2_ref_model.sv"
     `include "fft2_dout_din_transaction.sv"
-    `include "fft2_init_transaction.sv"
+	  `include "fft2_init_transaction.sv"
     // ==========================================================
 
 endpackage : fft2_pkg
