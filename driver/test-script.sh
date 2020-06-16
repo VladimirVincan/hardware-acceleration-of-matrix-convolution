@@ -41,7 +41,7 @@ echo "13, 0" > /dev/xlnx,bram_im
 echo "14, 0" > /dev/xlnx,bram_im
 echo "15, 0" > /dev/xlnx,bram_im
 
-echo "1, 3, 1, 3" > /dev/xlnx,fft2
+echo "4, 4" > /dev/xlnx,fft2
 cat /dev/xlnx,fft2
 cat /dev/xlnx,bram_re
 cat /dev/xlnx,bram_im

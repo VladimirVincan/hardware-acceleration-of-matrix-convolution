@@ -340,7 +340,11 @@ ssize_t fft2_write(struct file *pfile, const char __user *buffer, size_t length,
   switch (minor)
     {
     case 0: //device fft2
-      sscanf(buf, "%d, %d, %d, %d", &log2w, &width, &log2h, &height);
+      sscanf(buf, "%d, %d", &width, &height);
+      log2w = (width  >> 1) - 1;
+      log2h = (height >> 1) - 1;
+      width  -= 1;
+      height -= 1;
       printk(KERN_INFO "[WRITE] %d, %d, %d, %d\n", log2w, width, log2h, height);
       iowrite32(log2w, fft2->base_addr + 0);
       iowrite32(width, fft2->base_addr + 4);
