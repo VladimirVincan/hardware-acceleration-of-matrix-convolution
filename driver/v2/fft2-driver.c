@@ -255,8 +255,10 @@ static int fft2_close(struct inode *pinode, struct file *pfile)
 // READ & WRITE
 // ------------------------------------------
 
-unsigned int log2w=0, width=0, log2h=0, height=0;
-#define BUFF_SIZE 30
+unsigned int log2wa=0, wa=0, log2ha=0, ha=0;
+unsigned int log2wb=0, wb=0, log2hb=0, hb=0;
+/* unsigned int log2w=0, width=0, log2h=0, height=0; */
+#define BUFF_SIZE 40
 int i = 0;
 int end_read = 0;
 
@@ -279,13 +281,13 @@ unsigned int _log2(unsigned int n)
 
 ssize_t fft2_read(struct file *pfile, char __user *buffer, size_t length, loff_t *offset)
 {
-  char buf[30];
+  char buf[BUFF_SIZE];
   long int len=0;
   u32 val;
   int minor = MINOR(pfile->f_inode->i_rdev);
 
   /* printk(KERN_INFO "FFT2 READ entered \n"); */
-  /* printk(KERN_INFO "i = %d, len = %ld, end_read = %d\n", i, len, end_read); */
+  printk(KERN_INFO "i = %d, len = %ld, end_read = %d\n", i, len, end_read);
   if (end_read == 1)
     {
       end_read = 0;
@@ -295,9 +297,10 @@ ssize_t fft2_read(struct file *pfile, char __user *buffer, size_t length, loff_t
   switch (minor)
     {
     case 0: //device fft2
-      /* printk(KERN_INFO "i = %d\n", i); */
+      /* printk(KERN_INFO "i = %d\n", i);
+         */
       printk(KERN_INFO "[READ] Succesfully read from fft2 device.\n");
-      len = scnprintf(buf, BUFF_SIZE, "[READ] width = %d, height = %d\n", width, height);
+      len = scnprintf(buf, BUFF_SIZE, "[READ] wa = %d, ha = %d, wb = %d, hb = %d\n", wa, ha, wb, hb);
       if (copy_to_user(buffer, buf, len))
         return -EFAULT;
       end_read = 1;
@@ -305,10 +308,20 @@ ssize_t fft2_read(struct file *pfile, char __user *buffer, size_t length, loff_t
 
     case 1: //device bram_re
       val = ioread32(bram_re->base_addr + i*4);
-      if ((i+1) % (width+1) == 0)
-        len = scnprintf(buf, BUFF_SIZE, "%d\n", val);
+      if (i < 1024)
+      {
+        if ((i+1) % (wa+1) == 0)
+          len = scnprintf(buf, BUFF_SIZE, "%d\n", val);
+        else
+          len = scnprintf(buf, BUFF_SIZE, "%d ", val);
+      }
       else
-        len = scnprintf(buf, BUFF_SIZE, "%d ", val);
+        {
+          if ((i+1 - 1024) % (wb+1) == 0)
+            len = scnprintf(buf, BUFF_SIZE, "%d\n", val);
+          else
+            len = scnprintf(buf, BUFF_SIZE, "%d ", val);
+        }
       *offset += len;
       /* printk(KERN_INFO "%s", buf); */
       /* printk(KERN_INFO "i = %d, len = %ld\n", i, len); */
@@ -318,9 +331,20 @@ ssize_t fft2_read(struct file *pfile, char __user *buffer, size_t length, loff_t
           return -EFAULT;
         }
       ++i;
-      if (i == (width+1) * (height+1))
+      if (i == (wa+1) * (ha+1))
         {
-          printk(KERN_INFO "[READ] Succesfully read from bram_re device\n");
+          if (!wb || !hb)
+            {
+              printk(KERN_INFO "[READ] Succesfully read from bram_re device [single]\n");
+              end_read = 1;
+              i = 0;
+            }
+          else
+            i = 1024;
+        }
+      else if (i == (wb+1) * (hb+1) + 1024)
+        {
+          printk(KERN_INFO "[READ] Succesfully read from bram_re device [dual]\n");
           end_read = 1;
           i = 0;
         }
@@ -328,10 +352,20 @@ ssize_t fft2_read(struct file *pfile, char __user *buffer, size_t length, loff_t
 
     case 2: //device bram_im
       val = ioread32(bram_im->base_addr + i*4);
-      if ((i+1) % (width+1) == 0)
-        len = scnprintf(buf, BUFF_SIZE, "%d\n", val);
+      if (i < 1024)
+        {
+          if ((i+1) % (wa+1) == 0)
+            len = scnprintf(buf, BUFF_SIZE, "%d\n", val);
+          else
+            len = scnprintf(buf, BUFF_SIZE, "%d ", val);
+        }
       else
-        len = scnprintf(buf, BUFF_SIZE, "%d ", val);
+        {
+          if ((i+1 - 1024) % (wb+1) == 0)
+            len = scnprintf(buf, BUFF_SIZE, "%d\n", val);
+          else
+            len = scnprintf(buf, BUFF_SIZE, "%d ", val);
+        }
       *offset += len;
       /* printk(KERN_INFO "%s", buf); */
       /* printk(KERN_INFO "i = %d, len = %ld\n", i, len); */
@@ -341,9 +375,20 @@ ssize_t fft2_read(struct file *pfile, char __user *buffer, size_t length, loff_t
           return -EFAULT;
         }
       ++i;
-      if (i == (width+1) * (height+1))
+      if (i == (wa+1) * (ha+1))
         {
-          printk(KERN_INFO "[READ] Succesfully read from bram_im device\n");
+          if (!wb || !hb)
+            {
+              printk(KERN_INFO "[READ] Succesfully read from bram_im device [single]\n");
+              end_read = 1;
+              i = 0;
+            }
+          else
+            i = 1024;
+        }
+      else if (i == (wb+1) * (hb+1) + 1024)
+        {
+          printk(KERN_INFO "[READ] Succesfully read from bram_im device [dual]\n");
           end_read = 1;
           i = 0;
         }
@@ -361,7 +406,7 @@ ssize_t fft2_write(struct file *pfile, const char __user *buffer, size_t length,
 {
   char buf[length+1];
   int minor = MINOR(pfile->f_inode->i_rdev);
-  unsigned int pos=0, val=0;
+  unsigned int pos=0, val=0, val2=0;
   if (copy_from_user(buf, buffer, length))
     return -EFAULT;
   buf[length]='\0';
@@ -369,25 +414,89 @@ ssize_t fft2_write(struct file *pfile, const char __user *buffer, size_t length,
   switch (minor)
     {
     case 0: //device fft2
-      sscanf(buf, "%u, %u", &width, &height);
-      printk(KERN_INFO "[WRITE] %u, %u\n", width, height);
-      log2w = _log2(width);
-      log2h = _log2(height);
-      if ((log2w > 4) || (log2h > 4))
+      sscanf(buf, "%u, %u, %u, %u", &wa, &ha, &wb, &hb);
+      printk(KERN_INFO "[WRITE] %u, %u, %u, %u\n", wa, ha, wb, hb);
+
+      // ===================
+      // FFT2 over A
+      // ===================
+
+      log2wa = _log2(wa);
+      log2ha = _log2(ha);
+      if ((log2wa > 4) || (log2ha > 4))
         return -EFAULT;
-      width  -= 1;
-      height -= 1;
-      printk(KERN_INFO "[WRITE] %u, %u, %u, %u\n", log2w, width, log2h, height);
-      iowrite32(log2w, fft2->base_addr + 0);
-      iowrite32(width, fft2->base_addr + 4);
-      iowrite32(log2h, fft2->base_addr + 8);
-      iowrite32(height, fft2->base_addr + 12);
+      wa  -= 1;
+      ha -= 1;
+      printk(KERN_INFO "[WRITE] %u, %u, %u, %u\n", log2wa, wa, log2ha, ha);
+      iowrite32(log2wa, fft2->base_addr + 0);
+      iowrite32(wa,     fft2->base_addr + 4);
+      iowrite32(log2ha, fft2->base_addr + 8);
+      iowrite32(ha,     fft2->base_addr + 12);
 
       iowrite32(1, fft2->base_addr + 16);
       udelay(1000);
       iowrite32(0, fft2->base_addr + 16);
+      while (!ioread32(fft2->base_addr + 20))
+        udelay(1000);
 
-      printk(KERN_INFO "[WRITE] Succesfully wrote into fft2 device. %d, %d, %d, %d\n", log2w, width, log2h, height);
+      printk(KERN_INFO "[WRITE] Succesfully wrote into fft2 device. %d, %d, %d, %d\n", log2wa, wa, log2ha, ha);
+
+      // ===================
+      // FFT2 over B (if exists)
+      // ===================
+
+      if (!wb || !hb)
+        break;
+
+      // swap A and B in bram
+      for (i = 0; i < 1024; ++i)
+        {
+          val  = ioread32(bram_re->base_addr + i*4);
+          val2 = ioread32(bram_re->base_addr + i*4 + 1024*4);
+          iowrite32 (val, bram_re->base_addr + i*4 + 1024*4);
+          iowrite32 (val2,bram_re->base_addr + i*4);
+
+          val  = ioread32(bram_im->base_addr + i*4);
+          val2 = ioread32(bram_im->base_addr + i*4 + 1024*4);
+          iowrite32 (val, bram_im->base_addr + i*4 + 1024*4);
+          iowrite32 (val2,bram_im->base_addr + i*4);
+        }
+      i = 0;
+
+      log2wb = _log2(wb);
+      log2hb = _log2(hb);
+      if ((log2wb > 4) || (log2hb > 4))
+        return -EFAULT;
+      wb  -= 1;
+      hb -= 1;
+      printk(KERN_INFO "[WRITE] %u, %u, %u, %u\n", log2wb, wb, log2hb, hb);
+      iowrite32(log2wb, fft2->base_addr + 0);
+      iowrite32(wb,     fft2->base_addr + 4);
+      iowrite32(log2hb, fft2->base_addr + 8);
+      iowrite32(hb,     fft2->base_addr + 12);
+
+      iowrite32(1, fft2->base_addr + 16);
+      udelay(1000);
+      iowrite32(0, fft2->base_addr + 16);
+      while (!ioread32(fft2->base_addr + 20))
+        udelay(1000);
+
+      // swap A and B in bram
+      for (i = 0; i < 1024; ++i)
+        {
+          val  = ioread32(bram_re->base_addr + i*4);
+          val2 = ioread32(bram_re->base_addr + i*4 + 1024*4);
+          iowrite32 (val, bram_re->base_addr + i*4 + 1024*4);
+          iowrite32 (val2,bram_re->base_addr + i*4);
+
+          val  = ioread32(bram_im->base_addr + i*4);
+          val2 = ioread32(bram_im->base_addr + i*4 + 1024*4);
+          iowrite32 (val, bram_im->base_addr + i*4 + 1024*4);
+          iowrite32 (val2,bram_im->base_addr + i*4);
+        }
+      i = 0;
+
+      printk(KERN_INFO "[WRITE] Succesfully wrote into fft2 device. %d, %d, %d, %d\n", log2wb, wb, log2hb, hb);
       break;
 
     case 1: //device bram_re
