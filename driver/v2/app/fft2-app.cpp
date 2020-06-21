@@ -18,11 +18,20 @@ int wa, ha, wb, hb, wc, hc;
 void read_matrix  (FILE* f, double mat[][32], int *w, int *h);
 void write_matrix (FILE *f, const double mat[][32], const int w, const int h);
 void print_matrix (const double mat[][32], const int w, const int h);
-void write_ip     (const int w, const int h);
-void write_bramre (const double mat[][32], const int w, const int h);
-void write_bramim (const double mat[][32], const int w, const int h);
-void read_bramre  (double mat[][32], const int w, const int h);
-void read_bramim  (double mat[][32], const int w, const int h);
+void write_ip     (const int wa, const int ha,
+                   const int wb, const int hb);
+void write_bramre (const double mata[][32], const double matb[][32],
+                   const int wa, const int ha,
+                   const int wb, const int hb);
+void write_bramim (const double mata[][32], const double matb[][32],
+                   const int wa, const int ha,
+                   const int wb, const int hb);
+void read_bramre  (double mata[][32], double matb[][32],
+                   const int wa, const int ha,
+                   const int wb, const int hb);
+void read_bramim  (double mata[][32], double matb[][32],
+                   const int wa, const int ha,
+                   const int wb, const int hb);
 int double2int32  (const double d);
 double int2double (const int n);
 void test_casting (void);
@@ -58,26 +67,19 @@ int main (void)
   wa = wb = wc;
   ha = hb = hc;
 
-  printf("\nStarting fft2 over A.\n");
-  write_bramre (a_re, wa, ha);
-  write_bramim (zero_mat, wa, ha);
-  write_ip (wa, ha);
-  read_bramim(a_im, wa, ha);
+  printf("\nStarting fft2 over A and B.\n");
+  write_bramre (a_re, b_re, wa, ha, wb, hb);
+  write_bramim (zero_mat, zero_mat, wa, ha, wb, hb);
+  write_ip (wa, ha, wb, hb);
+  read_bramre(a_re, b_re, wa, ha, wb, hb);
   usleep(1000);
-  read_bramre(a_re, wa, ha);
+  read_bramim(a_im, b_im, wa, ha, wb, hb);
   usleep(1000);
 
   printf("a_re = \n");
   print_matrix(a_re, wa, ha);
   printf("\na_im = \n");
   print_matrix(a_im, wa, ha);
-
-  printf("\nStarting fft2 over B.\n");
-  write_bramre (b_re, wb, hb);
-  write_bramim (zero_mat, wb, hb);
-  write_ip (wb, hb);
-  read_bramre(b_re, wb, hb);
-  read_bramim(b_im, wb, hb);
 
   printf("b_im = \n");
   print_matrix(b_re, wb, hb);
@@ -94,11 +96,11 @@ int main (void)
       }
 
   printf("\nStarting fft2 over C.\n");
-  write_bramre (c_re, wc, hc);
-  write_bramim (c_im, wc, hc);
-  write_ip (wc, hc);
-  read_bramre(c_re, wc, hc);
-  read_bramim(c_im, wc, hc);
+  write_bramre (c_re, zero_mat, wc, hc, 0, 0);
+  write_bramim (c_im, zero_mat, wc, hc, 0, 0);
+  write_ip (wc, hc, 0, 0);
+  read_bramre(c_re, zero_mat, wc, hc, 0, 0);
+  read_bramim(c_im, zero_mat, wc, hc, 0, 0);
 
   for (int i = 0; i < hc; ++i)
     for (int j = 0; j < wc; ++j)
@@ -144,67 +146,105 @@ void write_matrix (FILE *f, const double mat[][32], const int w, const int h)
         fprintf (f, "\n");
 }
 
-void write_ip (const int w, const int h)
+void write_ip (const int wa, const int ha, const int wb, const int hb)
 {
   FILE *fft2;
   fft2 = fopen ("/dev/xlnx,fft2", "w");
-  fprintf (fft2, "%d, %d \n", w, h);
-  printf ("[APP] %d, %d \n", w, h);
+  fprintf (fft2, "%d, %d, %d, %d\n", wa, ha, wb, hb);
+  printf ("[APP] %d, %d, %d, %d \n", wa, ha, wb, hb);
   fclose (fft2);
 }
 
-void write_bramre(const double mat[][32], const int w, const int h)
+void write_bramre(const double mata[][32], const double matb[][32],
+                  const int wa, const int ha,
+                  const int wb, const int hb)
 {
   FILE *bramre;
-  for (int i = 0; i < h; ++i)
-    for (int j = 0; j < w; ++j)
+  for (int i = 0; i < ha; ++i)
+    for (int j = 0; j < wa; ++j)
       {
         bramre = fopen ("/dev/xlnx,bram_re", "w");
-        fprintf(bramre, "%d, %d\n", i*w+j, double2int32(mat[i][j]));
+        fprintf(bramre, "%d, %d\n", i*wa+j, double2int32(mata[i][j]));
+        fclose (bramre);
+      }
+
+  for (int i = 0; i < hb; ++i)
+    for (int j = 0; j < wb; ++j)
+      {
+        bramre = fopen ("/dev/xlnx,bram_re", "w");
+        fprintf(bramre, "%d, %d\n", i*wa+j+1024, double2int32(matb[i][j]));
         fclose (bramre);
       }
 }
 
-void write_bramim(const double mat[][32], const int w, const int h)
+void write_bramim(const double mata[][32], const double matb[][32],
+                  const int wa, const int ha,
+                  const int wb, const int hb)
 {
   FILE *bramim;
-  for (int i = 0; i < h; ++i)
-    for (int j = 0; j < w; ++j)
+  for (int i = 0; i < ha; ++i)
+    for (int j = 0; j < wa; ++j)
       {
         bramim = fopen ("/dev/xlnx,bram_im", "w");
-        fprintf(bramim, "%d, %d\n", i*w+j, double2int32(mat[i][j]));
+        fprintf(bramim, "%d, %d\n", i*wa+j, double2int32(mata[i][j]));
+        fclose (bramim);
+      }
+
+  for (int i = 0; i < hb; ++i)
+    for (int j = 0; j < wb; ++j)
+      {
+        bramim = fopen ("/dev/xlnx,bram_im", "w");
+        fprintf(bramim, "%d, %d\n", i*wa+j+1024, double2int32(matb[i][j]));
         fclose (bramim);
       }
 }
 
-void read_bramre(double mat[][32], const int w, const int h)
+void read_bramre(double mata[][32], double matb[][32],
+                 const int wa, const int ha,
+                 const int wb, const int hb)
 {
   char endstr[100];
   FILE *bramre;
   bramre = fopen ("/dev/xlnx,bram_re", "r");
   int n;
-  for (int i = 0; i < h; ++i)
-    for (int j = 0; j < w; ++j)
+  for (int i = 0; i < ha; ++i)
+    for (int j = 0; j < wa; ++j)
       {
         fscanf (bramre, "%d", &n);
-        mat[i][j] = int2double(n);
+        mata[i][j] = int2double(n);
+      }
+
+  for (int i = 0; i < hb; ++i)
+    for (int j = 0; j < wb; ++j)
+      {
+        fscanf (bramre, "%d", &n);
+        matb[i][j] = int2double(n);
       }
   fgets(endstr, 100, bramre); // needed to simulate cat
   fgets(endstr, 100, bramre); // needed to simulate cat
   fclose (bramre);
 }
 
-void read_bramim(double mat[][32], const int w, const int h)
+void read_bramim(double mata[][32], double matb[][32],
+                 const int wa, const int ha,
+                 const int wb, const int hb)
 {
   char endstr[100];
   FILE *bramim;
   bramim = fopen ("/dev/xlnx,bram_im", "r");
   int n;
-  for (int i = 0; i < h; ++i)
-    for (int j = 0; j < w; ++j)
+  for (int i = 0; i < ha; ++i)
+    for (int j = 0; j < wa; ++j)
       {
         fscanf (bramim, "%d", &n);
-        mat[i][j] = int2double(n);
+        mata[i][j] = int2double(n);
+      }
+
+  for (int i = 0; i < hb; ++i)
+    for (int j = 0; j < wb; ++j)
+      {
+        fscanf (bramim, "%d", &n);
+        matb[i][j] = int2double(n);
       }
   fgets(endstr, 100, bramim); // needed to simulate cat
   fgets(endstr, 100, bramim); // needed to simulate cat
